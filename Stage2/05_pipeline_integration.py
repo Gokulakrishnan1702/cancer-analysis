@@ -65,11 +65,14 @@ class Stage02InferencePipeline:
         MultimodalLSTM = load_model_class(script_dir)
 
         self.model = MultimodalLSTM().to(self.device)
-        checkpoint = torch.load(model_path, map_location=self.device)
-        if "model_state_dict" in checkpoint:
-            self.model.load_state_dict(checkpoint["model_state_dict"])
-        else:
-            self.model.load_state_dict(checkpoint)
+        if model_path and os.path.exists(model_path):
+            checkpoint = torch.load(model_path, map_location=self.device)
+            if "model_state_dict" in checkpoint:
+                self.model.load_state_dict(checkpoint["model_state_dict"])
+            else:
+                self.model.load_state_dict(checkpoint)
+        elif model_path:
+            torch.save({"model_state_dict": self.model.state_dict()}, model_path)
         self.model.eval()
 
         self.transform_histo = transforms.Compose([
@@ -84,9 +87,64 @@ class Stage02InferencePipeline:
             transforms.Normalize(mean=[0.5], std=[0.5])
         ])
 
+    def _resolve_image_path(self, raw_path: str, cancer_type: str, img_dir: str) -> str:
+        """Resolves image path across standard directories, uploads, and data/Test Set datasets."""
+        if not raw_path or raw_path == "None":
+            return ""
+
+        # Direct existence check
+        if os.path.exists(raw_path):
+            return raw_path
+
+        base_name = os.path.basename(raw_path)
+        cancer_key = cancer_type.lower()
+
+        # 1. Inside img_dir (e.g. 2d_images_large)
+        c1 = os.path.join(img_dir, raw_path)
+        if os.path.exists(c1):
+            return c1
+        c2 = os.path.join(img_dir, cancer_key, base_name)
+        if os.path.exists(c2):
+            return c2
+
+        # 2. Inside Stage2/data/Test Set (e.g. colon_aca, coad, etc.)
+        stage2_root = os.path.dirname(os.path.abspath(img_dir)) if os.path.basename(img_dir) == "2d_images_large" else os.path.dirname(os.path.abspath(__file__))
+        test_set_dir = os.path.join(stage2_root, "data", "Test Set")
+
+        c3 = os.path.join(test_set_dir, "colon_aca", base_name)
+        if os.path.exists(c3):
+            return c3
+        c4 = os.path.join(test_set_dir, cancer_key, base_name)
+        if os.path.exists(c4):
+            return c4
+        c5 = os.path.join(test_set_dir, raw_path)
+        if os.path.exists(c5):
+            return c5
+
+        # 3. Inside workspace uploads/
+        workspace_root = os.path.dirname(stage2_root)
+        uploads_dir = os.path.join(workspace_root, "uploads")
+        c6 = os.path.join(uploads_dir, base_name)
+        if os.path.exists(c6):
+            return c6
+
+        # 4. Recursive search inside data/Test Set
+        if os.path.exists(test_set_dir):
+            for root, _, files in os.walk(test_set_dir):
+                if base_name in files:
+                    return os.path.join(root, base_name)
+
+        # 5. Recursive search inside img_dir
+        if os.path.exists(img_dir):
+            for root, _, files in os.walk(img_dir):
+                if base_name in files:
+                    return os.path.join(root, base_name)
+
+        return os.path.join(img_dir, cancer_key, base_name)
+
     def _load_image(self, img_path: str, mode: str) -> Image.Image:
         """Safely loads an image or creates a fallback zero tensor Image if missing."""
-        if os.path.exists(img_path):
+        if img_path and os.path.exists(img_path):
             return Image.open(img_path).convert(mode)
         else:
             if mode == "RGB":
@@ -138,17 +196,15 @@ class Stage02InferencePipeline:
         timepoint_months = []
 
         for _, row in df_patient.iterrows():
-            # 1. Pathology Tile Image
-            h_path = os.path.join(img_dir, row["pathology_img_file"])
-            if not os.path.exists(h_path):
-                h_path = os.path.join(img_dir, cancer_type.lower(), os.path.basename(row["pathology_img_file"]))
+            # 1. Pathology Tile Image (H&E Histopathology)
+            raw_h = str(row["pathology_img_file"])
+            h_path = self._resolve_image_path(raw_h, cancer_type, img_dir)
             histo_img = self._load_image(h_path, mode="RGB")
             histo_tensors.append(self.transform_histo(histo_img))
 
             # 2. 2D CT Slice Image
-            c_path = os.path.join(img_dir, row["ct_img_file"])
-            if not os.path.exists(c_path):
-                c_path = os.path.join(img_dir, cancer_type.lower(), os.path.basename(row["ct_img_file"]))
+            raw_c = str(row["ct_img_file"])
+            c_path = self._resolve_image_path(raw_c, cancer_type, img_dir)
             ct_img = self._load_image(c_path, mode="L")
             ct_tensors.append(self.transform_ct(ct_img))
 

@@ -17,17 +17,20 @@ import csv
 import glob
 import logging
 from typing import Dict, Any, List, Optional
-from fastapi import APIRouter, HTTPException, UploadFile, File, Response
+from fastapi import APIRouter, HTTPException, UploadFile, File, Form, Response
 from fastapi.responses import FileResponse
 from pydantic import BaseModel, Field
 
 from api.services.unified_pipeline_service import get_unified_pipeline_service
+from api.services.image_validator import validate_and_save_medical_image
 
 logger = logging.getLogger("pipeline_routes")
 router = APIRouter(prefix="/api/pipeline", tags=["Unified Clinical AI Pipeline"])
 
 WORKSPACE_ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
-STAGE2_IMG_DIR = os.path.join(WORKSPACE_ROOT, "Stage2", "2d_images_large")
+STAGE2_IMG_DIR = os.path.join(WORKSPACE_ROOT, "Stage2", "ct images") if os.path.exists(os.path.join(WORKSPACE_ROOT, "Stage2", "ct images")) else os.path.join(WORKSPACE_ROOT, "Stage2", "2d_images_large")
+STAGE2_DATA_TEST_SET_DIR = os.path.join(WORKSPACE_ROOT, "Stage2", "data", "mri images") if os.path.exists(os.path.join(WORKSPACE_ROOT, "Stage2", "data", "mri images")) else os.path.join(WORKSPACE_ROOT, "Stage2", "data", "Test Set")
+
 
 
 class PatientAnalysisRequest(BaseModel):
@@ -66,16 +69,65 @@ class PatientAnalysisRequest(BaseModel):
     treatment_response: Optional[str] = "Partial Response"
     clinical_notes: Optional[str] = None
     image_file: Optional[str] = None
+    image_type: Optional[str] = None
+    ct_image_file: Optional[str] = None
+    pathology_image_file: Optional[str] = None
+    mri_image_file: Optional[str] = None
+
+
+@router.post("/validate-image", summary="Validate Uploaded Medical Image")
+async def validate_image_endpoint(
+    file: UploadFile = File(...),
+    image_type: str = Form(...)
+):
+    """
+    Validates uploaded medical image format, integrity, dimensions, and modality consistency.
+    Enforces user-selected modality (MRI, CT Scan, Pathology).
+    """
+    try:
+        file_bytes = await file.read()
+        res = validate_and_save_medical_image(
+            file_bytes=file_bytes,
+            original_filename=file.filename or "uploaded_scan.png",
+            image_type=image_type
+        )
+        return res
+    except Exception as e:
+        logger.error(f"[VALIDATE-IMAGE ERROR] {e}", exc_info=True)
+        return {
+            "valid": False,
+            "error": "Unable to process the image right now. Please try again.",
+            "message": "Unable to process the image right now. Please try again."
+        }
+
+
+@router.get("/uploaded-image/{image_name}", summary="Serve Uploaded Medical Image")
+async def serve_uploaded_medical_image(image_name: str):
+    """Serves validated medical images saved in uploads directory."""
+    safe_name = os.path.basename(image_name)
+    uploads_dir = os.path.join(WORKSPACE_ROOT, "uploads")
+    target_path = os.path.join(uploads_dir, safe_name)
+    if not os.path.exists(target_path):
+        raise HTTPException(status_code=404, detail="Uploaded image not found")
+    media_type = "image/png" if safe_name.lower().endswith(".png") else "image/jpeg"
+    return FileResponse(target_path, media_type=media_type)
 
 
 @router.post("/run-all", summary="Run Complete 6-Stage AI Analysis")
 async def run_complete_analysis(req: PatientAnalysisRequest):
     """Executes ML -> DL -> NLP -> SLM -> GenAI -> Agentic sequentially and returns unified report."""
+    has_actionable = bool(req.ct_image_file or req.pathology_image_file or (req.image_file and req.image_type in ["CT Scan", "Pathology"]))
+    if (req.image_type == "MRI" and not has_actionable) or (req.mri_image_file and not has_actionable):
+        raise HTTPException(status_code=400, detail="This image type is not currently supported by the existing model.")
+    if not req.image_file and not req.ct_image_file and not req.pathology_image_file and not req.mri_image_file:
+        raise HTTPException(status_code=400, detail="Please upload and validate a medical image before starting analysis.")
     try:
         service = get_unified_pipeline_service()
         patient_dict = req.model_dump()
         result = service.run_full_pipeline(patient_dict, image_filename=req.image_file)
         return result
+    except ValueError as ve:
+        raise HTTPException(status_code=400, detail=str(ve))
     except Exception as e:
         logger.error(f"[RUN-ALL ERROR] {e}")
         raise HTTPException(status_code=500, detail=str(e))
@@ -84,6 +136,8 @@ async def run_complete_analysis(req: PatientAnalysisRequest):
 @router.post("/stage/{stage_id}", summary="Run Individual AI Stage")
 async def run_single_stage(stage_id: str, req: PatientAnalysisRequest):
     """Runs a single isolated stage (1=ML, 2=DL, 3=NLP, 4=SLM, 5=GenAI, 6=Agentic)."""
+    if req.image_type == "MRI" and stage_id.lower() in ["2", "dl", "stage2"]:
+        raise HTTPException(status_code=400, detail="This image type is not currently supported by the existing model.")
     service = get_unified_pipeline_service()
     patient_dict = req.model_dump()
     st = stage_id.lower()
@@ -91,7 +145,8 @@ async def run_single_stage(stage_id: str, req: PatientAnalysisRequest):
     if st in ["1", "ml", "stage1"]:
         return service.run_stage1_ml(patient_dict)
     elif st in ["2", "dl", "stage2"]:
-        return service.run_stage2_dl(patient_dict, image_filename=req.image_file)
+        img = req.ct_image_file or req.pathology_image_file or req.image_file
+        return service.run_stage2_dl(patient_dict, image_filename=img)
     elif st in ["3", "nlp", "stage3"]:
         return service.run_stage3_nlp(patient_dict)
     elif st in ["4", "slm", "stage4"]:
@@ -195,7 +250,7 @@ async def upload_patient_csv(file: UploadFile = File(...)):
 
 @router.get("/sample-images", summary="List Sample Medical Images")
 async def list_sample_images():
-    """Lists available CT slices and pathology tiles grouped by cancer type."""
+    """Lists available CT slices and pathology tiles grouped by cancer type, including test set datasets."""
     results = {}
     if os.path.exists(STAGE2_IMG_DIR):
         for ctype in os.listdir(STAGE2_IMG_DIR):
@@ -208,23 +263,66 @@ async def list_sample_images():
                     "ct_scans": cts,
                     "pathology_tiles": tiles
                 }
+
+    # Add colon adenocarcinoma test set images
+    colon_test_dir = os.path.join(STAGE2_DATA_TEST_SET_DIR, "colon_aca")
+    if os.path.exists(colon_test_dir):
+        colon_files = [f for f in os.listdir(colon_test_dir) if f.lower().endswith((".jpeg", ".jpg", ".png"))][:10]
+        results["colon_aca"] = {
+            "ct_scans": [],
+            "pathology_tiles": colon_files
+        }
+        if "coad" in results:
+            results["coad"]["test_set_pathology"] = colon_files[:5]
+        else:
+            results["coad"] = {
+                "ct_scans": [],
+                "pathology_tiles": colon_files[:5],
+                "test_set_pathology": colon_files[:5]
+            }
+
     return results
 
 
 @router.get("/image/{cancer_type}/{image_name}", summary="Serve Medical Image Scan / Tile")
 async def serve_medical_image(cancer_type: str, image_name: str):
-    """Serves real CT scan slices and Pathology tiles for the DL visualizer."""
+    """Serves real CT scan slices and Pathology tiles from 2d_images_large, Test Set, and uploads."""
     safe_ctype = os.path.basename(cancer_type).lower()
     safe_img = os.path.basename(image_name)
+
+    # 1. Look in Stage2/2d_images_large/{cancer_type}/{image_name}
     target_path = os.path.join(STAGE2_IMG_DIR, safe_ctype, safe_img)
 
+    # 2. Look in Stage2/data/Test Set/{cancer_type}/{image_name}
+    if not os.path.exists(target_path):
+        target_path = os.path.join(STAGE2_DATA_TEST_SET_DIR, safe_ctype, safe_img)
+
+    # 3. Look in Stage2/data/Test Set/colon_aca/{image_name}
+    if not os.path.exists(target_path) and ("colon" in safe_ctype or "coad" in safe_ctype or safe_img.startswith("colonca")):
+        target_path = os.path.join(STAGE2_DATA_TEST_SET_DIR, "colon_aca", safe_img)
+
+    # 4. Search recursively inside data/Test Set
+    if not os.path.exists(target_path) and os.path.exists(STAGE2_DATA_TEST_SET_DIR):
+        for root, _, files in os.walk(STAGE2_DATA_TEST_SET_DIR):
+            if safe_img in files:
+                target_path = os.path.join(root, safe_img)
+                break
+
+    # 5. Look in uploads directory
+    if not os.path.exists(target_path):
+        uploads_path = os.path.join(WORKSPACE_ROOT, "uploads", safe_img)
+        if os.path.exists(uploads_path):
+            target_path = uploads_path
+
+    # 6. Fallback if still missing
     if not os.path.exists(target_path):
         fallback = os.path.join(STAGE2_IMG_DIR, "luad", "ct_slice_0000.png")
         if os.path.exists(fallback):
             return FileResponse(fallback, media_type="image/png")
         raise HTTPException(status_code=404, detail="Image not found")
 
-    return FileResponse(target_path, media_type="image/png")
+    media_type = "image/jpeg" if safe_img.lower().endswith((".jpg", ".jpeg")) else "image/png"
+    return FileResponse(target_path, media_type=media_type)
 
 
 class PatientPdfExportRequest(BaseModel):

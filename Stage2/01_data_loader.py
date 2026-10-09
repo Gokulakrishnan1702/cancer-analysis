@@ -90,21 +90,38 @@ class Stage02MultiModalDataset(Dataset):
         """Helper to resolve and load image from filesystem safely."""
         full_path = os.path.join(self.img_dir, rel_path)
         if not os.path.exists(full_path):
-            # Fallback search inside subdirectories
             basename = os.path.basename(rel_path)
-            alt_path = None
-            for root, _, files in os.walk(self.img_dir):
-                if basename in files:
-                    alt_path = os.path.join(root, basename)
+            # Check data/Test Set/colon_aca and data/Test Set
+            test_dir = os.path.join(os.path.dirname(os.path.abspath(self.img_dir)), "data", "Test Set")
+            candidate_paths = [
+                os.path.join(test_dir, "colon_aca", basename),
+                os.path.join(test_dir, basename),
+                os.path.join(self.img_dir, "coad", basename)
+            ]
+            for cp in candidate_paths:
+                if os.path.exists(cp):
+                    full_path = cp
                     break
-            if alt_path and os.path.exists(alt_path):
-                full_path = alt_path
-            else:
-                # Return synthetic placeholder Image if file missing
-                if mode == "RGB":
-                    return Image.fromarray(np.zeros((224, 224, 3), dtype=np.uint8))
+
+            if not os.path.exists(full_path):
+                # Fallback search inside subdirectories
+                alt_path = None
+                for search_root in [self.img_dir, test_dir]:
+                    if os.path.exists(search_root):
+                        for root, _, files in os.walk(search_root):
+                            if basename in files:
+                                alt_path = os.path.join(root, basename)
+                                break
+                    if alt_path:
+                        break
+                if alt_path and os.path.exists(alt_path):
+                    full_path = alt_path
                 else:
-                    return Image.fromarray(np.zeros((224, 224), dtype=np.uint8))
+                    # Return synthetic placeholder Image if file missing
+                    if mode == "RGB":
+                        return Image.fromarray(np.zeros((224, 224, 3), dtype=np.uint8))
+                    else:
+                        return Image.fromarray(np.zeros((224, 224), dtype=np.uint8))
 
         return Image.open(full_path).convert(mode)
 

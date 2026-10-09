@@ -140,6 +140,12 @@ def create_app() -> FastAPI:
         from api.dashboard_view import DASHBOARD_HTML
         return HTMLResponse(content=DASHBOARD_HTML)
 
+    @app.get("/dashboard", tags=["Gateway Status"])
+    async def dashboard_gateway():
+        from fastapi.responses import HTMLResponse
+        from api.dashboard_view import DASHBOARD_HTML
+        return HTMLResponse(content=DASHBOARD_HTML)
+
     # Dedicated Clinical Login Route
     @app.get("/login", tags=["Authentication Gateway"])
     async def login_portal():

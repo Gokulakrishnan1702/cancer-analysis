@@ -60,7 +60,9 @@ class UnifiedPipelineService:
 
         self.stage2_pipeline = None
         self.stage2_scaler = None
-        self.stage2_img_dir = os.path.join(STAGE2_DIR, "2d_images_large")
+        self.stage2_img_dir = os.path.join(STAGE2_DIR, "ct images") if os.path.exists(os.path.join(STAGE2_DIR, "ct images")) else os.path.join(STAGE2_DIR, "2d_images_large")
+        self.stage2_test_set_dir = os.path.join(STAGE2_DIR, "data", "mri images") if os.path.exists(os.path.join(STAGE2_DIR, "data", "mri images")) else os.path.join(STAGE2_DIR, "data", "Test Set")
+
 
         self.stage3_pipeline = None
 
@@ -412,15 +414,61 @@ class UnifiedPipelineService:
             img_folder = os.path.join(self.stage2_img_dir, "luad")
             cancer_sub = "luad"
 
+        img_type = str(patient_data.get("image_type") or "").strip()
+        mri_file = patient_data.get("mri_image_file")
+        ct_file = patient_data.get("ct_image_file")
+        path_file = patient_data.get("pathology_image_file")
+
+        if (img_type == "MRI" or mri_file) and not ct_file and not path_file:
+            raise ValueError("This image type is not currently supported by the existing model.")
+
         ct_sample = "ct_slice_0000.png"
         path_sample = "tile_0000.png"
 
-        if image_filename and os.path.basename(image_filename):
-            chosen = os.path.basename(image_filename)
-            if "tile" in chosen:
+        # If Colon / COAD and new test set exists, use colonca4273.jpeg as default pathology tile
+        if cancer_sub in ["coad", "colon", "colon_aca"]:
+            test_colon_path = os.path.join(self.stage2_test_set_dir, "colon_aca", "colonca4273.jpeg")
+            if os.path.exists(test_colon_path):
+                path_sample = "colon_aca/colonca4273.jpeg"
+
+        uploads_dir = os.path.join(WORKSPACE_ROOT, "uploads")
+        if ct_file:
+            chosen = os.path.basename(str(ct_file))
+            possible = os.path.join(uploads_dir, chosen)
+            ct_sample = possible if os.path.exists(possible) else chosen
+
+        if path_file:
+            chosen = str(path_file)
+            base_chosen = os.path.basename(chosen)
+            possible = os.path.join(uploads_dir, base_chosen)
+            possible_test = os.path.join(self.stage2_test_set_dir, "colon_aca", base_chosen)
+            if os.path.exists(possible):
+                path_sample = possible
+            elif os.path.exists(possible_test):
+                path_sample = possible_test
+            elif os.path.exists(chosen):
                 path_sample = chosen
             else:
-                ct_sample = chosen
+                path_sample = chosen
+
+        if not ct_file and not path_file and image_filename and os.path.basename(image_filename):
+            chosen = str(image_filename)
+            base_chosen = os.path.basename(chosen)
+            possible_upload = os.path.join(uploads_dir, base_chosen)
+            possible_test = os.path.join(self.stage2_test_set_dir, "colon_aca", base_chosen)
+            if os.path.exists(possible_upload):
+                resolved = possible_upload
+            elif os.path.exists(possible_test):
+                resolved = possible_test
+            elif os.path.exists(chosen):
+                resolved = chosen
+            else:
+                resolved = chosen
+
+            if img_type == "Pathology" or "tile" in base_chosen.lower() or "colon" in base_chosen.lower() or "path" in base_chosen.lower():
+                path_sample = resolved
+            else:
+                ct_sample = resolved
 
         # Run multi-step sequence with Stage 2 pipeline
         prog_prob = 0.42
@@ -442,8 +490,8 @@ class UnifiedPipelineService:
                         "ct_tumor_vol_cm3": max(0.5, v0 * (1.0 + (step - 2) * 0.12)),
                         "biomarker_ng_ml": max(0.1, tumor_marker * (1.0 + (step - 2) * 0.10)),
                         "wsi_atypia_score": min(0.99, max(0.1, 0.45 + step * 0.08)),
-                        "pathology_img_file": f"{cancer_sub}/{path_sample}",
-                        "ct_img_file": f"{cancer_sub}/{ct_sample}"
+                        "pathology_img_file": path_sample if (os.path.isabs(str(path_sample)) or os.path.exists(str(path_sample))) else f"{cancer_sub}/{path_sample}",
+                        "ct_img_file": ct_sample if (os.path.isabs(str(ct_sample)) or os.path.exists(str(ct_sample))) else f"{cancer_sub}/{ct_sample}"
                     })
 
                 res = self.stage2_pipeline.predict_patient_trajectory(trajectory_rows, self.stage2_img_dir)
@@ -456,6 +504,25 @@ class UnifiedPipelineService:
                 risk_tier = "High Progression Risk" if prog_prob > 0.7 else ("Low Progression Risk" if prog_prob < 0.35 else "Moderate Risk")
 
         lesion_classification = "Malignant Neoplasm - Progressive" if prog_prob > 0.65 else ("Partial Remission / Stable Lesion" if prog_prob < 0.35 else "Indeterminate Lesion / Marginal Change")
+
+        # Determine preview URLs
+        if os.path.isabs(str(path_sample)) and "uploads" in str(path_sample):
+            path_url = f"/api/pipeline/uploaded-image/{os.path.basename(path_sample)}"
+        elif "colonca" in str(path_sample) or "colon_aca" in str(path_sample):
+            path_url = f"/api/pipeline/image/colon_aca/{os.path.basename(path_sample)}"
+        elif os.path.exists(os.path.join(uploads_dir, os.path.basename(str(path_sample)))):
+            path_url = f"/api/pipeline/uploaded-image/{os.path.basename(path_sample)}"
+        else:
+            base_p = os.path.basename(str(path_sample))
+            path_url = f"/api/pipeline/image/{cancer_sub}/{base_p}"
+
+        if os.path.isabs(str(ct_sample)) and "uploads" in str(ct_sample):
+            ct_url = f"/api/pipeline/uploaded-image/{os.path.basename(ct_sample)}"
+        elif os.path.exists(os.path.join(uploads_dir, os.path.basename(str(ct_sample)))):
+            ct_url = f"/api/pipeline/uploaded-image/{os.path.basename(ct_sample)}"
+        else:
+            base_c = os.path.basename(str(ct_sample))
+            ct_url = f"/api/pipeline/image/{cancer_sub}/{base_c}"
 
         return {
             "stage": "DL",
@@ -471,8 +538,8 @@ class UnifiedPipelineService:
             "confidence": round(max(prog_prob, 1 - prog_prob), 4),
             "confidence_pct": round(max(prog_prob, 1 - prog_prob) * 100, 1),
             "risk_tier": risk_tier,
-            "pathology_tile_file": f"/api/pipeline/image/{cancer_sub}/{path_sample}",
-            "ct_slice_file": f"/api/pipeline/image/{cancer_sub}/{ct_sample}",
+            "pathology_tile_file": path_url,
+            "ct_slice_file": ct_url,
             "trajectory_timepoints": timepoint_steps,
             "trajectory_breakdown": timepoint_steps,
             "clinical_interpretation": (
@@ -1311,6 +1378,53 @@ class UnifiedPipelineService:
                         "Critically elevated ALT 412 U/L and AST 385 U/L. Immediate ICU transfer and resuscitation initiated."
                     ),
                     "image_file": "lusc/ct_slice_0000.png"
+                }
+            },
+            "COLON_TEST_SET": {
+                "name": "Colon Adenocarcinoma (COAD - Test Set)",
+                "description": "Colon adenocarcinoma histopathology from new test dataset (colonca4273.jpeg), Stage III on adjuvant FOLFOX + Bevacizumab.",
+                "data": {
+                    "patient_id": "PAT-COAD-4273",
+                    "age": 62,
+                    "sex": "Male",
+                    "cancer_type": "Colon (COAD)",
+                    "cancer_stage": "Stage III",
+                    "treatment_name": "FOLFOX + Bevacizumab",
+                    "treatment_cycle": 4,
+                    "dosage_mg": 350.0,
+                    "previous_dose_mg": 350.0,
+                    "dose_change_percentage": 0.0,
+                    "treatment_duration_days": 28,
+                    "mutation_profile": "KRAS G12D, APC",
+                    "mutation_count": 2,
+                    "biomarker_status": "Positive",
+                    "ctDNA_level": 0.82,
+                    "tumor_marker_level": 18.4,
+                    "WBC": 5.4,
+                    "hemoglobin": 11.2,
+                    "platelet_count": 220.0,
+                    "creatinine": 1.05,
+                    "bilirubin": 1.1,
+                    "ALT": 38.0,
+                    "AST": 34.0,
+                    "heart_rate": 78,
+                    "systolic_bp": 126,
+                    "diastolic_bp": 80,
+                    "spo2": 97,
+                    "temperature": 37.0,
+                    "respiratory_rate": 16,
+                    "previous_adverse_reaction": "No",
+                    "previous_treatment_response": "Partial Response",
+                    "previous_toxicity": "Low",
+                    "treatment_response": "Partial Response",
+                    "clinical_notes": (
+                        "Primary colon adenocarcinoma resection specimen test set evaluation. "
+                        "Histopathology H&E tile demonstrates moderate-to-poorly differentiated glandular architecture with stromal invasion. "
+                        "Evaluating response to adjuvant FOLFOX regimen with anti-VEGF targeted therapy."
+                    ),
+                    "image_file": "colon_aca/colonca4273.jpeg",
+                    "pathology_image_file": "colon_aca/colonca4273.jpeg",
+                    "image_type": "Pathology"
                 }
             }
         }

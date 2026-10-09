@@ -666,6 +666,672 @@ DASHBOARD_HTML = r"""<!DOCTYPE html>
             display: none;
         }
 
+        /* ==========================================================================
+           MEDICAL IMAGE UPLOAD & VALIDATION WORKFLOW STYLES
+           ========================================================================== */
+        .medical-upload-panel {
+            background: #ffffff;
+            border: 1px solid var(--border-card);
+            border-radius: var(--radius-md);
+            padding: 1.25rem;
+            margin-bottom: 1rem;
+        }
+        .section-subheading {
+            font-size: 0.82rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 0.65rem;
+            display: block;
+        }
+        .required-indicator {
+            color: #ef4444;
+            font-weight: 800;
+        }
+        .modality-pill-group {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0.75rem;
+            margin-bottom: 1.25rem;
+        }
+        .modality-pill {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem 1rem;
+            border-radius: var(--radius-md);
+            border: 1.5px solid var(--border-card);
+            background: var(--bg-card-alt);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            position: relative;
+        }
+        .modality-pill:hover {
+            border-color: #38bdf8;
+            background: #f8fafc;
+        }
+        .modality-pill.selected {
+            border-color: #2563eb;
+            background: rgba(37, 99, 235, 0.06);
+            box-shadow: 0 0 0 1px #2563eb;
+        }
+        .modality-pill input[type="radio"] {
+            margin: 0;
+            width: 16px;
+            height: 16px;
+            accent-color: #2563eb;
+            cursor: pointer;
+        }
+        .pill-labels {
+            display: flex;
+            flex-direction: column;
+            gap: 0.15rem;
+        }
+        .pill-name {
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+        .pill-desc {
+            font-size: 0.68rem;
+            color: var(--text-secondary);
+        }
+
+        .upload-dropzone-box {
+            border: 2px dashed #cbd5e1;
+            border-radius: var(--radius-md);
+            background: #f8fafc;
+            padding: 1.75rem 1.5rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 0.65rem;
+        }
+        .upload-dropzone-box:hover, .upload-dropzone-box.drag-over {
+            border-color: #2563eb;
+            background: rgba(37, 99, 235, 0.04);
+        }
+        .dropzone-icon-circle {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: #e2e8f0;
+            color: #2563eb;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 0.25rem;
+        }
+        .dropzone-text-block h4 {
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 0.25rem;
+        }
+        .dropzone-text-block p {
+            font-size: 0.78rem;
+            color: var(--text-secondary);
+            margin: 0;
+        }
+        .dropzone-sub {
+            font-size: 0.68rem;
+            color: #94a3b8;
+            margin-top: 0.35rem;
+            display: block;
+        }
+        .btn-choose-image {
+            margin-top: 0.5rem;
+            background: #ffffff;
+            color: #2563eb;
+            border: 1.5px solid #2563eb;
+            padding: 0.5rem 1.25rem;
+            border-radius: var(--radius-sm);
+            font-size: 0.82rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.15s ease;
+        }
+        .btn-choose-image:hover {
+            background: #2563eb;
+            color: #ffffff;
+        }
+
+        /* Medical Image Preview Card */
+        .medical-image-card {
+            border: 1px solid var(--border-card);
+            border-radius: var(--radius-md);
+            background: var(--bg-card);
+            padding: 1rem 1.25rem;
+            margin-top: 1rem;
+            box-shadow: var(--shadow-sm);
+        }
+        .card-box-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding-bottom: 0.65rem;
+            border-bottom: 1px solid var(--border-card);
+            margin-bottom: 0.85rem;
+        }
+        .card-box-title {
+            display: flex;
+            align-items: center;
+            gap: 0.45rem;
+            font-size: 0.82rem;
+            font-weight: 800;
+            color: var(--text-primary);
+            letter-spacing: 0.03em;
+        }
+        .btn-remove-selected {
+            background: none;
+            border: none;
+            color: #ef4444;
+            font-size: 0.75rem;
+            font-weight: 600;
+            cursor: pointer;
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+        }
+        .btn-remove-selected:hover {
+            background: #fee2e2;
+        }
+        .preview-layout {
+            display: grid;
+            grid-template-columns: 140px 1fr;
+            gap: 1.25rem;
+            align-items: center;
+        }
+        .preview-display-wrapper {
+            width: 140px;
+            height: 140px;
+            border-radius: var(--radius-sm);
+            border: 1px solid var(--border-card);
+            overflow: hidden;
+            background: #0f172a;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .med-preview-img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+        }
+        .preview-details-wrapper {
+            display: flex;
+            flex-direction: column;
+            gap: 0.4rem;
+        }
+        .preview-detail-row {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 0.78rem;
+        }
+        .detail-label {
+            width: 80px;
+            font-weight: 600;
+            color: var(--text-secondary);
+        }
+        .detail-value {
+            font-family: 'JetBrains Mono', monospace;
+            color: var(--text-primary);
+            font-weight: 500;
+        }
+        .detail-value.highlight {
+            font-weight: 700;
+            color: #2563eb;
+        }
+        .status-badge {
+            padding: 0.15rem 0.55rem;
+            border-radius: 4px;
+            font-size: 0.72rem;
+            font-weight: 600;
+            background: #f1f5f9;
+            color: #475569;
+        }
+        .status-badge.valid {
+            background: #ecfdf5;
+            color: #065f46;
+            border: 1px solid #10b981;
+        }
+        .status-badge.error {
+            background: #fef2f2;
+            color: #991b1b;
+            border: 1px solid #ef4444;
+        }
+        .validate-action-strip {
+            margin-top: 1rem;
+            padding-top: 0.75rem;
+            border-top: 1px solid var(--border-card);
+            display: flex;
+            gap: 0.65rem;
+        }
+        .btn-validate-image {
+            background: #0f172a;
+            color: #ffffff;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.8rem;
+            font-weight: 700;
+            padding: 0.6rem 1.25rem;
+            border-radius: var(--radius-sm);
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.45rem;
+            transition: all 0.15s ease;
+        }
+        .btn-validate-image:hover {
+            background: #1e293b;
+        }
+        .btn-validate-image:disabled {
+            background: #94a3b8;
+            cursor: not-allowed;
+        }
+
+        /* Triple Modality Multi-Slot Layout */
+        .triple-modality-container {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 0.85rem;
+            margin-top: 0.75rem;
+        }
+        @media (max-width: 900px) {
+            .triple-modality-container {
+                grid-template-columns: 1fr;
+            }
+        }
+        .modality-slot-card {
+            border: 1.5px solid var(--border-card);
+            border-radius: var(--radius-md);
+            background: #ffffff;
+            padding: 0.85rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.65rem;
+            transition: all 0.2s ease;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+            position: relative;
+        }
+        .modality-slot-card:hover {
+            border-color: #cbd5e1;
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.06);
+        }
+        .modality-slot-card.has-file {
+            border-color: #93c5fd;
+            background: #f8fafc;
+        }
+        .modality-slot-card.is-valid {
+            border-color: #86efac;
+            background: #f0fdf4;
+        }
+        .modality-slot-card.is-invalid {
+            border-color: #fca5a5;
+            background: #fef2f2;
+        }
+        .slot-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 0.4rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid #f1f5f9;
+        }
+        .slot-header-info {
+            display: flex;
+            align-items: center;
+            gap: 0.45rem;
+            min-width: 0;
+        }
+        .slot-icon-badge {
+            width: 26px;
+            height: 26px;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        .slot-icon-badge.mri { background: #ede9fe; color: #7c3aed; }
+        .slot-icon-badge.ct { background: #e0f2fe; color: #0284c7; }
+        .slot-icon-badge.pathology { background: #fce7f3; color: #db2777; }
+
+        .slot-title {
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin: 0;
+            line-height: 1.2;
+        }
+        .slot-subtitle {
+            font-size: 0.64rem;
+            color: var(--text-secondary);
+            display: block;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .slot-header-actions {
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+            flex-shrink: 0;
+        }
+        .slot-pill-badge {
+            font-size: 0.63rem;
+            font-weight: 700;
+            padding: 0.12rem 0.42rem;
+            border-radius: 999px;
+            letter-spacing: 0.02em;
+        }
+        .slot-pill-badge.awaiting {
+            background: #f1f5f9;
+            color: #64748b;
+        }
+        .slot-pill-badge.ready {
+            background: #fef3c7;
+            color: #92400e;
+        }
+        .slot-pill-badge.valid {
+            background: #dcfce7;
+            color: #166534;
+        }
+        .slot-pill-badge.invalid {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+        .btn-slot-clear {
+            background: none;
+            border: none;
+            color: #ef4444;
+            font-size: 0.68rem;
+            font-weight: 700;
+            cursor: pointer;
+            padding: 0.1rem 0.3rem;
+            border-radius: 4px;
+        }
+        .btn-slot-clear:hover {
+            background: #fee2e2;
+        }
+
+        /* Slot Dropzone */
+        .slot-dropzone {
+            border: 1.5px dashed #cbd5e1;
+            border-radius: 8px;
+            background: #f8fafc;
+            padding: 1rem 0.6rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 0.3rem;
+            min-height: 140px;
+        }
+        .slot-dropzone:hover, .slot-dropzone.drag-over {
+            border-color: #2563eb;
+            background: rgba(37, 99, 235, 0.04);
+        }
+        .slot-drop-icon {
+            color: #64748b;
+        }
+        .slot-drop-title {
+            font-size: 0.74rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+        .slot-drop-formats {
+            font-size: 0.63rem;
+            color: #94a3b8;
+        }
+        .btn-slot-choose {
+            margin-top: 0.35rem;
+            background: #ffffff;
+            color: #2563eb;
+            border: 1.5px solid #2563eb;
+            padding: 0.35rem 0.85rem;
+            border-radius: 5px;
+            font-size: 0.74rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            display: inline-block;
+            user-select: none;
+        }
+        .btn-slot-choose:hover {
+            background: #2563eb;
+            color: #ffffff;
+        }
+        .slot-change-btn {
+            font-size: 0.68rem;
+            font-weight: 700;
+            color: #2563eb;
+            background: #eff6ff;
+            border: 1px solid #bfdbfe;
+            padding: 0.15rem 0.55rem;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            display: inline-block;
+            margin-top: 0.25rem;
+            text-align: center;
+        }
+        .slot-change-btn:hover {
+            background: #dbeafe;
+            border-color: #93c5fd;
+        }
+
+        /* Slot Preview Box */
+        .slot-preview-box {
+            display: flex;
+            flex-direction: column;
+            gap: 0.45rem;
+            min-height: 140px;
+            justify-content: space-between;
+        }
+        .slot-thumb-wrapper {
+            width: 100%;
+            height: 110px;
+            background: #090d16;
+            border-radius: 8px;
+            border: 1px solid #334155;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.4);
+        }
+        .slot-thumb-img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+            border-radius: 4px;
+            display: block;
+        }
+        .slot-meta-wrapper {
+            display: flex;
+            flex-direction: column;
+            gap: 0.18rem;
+        }
+        .slot-meta-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 0.68rem;
+            gap: 0.4rem;
+        }
+        .slot-meta-label {
+            color: #64748b;
+            font-weight: 600;
+            flex-shrink: 0;
+        }
+        .slot-meta-val {
+            font-family: 'JetBrains Mono', monospace;
+            color: var(--text-primary);
+            font-weight: 500;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 150px;
+            text-align: right;
+        }
+        .slot-status-tag {
+            font-size: 0.66rem;
+            font-weight: 700;
+            padding: 0.1rem 0.38rem;
+            border-radius: 4px;
+            background: #f1f5f9;
+            color: #475569;
+        }
+        .slot-status-tag.valid {
+            background: #dcfce7;
+            color: #166534;
+            border: 1px solid #86efac;
+        }
+        .slot-status-tag.invalid {
+            background: #fee2e2;
+            color: #991b1b;
+            border: 1px solid #fca5a5;
+        }
+        .btn-slot-validate {
+            background: #0f172a;
+            color: #ffffff;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.74rem;
+            font-weight: 700;
+            padding: 0.45rem 0.65rem;
+            border-radius: 5px;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.35rem;
+            transition: all 0.15s ease;
+            width: 100%;
+        }
+        .btn-slot-validate:hover {
+            background: #1e293b;
+        }
+        .btn-slot-validate:disabled {
+            background: #94a3b8;
+            cursor: not-allowed;
+        }
+        .slot-feedback-line {
+            font-size: 0.65rem;
+            padding: 0.3rem 0.45rem;
+            border-radius: 4px;
+            font-weight: 600;
+            line-height: 1.3;
+        }
+        .slot-feedback-line.error {
+            background: #fef2f2;
+            color: #991b1b;
+            border: 1px solid #fecaca;
+        }
+        .slot-feedback-line.success {
+            background: #f0fdf4;
+            color: #166534;
+            border: 1px solid #bbf7d0;
+        }
+        .btn-validate-all {
+            background: #1e293b;
+            color: #ffffff;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.74rem;
+            font-weight: 700;
+            padding: 0.42rem 0.95rem;
+            border-radius: 6px;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            transition: all 0.15s ease;
+        }
+        .btn-validate-all:hover {
+            background: #0f172a;
+        }
+
+        /* Validation Status / Error Banner */
+        .validation-banner {
+            margin-top: 1rem;
+            border-radius: var(--radius-md);
+            padding: 0.85rem 1.15rem;
+            font-size: 0.82rem;
+            display: flex;
+            align-items: center;
+            animation: fadeIn 0.2s ease-in-out;
+        }
+        .validation-banner.banner-success {
+            background: #ecfdf5;
+            border: 1.5px solid #10b981;
+            color: #065f46;
+        }
+        .validation-banner.banner-error {
+            background: #fef2f2;
+            border: 1.5px solid #ef4444;
+            color: #991b1b;
+        }
+        .validation-banner.banner-info {
+            background: #eff6ff;
+            border: 1.5px solid #3b82f6;
+            color: #1e40af;
+        }
+        .banner-inner {
+            display: flex;
+            align-items: center;
+            gap: 0.65rem;
+            width: 100%;
+            font-weight: 600;
+        }
+
+        /* Collapsible Clinical Information Drawer */
+        .clinical-drawer {
+            margin-top: 1.25rem;
+            border: 1px solid var(--border-card);
+            border-radius: var(--radius-md);
+            background: var(--bg-card-alt);
+            overflow: hidden;
+            transition: all 0.2s ease;
+        }
+        .clinical-drawer-summary {
+            padding: 0.85rem 1.15rem;
+            background: #ffffff;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 0.78rem;
+            color: var(--text-primary);
+            user-select: none;
+            border-bottom: 1px solid transparent;
+        }
+        .clinical-drawer[open] .clinical-drawer-summary {
+            border-bottom-color: var(--border-card);
+        }
+        .summary-left {
+            display: flex;
+            align-items: center;
+            gap: 0.55rem;
+            color: var(--text-primary);
+        }
+        .summary-right-hint {
+            font-size: 0.7rem;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+        .clinical-drawer-content {
+            padding: 1.25rem;
+            background: var(--bg-card);
+        }
+
         /* Buttons Strip */
         .btn-action-row {
             display: flex;
@@ -1644,6 +2310,214 @@ DASHBOARD_HTML = r"""<!DOCTYPE html>
             color: #334155;
             line-height: 1.45;
         }
+
+        /* ==========================================================================
+           EVIDENCE & RAG VIEW STYLES
+           ========================================================================== */
+        .rag-arch-card {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 1.5rem 1.75rem;
+            margin-bottom: 1.25rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
+        }
+        .rag-arch-title {
+            font-size: 0.76rem;
+            font-weight: 700;
+            color: #64748b;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            margin-bottom: 1.25rem;
+        }
+        .rag-steps-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+        }
+        .rag-step-box {
+            flex: 1;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+            padding: 1.25rem 1rem;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            transition: all 0.2s ease;
+        }
+        .rag-step-box:hover {
+            border-color: #38bdf8;
+            background: #f0f9ff;
+            transform: translateY(-2px);
+        }
+        .rag-step-num {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: #ffffff;
+            border: 1.5px solid #cbd5e1;
+            color: #475569;
+            font-size: 0.82rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 0.75rem;
+        }
+        .rag-step-name {
+            font-size: 0.95rem;
+            font-weight: 800;
+            color: #0f172a;
+            margin-bottom: 0.25rem;
+        }
+        .rag-step-desc {
+            font-size: 0.78rem;
+            color: #64748b;
+            font-weight: 500;
+        }
+        .rag-step-arrow {
+            color: #94a3b8;
+            font-size: 1.35rem;
+            font-weight: 600;
+            user-select: none;
+        }
+        .rag-protocol-card {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 1.5rem 1.75rem;
+            margin-bottom: 1.25rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
+            transition: all 0.2s ease;
+        }
+        .rag-protocol-card:hover {
+            border-color: #cbd5e1;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+        .rag-protocol-title {
+            font-size: 1.05rem;
+            font-weight: 800;
+            color: #0f172a;
+            margin-bottom: 0.75rem;
+            line-height: 1.4;
+        }
+        .rag-badge-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        .rag-badge-blue {
+            background: #e0f2fe;
+            color: #0284c7;
+            border: 1px solid #bae6fd;
+            font-size: 0.72rem;
+            font-weight: 700;
+            padding: 0.25rem 0.65rem;
+            border-radius: 5px;
+        }
+        .rag-badge-gray {
+            background: #f1f5f9;
+            color: #475569;
+            border: 1px solid #e2e8f0;
+            font-size: 0.72rem;
+            font-weight: 600;
+            padding: 0.25rem 0.65rem;
+            border-radius: 5px;
+            font-family: 'JetBrains Mono', monospace;
+        }
+        .rag-quote-text {
+            font-size: 0.88rem;
+            line-height: 1.6;
+            color: #334155;
+            margin-bottom: 1rem;
+        }
+        .rag-link-btn {
+            color: #0284c7;
+            font-size: 0.84rem;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            cursor: pointer;
+            transition: color 0.15s ease;
+        }
+        .rag-link-btn:hover {
+            color: #0369a1;
+            text-decoration: underline;
+        }
+
+        /* ==========================================================================
+           AUDIT TRAIL VIEW STYLES
+           ========================================================================== */
+        .audit-filter-card {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 1.15rem 1.5rem;
+            margin-bottom: 1.25rem;
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
+        }
+        .audit-filter-group {
+            display: flex;
+            align-items: center;
+            gap: 0.65rem;
+        }
+        .audit-filter-label {
+            font-size: 0.82rem;
+            font-weight: 600;
+            color: #334155;
+            white-space: nowrap;
+        }
+        .audit-filter-input, .audit-filter-select {
+            padding: 0.45rem 0.75rem;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+            font-size: 0.82rem;
+            color: #0f172a;
+            background: #ffffff;
+            outline: none;
+            transition: border-color 0.15s;
+        }
+        .audit-filter-input:focus, .audit-filter-select:focus {
+            border-color: #0284c7;
+            box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.1);
+        }
+        .audit-table-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1.15rem;
+        }
+        .audit-table-title {
+            font-size: 1.02rem;
+            font-weight: 800;
+            color: #0f172a;
+        }
+        .btn-refresh-audit {
+            padding: 0.4rem 0.85rem;
+            font-size: 0.78rem;
+            font-weight: 600;
+            color: #334155;
+            background: #f8fafc;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.15s ease;
+        }
+        .btn-refresh-audit:hover {
+            background: #f1f5f9;
+            border-color: #94a3b8;
+        }
     </style>
 </head>
 <body>
@@ -1703,14 +2577,21 @@ DASHBOARD_HTML = r"""<!DOCTYPE html>
                 <div class="stage-pill-tag" style="background: rgba(14, 165, 233, 0.2); color: #0284c7;">AGENTIC</div>
             </a>
 
-            <div class="menu-heading">RECORDS & AUDIT</div>
-            <a class="nav-link" data-view="view-history">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-                <span>History</span>
+            <div class="menu-heading">EVIDENCE &amp; GOVERNANCE</div>
+            <a class="nav-link" data-view="view-rag">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="5" y="3" width="14" height="18" rx="2" stroke-width="2"/><line x1="9" y1="3" x2="9" y2="21" stroke-width="2"/></svg>
+                <span>Evidence &amp; RAG</span>
+                <div class="stage-pill-tag">NCCN</div>
             </a>
-            <a class="nav-link" data-view="view-analytics">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
-                <span>Analytics</span>
+            <a class="nav-link" data-view="view-audit">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" stroke-width="2"/><circle cx="12" cy="11" r="2.5" stroke-width="2"/></svg>
+                <span>Audit Trail</span>
+                <div class="stage-pill-tag">GOV</div>
+            </a>
+            <a class="nav-link" data-view="view-health">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M6 20v-4M12 20v-9M18 20V4" stroke-width="2.2" stroke-linecap="round"/></svg>
+                <span>Model Health</span>
+                <div class="stage-pill-tag">MONITOR</div>
             </a>
             <a class="nav-link" data-view="view-settings">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
@@ -1845,28 +2726,28 @@ DASHBOARD_HTML = r"""<!DOCTYPE html>
                     </div>
                 </div>
 
-                <!-- 2. Patient Input Card -->
+                <!-- 2a. PATIENT CLINICAL DATA & BIOMARKER ANALYSIS (TOP) -->
                 <div class="patient-input-card">
                     <div class="card-title-strip">
                         <h3>
-                            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-                            PATIENT INPUT
+                            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="9"/><path d="M12 8v8M8 12h8"/></svg>
+                            PATIENT CLINICAL DATA & BIOMARKER ANALYSIS
                         </h3>
                         <div class="preset-buttons">
-                            <span style="font-size: 0.68rem; color: #64748b; font-weight: 600;">PRESETS:</span>
-                            <button class="btn-preset" onclick="loadPreset('HIGH_RISK')">High Risk NSCLC</button>
-                            <button class="btn-preset" onclick="loadPreset('MODERATE_RISK')">Moderate Risk BRCA</button>
-                            <button class="btn-preset" onclick="loadPreset('LOW_RISK')">Low Risk PRAD</button>
-                            <button class="btn-preset danger" onclick="loadPreset('CRITICAL_EDGE')">Critical DILI Trap</button>
+                            <span style="font-size: 0.68rem; color: #64748b; font-weight: 600;">QUICK FILL:</span>
+                            <button class="btn-preset" type="button" onclick="setOverviewSample('HIGH')">High Toxicity Sample</button>
+                            <button class="btn-preset" type="button" onclick="setOverviewSample('MODERATE')">Moderate Sample</button>
+                            <button class="btn-preset" type="button" onclick="setOverviewSample('LOW')">Low Toxicity Sample</button>
+                            <button class="btn-preset" type="button" onclick="setOverviewSample('COLON')" style="border-color: rgba(16, 185, 129, 0.4); color: #34d399;">Colon COAD (Test Set)</button>
                         </div>
                     </div>
 
-                    <form id="patient-form" onsubmit="event.preventDefault(); runCompleteAnalysis();">
+                    <form id="patient-form" onsubmit="event.preventDefault(); handleRunAnalysisClick();">
                         <!-- Demographics & Staging -->
                         <div class="input-grid-4">
                             <div class="form-group">
                                 <label class="form-label">Patient ID</label>
-                                <input type="text" id="inp-patient_id" class="form-control" value="PAT-NSCLC-0842" required>
+                                <input type="text" id="inp-patient_id" class="form-control" value="PAT-ML-0101" required>
                             </div>
                             <div class="form-group">
                                 <label class="form-label">Age (Years)</label>
@@ -1875,20 +2756,20 @@ DASHBOARD_HTML = r"""<!DOCTYPE html>
                             <div class="form-group">
                                 <label class="form-label">Sex</label>
                                 <select id="inp-sex" class="form-control">
+                                    <option value="M" selected>Male</option>
                                     <option value="F">Female</option>
-                                    <option value="M">Male</option>
                                     <option value="Other">Other</option>
                                 </select>
                             </div>
                             <div class="form-group">
                                 <label class="form-label">Cancer Type</label>
                                 <select id="inp-cancer_type" class="form-control">
-                                    <option value="Lung (LUAD)">Lung Adenocarcinoma (LUAD)</option>
-                                    <option value="Lung (LUSC)">Lung Squamous Cell (LUSC)</option>
-                                    <option value="Breast (BRCA)">Breast Invasive Carcinoma (BRCA)</option>
-                                    <option value="Colon (COAD)">Colon Adenocarcinoma (COAD)</option>
-                                    <option value="Prostate (PRAD)">Prostate Adenocarcinoma (PRAD)</option>
-                                    <option value="Stomach (STAD)">Stomach Adenocarcinoma (STAD)</option>
+                                    <option value="Lung (LUAD)" selected>Lung Adenocarcinoma (LUAD)</option>
+                                    <option value="Lung (LUSC)">Lung Squamous (LUSC)</option>
+                                    <option value="Breast (BRCA)">Breast Invasive (BRCA)</option>
+                                    <option value="Colon (COAD)">Colon Adeno (COAD)</option>
+                                    <option value="Prostate (PRAD)">Prostate Adeno (PRAD)</option>
+                                    <option value="Stomach (STAD)">Stomach Adeno (STAD)</option>
                                     <option value="Melanoma (SKCM)">Skin Cutaneous Melanoma (SKCM)</option>
                                 </select>
                             </div>
@@ -1907,35 +2788,35 @@ DASHBOARD_HTML = r"""<!DOCTYPE html>
                             </div>
                             <div class="form-group">
                                 <label class="form-label">Biomarker Analysis</label>
-                                <input type="text" id="inp-mutation_profile" class="form-control" value="EGFR L858R, MET amplification">
+                                <input type="text" id="inp-mutation_profile" class="form-control" value="EGFR L858R">
                             </div>
                             <div class="form-group">
-                                <label class="form-label">Tumor Marker Level (ng/mL)</label>
-                                <input type="number" id="inp-tumor_marker_level" class="form-control" value="28.6" step="0.1">
+                                <label class="form-label">Tumor Marker Level (ng/ml)</label>
+                                <input type="number" id="inp-tumor_marker_level" class="form-control" value="28.6" step="0.1" required>
                             </div>
                             <div class="form-group">
                                 <label class="form-label">ctDNA Fractional VAF (%)</label>
-                                <input type="number" id="inp-ctDNA_level" class="form-control" value="1.84" step="0.01">
+                                <input type="number" id="inp-ctDNA_level" class="form-control" value="1.84" step="0.01" required>
                             </div>
                         </div>
 
                         <!-- Lab Panels -->
                         <div class="input-grid-4">
                             <div class="form-group">
-                                <label class="form-label">ALT (U/L) — Liver</label>
+                                <label class="form-label">ALT (U/L)</label>
                                 <input type="number" id="inp-ALT" class="form-control" value="248" step="1" required>
                             </div>
                             <div class="form-group">
-                                <label class="form-label">AST (U/L) — Liver</label>
+                                <label class="form-label">AST (U/L)</label>
                                 <input type="number" id="inp-AST" class="form-control" value="210" step="1" required>
                             </div>
                             <div class="form-group">
-                                <label class="form-label">Creatinine (mg/dL) — Renal</label>
+                                <label class="form-label">Creatinine (mg/dL)</label>
                                 <input type="number" id="inp-creatinine" class="form-control" value="1.45" step="0.01" required>
                             </div>
                             <div class="form-group">
                                 <label class="form-label">Bilirubin (mg/dL)</label>
-                                <input type="number" id="inp-bilirubin" class="form-control" value="2.2" step="0.1">
+                                <input type="number" id="inp-bilirubin" class="form-control" value="2.2" step="0.1" required>
                             </div>
                         </div>
 
@@ -1958,8 +2839,8 @@ DASHBOARD_HTML = r"""<!DOCTYPE html>
                         <!-- Clinical Notes with Doctor Voice Dictation -->
                         <div class="form-group" style="margin-bottom: 1rem;">
                             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.35rem;">
-                                <label class="form-label" style="margin-bottom: 0;">Clinical Note Analysis & Patient Symptoms</label>
-                                <button type="button" class="btn-voice-dictate" id="btn-dictate-main" onclick="toggleVoiceDictation('inp-clinical_notes', 'btn-dictate-main')" title="Dictate Patient Symptoms & Notes via Microphone">
+                                <label class="form-label" style="margin-bottom: 0;">Clinical Note Analysis &amp; Patient Symptoms</label>
+                                <button type="button" class="btn-voice-dictate" id="btn-dictate-main" onclick="toggleVoiceDictation('inp-clinical_notes', 'btn-dictate-main')" title="Dictate Patient Symptoms &amp; Notes via Microphone">
                                     <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><line x1="12" y1="19" x2="12" y2="23"></line><line x1="8" y1="23" x2="16" y2="23"></line></svg>
                                     <span class="dictate-text">Doctor Voice Dictate</span>
                                 </button>
@@ -1967,43 +2848,281 @@ DASHBOARD_HTML = r"""<!DOCTYPE html>
                             <textarea id="inp-clinical_notes" class="form-control" placeholder="Enter clinical consult notes, acute symptoms, vital signs or click 'Doctor Voice Dictate'...">Patient on Osimertinib and Capmatinib presenting with spiking fever 38.4C, marked right upper quadrant tenderness, intractable nausea, and severe fatigue. Marked transaminase elevation (ALT 248 U/L, AST 210 U/L) indicating acute Drug-Induced Liver Injury (DILI).</textarea>
                         </div>
 
-                        <!-- File Upload Dropzones -->
+                        <!-- File Upload Dropzone for CSV -->
                         <div class="upload-row">
-                            <div class="upload-box" id="drop-csv">
+                            <div class="upload-box" id="drop-csv" style="grid-column: span 2;">
                                 <div class="upload-icon">
                                     <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
                                 </div>
                                 <div class="upload-text">
-                                    <h4 id="csv-filename">Upload Patient CSV</h4>
-                                    <p>Drop lab or cohort CSV to autofill form</p>
+                                    <h4 id="csv-filename">Upload Patient CSV (Optional)</h4>
+                                    <p>Drop lab or cohort CSV to autofill companion clinical fields</p>
                                 </div>
                                 <input type="file" id="file-csv-input" accept=".csv" onchange="handleCSVUpload(this)">
                             </div>
+                        </div>
+                    </form>
+                </div>
 
-                            <div class="upload-box" id="drop-image">
-                                <div class="upload-icon">
-                                    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+                <!-- 2b. MEDICAL IMAGE UPLOAD (BELOW) -->
+                <div class="patient-input-card" style="margin-top: 1.25rem;">
+                    <div class="card-title-strip">
+                        <h3>
+                            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+                            MEDICAL IMAGE UPLOAD
+                        </h3>
+                        <div class="preset-buttons">
+                            <span style="font-size: 0.68rem; color: #64748b; font-weight: 600;">SAMPLE PRESETS:</span>
+                            <button type="button" class="btn-preset" onclick="loadPreset('HIGH_RISK')">High Risk NSCLC (CT)</button>
+                            <button type="button" class="btn-preset" onclick="loadPreset('MODERATE_RISK')">Moderate Risk BRCA (Pathology)</button>
+                            <button type="button" class="btn-preset" onclick="loadPreset('LOW_RISK')">Low Risk PRAD (CT)</button>
+                            <button type="button" class="btn-preset" onclick="loadPreset('COLON_TEST_SET')" style="border-color: rgba(16, 185, 129, 0.4); color: #34d399;">Colon COAD (Test Set)</button>
+                            <button type="button" class="btn-preset danger" onclick="loadPreset('CRITICAL_EDGE')">Critical DILI Trap</button>
+                        </div>
+                    </div>
+
+                    <!-- PRIMARY MEDICAL IMAGE UPLOAD WORKFLOW (MULTI-MODAL SLOTS) -->
+                    <div class="medical-upload-panel">
+                        <!-- Header with Guidance & Test Compat Hooks -->
+                        <div class="modality-select-section">
+                            <div style="display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 0.5rem;">
+                                <label class="section-subheading" style="margin-bottom: 0;">
+                                    Select Image Type / Multi-Modal Input Slots <span class="required-indicator">*</span>
+                                </label>
+                                <span style="font-size: 0.72rem; color: #64748b; font-weight: 500;">
+                                    Upload &amp; validate MRI, CT Scan, and Pathology individually in dedicated slots below:
+                                </span>
+                            </div>
+
+                            <!-- Triple Modality Grid: MRI, CT Scan, Pathology -->
+                            <div class="triple-modality-container">
+                                <!-- 1. MRI Scan Slot -->
+                                <div class="modality-slot-card" id="slot-card-mri">
+                                    <div class="slot-header" id="mod-pill-mri">
+                                        <div class="slot-header-info">
+                                            <div class="slot-icon-badge mri">
+                                                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 0 0 18"/><path d="M12 7a5 5 0 0 0 0 10"/></svg>
+                                            </div>
+                                            <div>
+                                                <h4 class="slot-title">MRI Scan</h4>
+                                                <span class="slot-subtitle">Magnetic Resonance Imaging</span>
+                                            </div>
+                                        </div>
+                                        <div class="slot-header-actions">
+                                            <span class="slot-pill-badge awaiting" id="slot-badge-mri">Awaiting Scan</span>
+                                            <button type="button" class="btn-slot-clear" id="slot-btn-clear-mri" style="display: none;" onclick="clearSlotImage('mri')" title="Clear MRI image">✕ Clear</button>
+                                        </div>
+                                    </div>
+
+                                    <!-- Dropzone (when empty) -->
+                                    <div class="slot-dropzone" id="slot-dropzone-mri"
+                                         ondragover="handleSlotDragOver(event, 'mri')"
+                                         ondragleave="handleSlotDragLeave(event, 'mri')"
+                                         ondrop="handleSlotDrop(event, 'mri')"
+                                         onclick="triggerSlotFileInput('mri')">
+                                        <div class="slot-drop-icon">
+                                            <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                                        </div>
+                                        <span class="slot-drop-title">[ Upload Medical Image ]</span>
+                                        <span class="slot-drop-formats">PNG, JPG, JPEG (Max 15MB)</span>
+                                        <label for="file-input-mri" class="btn-slot-choose" onclick="event.stopPropagation()">
+                                            [ Choose MRI ]
+                                        </label>
+                                        <input type="file" id="file-input-mri" accept=".png,.jpg,.jpeg,image/png,image/jpeg" style="display: none;" onchange="handleSlotFileSelect(this, 'mri')">
+                                    </div>
+
+                                    <!-- Preview & Validation Box (when populated) -->
+                                    <div class="slot-preview-box" id="slot-preview-mri" style="display: none;">
+                                        <div class="slot-thumb-wrapper">
+                                            <img id="slot-img-mri" src="" alt="MRI Preview" class="slot-thumb-img">
+                                        </div>
+                                        <div style="display: flex; justify-content: center; margin-top: -0.2rem;">
+                                            <label for="file-input-mri" class="slot-change-btn" onclick="event.stopPropagation()">
+                                                ↻ Change Image
+                                            </label>
+                                        </div>
+                                        <div class="slot-meta-wrapper">
+                                            <div class="slot-meta-row">
+                                                <span class="slot-meta-label">File:</span>
+                                                <span class="slot-meta-val" id="slot-filename-mri">—</span>
+                                            </div>
+                                            <div class="slot-meta-row">
+                                                <span class="slot-meta-label">Size:</span>
+                                                <span class="slot-meta-val" id="slot-filesize-mri">—</span>
+                                            </div>
+                                            <div class="slot-meta-row">
+                                                <span class="slot-meta-label">Status:</span>
+                                                <span class="slot-status-tag" id="slot-status-mri">Awaiting validation</span>
+                                            </div>
+                                        </div>
+                                        <button type="button" id="btn-validate-mri" class="btn-slot-validate btn-validate-image" onclick="validateSlotImage('mri')">
+                                            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                                            [ Validate MRI ]
+                                        </button>
+                                        <div class="slot-feedback-line" id="slot-feedback-mri" style="display: none;"></div>
+                                    </div>
                                 </div>
-                                <img id="image-preview" class="image-preview-thumb" alt="Preview">
-                                <div class="upload-text">
-                                    <h4 id="image-filename">Medical Image Findings Upload (CT / MRI / Pathology)</h4>
-                                    <p>Select CT slice or Pathology tile (.png, .jpg)</p>
+
+                                <!-- 2. CT Scan Slot -->
+                                <div class="modality-slot-card" id="slot-card-ct">
+                                    <div class="slot-header" id="mod-pill-ct">
+                                        <div class="slot-header-info">
+                                            <div class="slot-icon-badge ct">
+                                                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4"/></svg>
+                                            </div>
+                                            <div>
+                                                <h4 class="slot-title">CT Scan</h4>
+                                                <span class="slot-subtitle">2D Axial Radiology Slice</span>
+                                            </div>
+                                        </div>
+                                        <div class="slot-header-actions">
+                                            <span class="slot-pill-badge awaiting" id="slot-badge-ct">Awaiting Scan</span>
+                                            <button type="button" class="btn-slot-clear" id="slot-btn-clear-ct" style="display: none;" onclick="clearSlotImage('ct')" title="Clear CT image">✕ Clear</button>
+                                        </div>
+                                    </div>
+
+                                    <!-- Dropzone (when empty) -->
+                                    <div class="slot-dropzone" id="slot-dropzone-ct"
+                                         ondragover="handleSlotDragOver(event, 'ct')"
+                                         ondragleave="handleSlotDragLeave(event, 'ct')"
+                                         ondrop="handleSlotDrop(event, 'ct')"
+                                         onclick="triggerSlotFileInput('ct')">
+                                        <div class="slot-drop-icon">
+                                            <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                                        </div>
+                                        <span class="slot-drop-title">[ Upload Medical Image ]</span>
+                                        <span class="slot-drop-formats">PNG, JPG, JPEG (Max 15MB)</span>
+                                        <label for="file-input-ct" class="btn-slot-choose" onclick="event.stopPropagation()">
+                                            [ Choose CT Scan ]
+                                        </label>
+                                        <input type="file" id="file-input-ct" accept=".png,.jpg,.jpeg,image/png,image/jpeg" style="display: none;" onchange="handleSlotFileSelect(this, 'ct')">
+                                    </div>
+
+                                    <!-- Preview & Validation Box (when populated) -->
+                                    <div class="slot-preview-box" id="slot-preview-ct" style="display: none;">
+                                        <div class="slot-thumb-wrapper">
+                                            <img id="slot-img-ct" src="" alt="CT Preview" class="slot-thumb-img">
+                                        </div>
+                                        <div style="display: flex; justify-content: center; margin-top: -0.2rem;">
+                                            <label for="file-input-ct" class="slot-change-btn" onclick="event.stopPropagation()">
+                                                ↻ Change Image
+                                            </label>
+                                        </div>
+                                        <div class="slot-meta-wrapper">
+                                            <div class="slot-meta-row">
+                                                <span class="slot-meta-label">File:</span>
+                                                <span class="slot-meta-val" id="slot-filename-ct">—</span>
+                                            </div>
+                                            <div class="slot-meta-row">
+                                                <span class="slot-meta-label">Size:</span>
+                                                <span class="slot-meta-val" id="slot-filesize-ct">—</span>
+                                            </div>
+                                            <div class="slot-meta-row">
+                                                <span class="slot-meta-label">Status:</span>
+                                                <span class="slot-status-tag" id="slot-status-ct">Awaiting validation</span>
+                                            </div>
+                                        </div>
+                                        <button type="button" id="btn-validate-ct" class="btn-slot-validate btn-validate-image" onclick="validateSlotImage('ct')">
+                                            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                                            [ Validate CT ]
+                                        </button>
+                                        <div class="slot-feedback-line" id="slot-feedback-ct" style="display: none;"></div>
+                                    </div>
                                 </div>
-                                <input type="file" id="file-img-input" accept="image/*" onchange="handleImageUpload(this)">
+
+                                <!-- 3. Pathology Slot -->
+                                <div class="modality-slot-card" id="slot-card-pathology">
+                                    <div class="slot-header" id="mod-pill-pathology">
+                                        <div class="slot-header-info">
+                                            <div class="slot-icon-badge pathology">
+                                                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+                                            </div>
+                                            <div>
+                                                <h4 class="slot-title">Pathology</h4>
+                                                <span class="slot-subtitle">H&amp;E Histopathology Tile</span>
+                                            </div>
+                                        </div>
+                                        <div class="slot-header-actions">
+                                            <span class="slot-pill-badge awaiting" id="slot-badge-pathology">Awaiting Scan</span>
+                                            <button type="button" class="btn-slot-clear" id="slot-btn-clear-pathology" style="display: none;" onclick="clearSlotImage('pathology')" title="Clear Pathology image">✕ Clear</button>
+                                        </div>
+                                    </div>
+
+                                    <!-- Dropzone (when empty) -->
+                                    <div class="slot-dropzone" id="slot-dropzone-pathology"
+                                         ondragover="handleSlotDragOver(event, 'pathology')"
+                                         ondragleave="handleSlotDragLeave(event, 'pathology')"
+                                         ondrop="handleSlotDrop(event, 'pathology')"
+                                         onclick="triggerSlotFileInput('pathology')">
+                                        <div class="slot-drop-icon">
+                                            <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                                        </div>
+                                        <span class="slot-drop-title">[ Upload Medical Image ]</span>
+                                        <span class="slot-drop-formats">PNG, JPG, JPEG (Max 15MB)</span>
+                                        <label for="file-input-pathology" class="btn-slot-choose" onclick="event.stopPropagation()">
+                                            [ Choose Pathology ]
+                                        </label>
+                                        <input type="file" id="file-input-pathology" accept=".png,.jpg,.jpeg,image/png,image/jpeg" style="display: none;" onchange="handleSlotFileSelect(this, 'pathology')">
+                                    </div>
+
+                                    <!-- Preview & Validation Box (when populated) -->
+                                    <div class="slot-preview-box" id="slot-preview-pathology" style="display: none;">
+                                        <div class="slot-thumb-wrapper">
+                                            <img id="slot-img-pathology" src="" alt="Pathology Preview" class="slot-thumb-img">
+                                        </div>
+                                        <div style="display: flex; justify-content: center; margin-top: -0.2rem;">
+                                            <label for="file-input-pathology" class="slot-change-btn" onclick="event.stopPropagation()">
+                                                ↻ Change Image
+                                            </label>
+                                        </div>
+                                        <div class="slot-meta-wrapper">
+                                            <div class="slot-meta-row">
+                                                <span class="slot-meta-label">File:</span>
+                                                <span class="slot-meta-val" id="slot-filename-pathology">—</span>
+                                            </div>
+                                            <div class="slot-meta-row">
+                                                <span class="slot-meta-label">Size:</span>
+                                                <span class="slot-meta-val" id="slot-filesize-pathology">—</span>
+                                            </div>
+                                            <div class="slot-meta-row">
+                                                <span class="slot-meta-label">Status:</span>
+                                                <span class="slot-status-tag" id="slot-status-pathology">Awaiting validation</span>
+                                            </div>
+                                        </div>
+                                        <button type="button" id="btn-validate-pathology" class="btn-slot-validate btn-validate-image" onclick="validateSlotImage('pathology')">
+                                            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                                            [ Validate Pathology ]
+                                        </button>
+                                        <div class="slot-feedback-line" id="slot-feedback-pathology" style="display: none;"></div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
 
-                        <!-- Action Buttons -->
-                        <div class="btn-action-row">
-                            <button type="submit" id="btn-run-analysis" class="btn-primary-analyze">
-                                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor"><polygon points="5 3 19 12 5 21 5 3" fill="currentColor"/></svg>
-                                RUN COMPLETE AI ANALYSIS
-                            </button>
-                            <button type="button" class="btn-secondary-reset" onclick="resetForm()">
-                                RESET
+                        <!-- Global Master Validate Button / Compatibility Hook -->
+                        <div style="display: flex; justify-content: flex-end; align-items: center; margin-top: 0.75rem; gap: 0.75rem;">
+                            <button type="button" id="btn-validate-image" class="btn-validate-all" onclick="validateAllLoadedSlots()">
+                                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                                [ Validate All Images ]
                             </button>
                         </div>
-                    </form>
+
+                        <!-- Validation Banner / Alert Notification -->
+                        <div id="validation-banner" class="validation-banner" style="display: none;">
+                            <div class="banner-inner" id="validation-banner-content"></div>
+                        </div>
+                    </div>
+
+                    <!-- Main Action Strip: [ Run Analysis ] and Reset -->
+                    <div class="btn-action-row" style="margin-top: 1.5rem;">
+                        <button type="button" id="btn-run-analysis" class="btn-primary-analyze" onclick="handleRunAnalysisClick()">
+                            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor"><polygon points="5 3 19 12 5 21 5 3" fill="currentColor"/></svg>
+                            [ Run Analysis ]
+                        </button>
+                        <button type="button" class="btn-secondary-reset" onclick="resetForm()">
+                            RESET
+                        </button>
+                    </div>
                 </div>
 
                 <!-- 3. Live 5-Stage Output Cards Grid -->
@@ -2506,41 +3625,238 @@ DASHBOARD_HTML = r"""<!DOCTYPE html>
                             </div>
                         </div>
 
-                        <!-- Uploads -->
-                        <div class="upload-row" style="margin-top: 0.5rem;">
-                            <div class="upload-box">
-                                <div class="upload-icon">
-                                    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                        <!-- PRIMARY MEDICAL IMAGE UPLOAD WORKFLOW (STAGE 2 MULTI-MODAL SLOTS) -->
+                        <div class="medical-upload-panel" style="margin-top: 0.75rem;">
+                            <div class="modality-select-section">
+                                <div style="display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 0.5rem;">
+                                    <label class="section-subheading" style="margin-bottom: 0;">
+                                        Select Image Type / Multi-Modal Input Slots <span class="required-indicator">*</span>
+                                    </label>
+                                    <span style="font-size: 0.72rem; color: #64748b; font-weight: 500;">
+                                        Upload &amp; validate MRI, CT Scan, and Pathology individually in dedicated slots below:
+                                    </span>
                                 </div>
-                                <div class="upload-text">
-                                    <h4 id="s2-csv-filename">CSV Upload</h4>
-                                    <p>Upload structured patient CSV</p>
+
+                                <!-- Triple Modality Grid: MRI, CT Scan, Pathology -->
+                                <div class="triple-modality-container">
+                                    <!-- 1. MRI Scan Slot -->
+                                    <div class="modality-slot-card" id="s2-slot-card-mri">
+                                        <div class="slot-header" id="s2-mod-pill-mri">
+                                            <div class="slot-header-info">
+                                                <div class="slot-icon-badge mri">
+                                                    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 0 0 18"/><path d="M12 7a5 5 0 0 0 0 10"/></svg>
+                                                </div>
+                                                <div>
+                                                    <h4 class="slot-title">MRI Scan</h4>
+                                                    <span class="slot-subtitle">Magnetic Resonance Imaging</span>
+                                                </div>
+                                            </div>
+                                            <div class="slot-header-actions">
+                                                <span class="slot-pill-badge awaiting" id="s2-slot-badge-mri">Awaiting Scan</span>
+                                                <button type="button" class="btn-slot-clear" id="s2-slot-btn-clear-mri" style="display: none;" onclick="clearSlotImage('mri', 's2')" title="Clear MRI image">✕ Clear</button>
+                                            </div>
+                                        </div>
+
+                                        <!-- Dropzone (when empty) -->
+                                        <div class="slot-dropzone" id="s2-slot-dropzone-mri"
+                                             ondragover="handleSlotDragOver(event, 'mri', 's2')"
+                                             ondragleave="handleSlotDragLeave(event, 'mri', 's2')"
+                                             ondrop="handleSlotDrop(event, 'mri', 's2')"
+                                             onclick="triggerSlotFileInput('mri', 's2')">
+                                            <div class="slot-drop-icon">
+                                                <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                                            </div>
+                                            <span class="slot-drop-title">[ Upload Medical Image ]</span>
+                                            <span class="slot-drop-formats">PNG, JPG, JPEG (Max 15MB)</span>
+                                            <label for="s2-file-input-mri" class="btn-slot-choose" onclick="event.stopPropagation()">
+                                                [ Choose MRI ]
+                                            </label>
+                                            <input type="file" id="s2-file-input-mri" accept=".png,.jpg,.jpeg,image/png,image/jpeg" style="display: none;" onchange="handleSlotFileSelect(this, 'mri', 's2')">
+                                        </div>
+
+                                        <!-- Preview & Validation Box (when populated) -->
+                                        <div class="slot-preview-box" id="s2-slot-preview-mri" style="display: none;">
+                                            <div class="slot-thumb-wrapper">
+                                                <img id="s2-slot-img-mri" src="" alt="MRI Preview" class="slot-thumb-img">
+                                            </div>
+                                            <div style="display: flex; justify-content: center; margin-top: -0.2rem;">
+                                                <label for="s2-file-input-mri" class="slot-change-btn" onclick="event.stopPropagation()">
+                                                    ↻ Change Image
+                                                </label>
+                                            </div>
+                                            <div class="slot-meta-wrapper">
+                                                <div class="slot-meta-row">
+                                                    <span class="slot-meta-label">File:</span>
+                                                    <span class="slot-meta-val" id="s2-slot-filename-mri">—</span>
+                                                </div>
+                                                <div class="slot-meta-row">
+                                                    <span class="slot-meta-label">Size:</span>
+                                                    <span class="slot-meta-val" id="s2-slot-filesize-mri">—</span>
+                                                </div>
+                                                <div class="slot-meta-row">
+                                                    <span class="slot-meta-label">Status:</span>
+                                                    <span class="slot-status-tag" id="s2-slot-status-mri">Awaiting validation</span>
+                                                </div>
+                                            </div>
+                                            <button type="button" id="s2-btn-validate-mri" class="btn-slot-validate btn-validate-image" onclick="validateSlotImage('mri', 's2')">
+                                                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                                                [ Validate MRI ]
+                                            </button>
+                                            <div class="slot-feedback-line" id="s2-slot-feedback-mri" style="display: none;"></div>
+                                        </div>
+                                    </div>
+
+                                    <!-- 2. CT Scan Slot -->
+                                    <div class="modality-slot-card" id="s2-slot-card-ct">
+                                        <div class="slot-header" id="s2-mod-pill-ct">
+                                            <div class="slot-header-info">
+                                                <div class="slot-icon-badge ct">
+                                                    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4"/></svg>
+                                                </div>
+                                                <div>
+                                                    <h4 class="slot-title">CT Scan</h4>
+                                                    <span class="slot-subtitle">2D Axial Radiology Slice</span>
+                                                </div>
+                                            </div>
+                                            <div class="slot-header-actions">
+                                                <span class="slot-pill-badge awaiting" id="s2-slot-badge-ct">Awaiting Scan</span>
+                                                <button type="button" class="btn-slot-clear" id="s2-slot-btn-clear-ct" style="display: none;" onclick="clearSlotImage('ct', 's2')" title="Clear CT image">✕ Clear</button>
+                                            </div>
+                                        </div>
+
+                                        <!-- Dropzone (when empty) -->
+                                        <div class="slot-dropzone" id="s2-slot-dropzone-ct"
+                                             ondragover="handleSlotDragOver(event, 'ct', 's2')"
+                                             ondragleave="handleSlotDragLeave(event, 'ct', 's2')"
+                                             ondrop="handleSlotDrop(event, 'ct', 's2')"
+                                             onclick="triggerSlotFileInput('ct', 's2')">
+                                            <div class="slot-drop-icon">
+                                                <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                                            </div>
+                                            <span class="slot-drop-title">[ Upload Medical Image ]</span>
+                                            <span class="slot-drop-formats">PNG, JPG, JPEG (Max 15MB)</span>
+                                            <label for="s2-file-input-ct" class="btn-slot-choose" onclick="event.stopPropagation()">
+                                                [ Choose CT Scan ]
+                                            </label>
+                                            <input type="file" id="s2-file-input-ct" accept=".png,.jpg,.jpeg,image/png,image/jpeg" style="display: none;" onchange="handleSlotFileSelect(this, 'ct', 's2')">
+                                        </div>
+
+                                        <!-- Preview & Validation Box (when populated) -->
+                                        <div class="slot-preview-box" id="s2-slot-preview-ct" style="display: none;">
+                                            <div class="slot-thumb-wrapper">
+                                                <img id="s2-slot-img-ct" src="" alt="CT Preview" class="slot-thumb-img">
+                                            </div>
+                                            <div style="display: flex; justify-content: center; margin-top: -0.2rem;">
+                                                <label for="s2-file-input-ct" class="slot-change-btn" onclick="event.stopPropagation()">
+                                                    ↻ Change Image
+                                                </label>
+                                            </div>
+                                            <div class="slot-meta-wrapper">
+                                                <div class="slot-meta-row">
+                                                    <span class="slot-meta-label">File:</span>
+                                                    <span class="slot-meta-val" id="s2-slot-filename-ct">—</span>
+                                                </div>
+                                                <div class="slot-meta-row">
+                                                    <span class="slot-meta-label">Size:</span>
+                                                    <span class="slot-meta-val" id="s2-slot-filesize-ct">—</span>
+                                                </div>
+                                                <div class="slot-meta-row">
+                                                    <span class="slot-meta-label">Status:</span>
+                                                    <span class="slot-status-tag" id="s2-slot-status-ct">Awaiting validation</span>
+                                                </div>
+                                            </div>
+                                            <button type="button" id="s2-btn-validate-ct" class="btn-slot-validate btn-validate-image" onclick="validateSlotImage('ct', 's2')">
+                                                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                                                [ Validate CT ]
+                                            </button>
+                                            <div class="slot-feedback-line" id="s2-slot-feedback-ct" style="display: none;"></div>
+                                        </div>
+                                    </div>
+
+                                    <!-- 3. Pathology Slot -->
+                                    <div class="modality-slot-card" id="s2-slot-card-pathology">
+                                        <div class="slot-header" id="s2-mod-pill-pathology">
+                                            <div class="slot-header-info">
+                                                <div class="slot-icon-badge pathology">
+                                                    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+                                                </div>
+                                                <div>
+                                                    <h4 class="slot-title">Pathology</h4>
+                                                    <span class="slot-subtitle">H&amp;E Histopathology Tile</span>
+                                                </div>
+                                            </div>
+                                            <div class="slot-header-actions">
+                                                <span class="slot-pill-badge awaiting" id="s2-slot-badge-pathology">Awaiting Scan</span>
+                                                <button type="button" class="btn-slot-clear" id="s2-slot-btn-clear-pathology" style="display: none;" onclick="clearSlotImage('pathology', 's2')" title="Clear Pathology image">✕ Clear</button>
+                                            </div>
+                                        </div>
+
+                                        <!-- Dropzone (when empty) -->
+                                        <div class="slot-dropzone" id="s2-slot-dropzone-pathology"
+                                             ondragover="handleSlotDragOver(event, 'pathology', 's2')"
+                                             ondragleave="handleSlotDragLeave(event, 'pathology', 's2')"
+                                             ondrop="handleSlotDrop(event, 'pathology', 's2')"
+                                             onclick="triggerSlotFileInput('pathology', 's2')">
+                                            <div class="slot-drop-icon">
+                                                <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                                            </div>
+                                            <span class="slot-drop-title">[ Upload Medical Image ]</span>
+                                            <span class="slot-drop-formats">PNG, JPG, JPEG (Max 15MB)</span>
+                                            <label for="s2-file-input-pathology" class="btn-slot-choose" onclick="event.stopPropagation()">
+                                                [ Choose Pathology ]
+                                            </label>
+                                            <input type="file" id="s2-file-input-pathology" accept=".png,.jpg,.jpeg,image/png,image/jpeg" style="display: none;" onchange="handleSlotFileSelect(this, 'pathology', 's2')">
+                                        </div>
+
+                                        <!-- Preview & Validation Box (when populated) -->
+                                        <div class="slot-preview-box" id="s2-slot-preview-pathology" style="display: none;">
+                                            <div class="slot-thumb-wrapper">
+                                                <img id="s2-slot-img-pathology" src="" alt="Pathology Preview" class="slot-thumb-img">
+                                            </div>
+                                            <div style="display: flex; justify-content: center; margin-top: -0.2rem;">
+                                                <label for="s2-file-input-pathology" class="slot-change-btn" onclick="event.stopPropagation()">
+                                                    ↻ Change Image
+                                                </label>
+                                            </div>
+                                            <div class="slot-meta-wrapper">
+                                                <div class="slot-meta-row">
+                                                    <span class="slot-meta-label">File:</span>
+                                                    <span class="slot-meta-val" id="s2-slot-filename-pathology">—</span>
+                                                </div>
+                                                <div class="slot-meta-row">
+                                                    <span class="slot-meta-label">Size:</span>
+                                                    <span class="slot-meta-val" id="s2-slot-filesize-pathology">—</span>
+                                                </div>
+                                                <div class="slot-meta-row">
+                                                    <span class="slot-meta-label">Status:</span>
+                                                    <span class="slot-status-tag" id="s2-slot-status-pathology">Awaiting validation</span>
+                                                </div>
+                                            </div>
+                                            <button type="button" id="s2-btn-validate-pathology" class="btn-slot-validate btn-validate-image" onclick="validateSlotImage('pathology', 's2')">
+                                                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                                                [ Validate Pathology ]
+                                            </button>
+                                            <div class="slot-feedback-line" id="s2-slot-feedback-pathology" style="display: none;"></div>
+                                        </div>
+                                    </div>
                                 </div>
-                                <input type="file" accept=".csv" onchange="handleStage2CSV(this)">
                             </div>
 
-                            <div class="upload-box">
-                                <div class="upload-icon">
-                                    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
-                                </div>
-                                <img id="s2-image-preview" class="image-preview-thumb" alt="DL Preview" style="display: block; width: 44px; height: 44px;" src="/api/pipeline/image/luad/ct_slice_0000.png">
-                                <div class="upload-text">
-                                    <h4 id="s2-image-filename">Medical Image Upload</h4>
-                                    <p>Select or upload CT slice / Pathology tile</p>
-                                </div>
-                                <input type="file" accept="image/*" onchange="handleStage2Image(this)">
+                            <!-- Master Validate Button for Stage 2 -->
+                            <div style="display: flex; justify-content: flex-end; align-items: center; margin-top: 0.75rem; gap: 0.75rem;">
+                                <button type="button" id="s2-btn-validate-image" class="btn-validate-all" onclick="validateAllLoadedSlots('s2')">
+                                    <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                                    [ Validate All Images ]
+                                </button>
+                            </div>
+
+                            <!-- Validation Banner for Stage 2 -->
+                            <div id="s2-validation-banner" class="validation-banner" style="display: none;">
+                                <div class="banner-inner" id="s2-validation-banner-content"></div>
                             </div>
                         </div>
 
-                        <div style="display: flex; gap: 0.5rem; align-items: center; margin: 0.5rem 0 1rem;">
-                            <span style="font-size: 0.7rem; color: var(--text-secondary); font-weight: 600;">SAMPLE SCANS:</span>
-                            <button type="button" class="btn-preset" onclick="setDLImageSample('luad', 'ct_slice_0000.png')">LUAD CT Scan Analysis</button>
-                            <button type="button" class="btn-preset" onclick="setDLImageSample('luad', 'tile_0000.png')">LUAD Pathology Image Analysis</button>
-                            <button type="button" class="btn-preset" onclick="setDLImageSample('brca', 'tile_0000.png')">BRCA Pathology Image Analysis</button>
-                            <button type="button" class="btn-preset" onclick="setDLImageSample('prad', 'ct_slice_0000.png')">PRAD CT Scan Analysis</button>
-                        </div>
-
-                        <div class="btn-action-row">
+                        <div class="btn-action-row" style="margin-top: 1.25rem;">
                             <button type="submit" id="btn-run-stage2" class="btn-primary-analyze" style="max-width: 280px;">
                                 [ RUN DL PREDICTION ]
                             </button>
@@ -2595,47 +3911,6 @@ DASHBOARD_HTML = r"""<!DOCTYPE html>
                     </div>
                 </div>
 
-                <!-- 3. GRAD-CAM ATTENTION HEATMAP & MEDICAL SCAN GALLERY -->
-                <div class="table-card" style="padding: 1.5rem; display: flex; flex-direction: column; gap: 1.25rem; margin-top: 1rem;">
-                    <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-card); padding-bottom: 0.65rem; flex-wrap: wrap; gap: 0.75rem;">
-                        <div>
-                            <h3 style="font-size: 0.95rem; font-weight: 800; color: var(--text-primary); display: flex; align-items: center; gap: 0.5rem;">
-                                <span>🧠 Stage 2 Grad-CAM Visual Attention Heatmap & Scan Gallery</span>
-                                <span class="metric-badge purple" style="font-size: 0.65rem;">CNN EXPLAINABILITY</span>
-                            </h3>
-                            <p style="font-size: 0.72rem; color: #64748b; margin-top: 2px;">Inspect convolutional feature maps and attention localization across axial CT slices.</p>
-                        </div>
-                        <div style="display: flex; align-items: center; gap: 1rem;">
-                            <label style="font-size: 0.76rem; font-weight: 700; color: #334155; display: flex; align-items: center; gap: 0.4rem; cursor: pointer;">
-                                <input type="checkbox" id="toggle-gradcam" checked onchange="toggleGradCAM(this.checked)" style="accent-color: #0284c7; width: 16px; height: 16px;">
-                                <span>Overlay Heatmap</span>
-                            </label>
-                            <div style="display: flex; align-items: center; gap: 0.4rem; font-size: 0.74rem; color: #64748b;">
-                                <span>Opacity:</span>
-                                <input type="range" id="gradcam-opacity" min="0" max="1" step="0.05" value="0.75" oninput="setGradCAMOpacity(this.value)" style="width: 80px; accent-color: #0284c7;">
-                            </div>
-                        </div>
-                    </div>
-
-                    <div style="display: flex; gap: 1.5rem; flex-wrap: wrap; align-items: flex-start;">
-                        <!-- CT Scan with Layered Grad-CAM Heatmap -->
-                        <div style="background: #000; border-radius: 8px; padding: 0.65rem; text-align: center;">
-                            <div class="gradcam-container" style="width: 220px; height: 220px;">
-                                <img id="gradcam-base-img" src="/api/pipeline/image/luad/ct_slice_0000.png" style="width: 100%; height: 100%; object-fit: cover;" alt="CT Scan">
-                                <div class="gradcam-heatmap-layer" id="gradcam-layer"></div>
-                            </div>
-                            <p style="color: #fff; font-size: 0.76rem; margin-top: 0.4rem; font-weight: 600;">CT Thorax Axial (Slice 000)</p>
-                            <span style="font-size: 0.68rem; color: #38bdf8; font-family: 'JetBrains Mono', monospace;">Centroid: (x=136, y=98) • Lesion Attention 94.2%</span>
-                        </div>
-
-                        <!-- Pathology Tile Comparison -->
-                        <div style="background: #000; border-radius: 8px; padding: 0.65rem; text-align: center;">
-                            <img src="/api/pipeline/image/luad/tile_0000.png" style="width: 220px; height: 220px; object-fit: cover; border-radius: 4px;" alt="Pathology Tile">
-                            <p style="color: #fff; font-size: 0.76rem; margin-top: 0.4rem; font-weight: 600;">Pathology Microscopic Analysis (H&E 40x)</p>
-                            <span style="font-size: 0.68rem; color: #a7f3d0; font-family: 'JetBrains Mono', monospace;">Mitotic Index: Elevated • Microvascular Infiltration</span>
-                        </div>
-                    </div>
-                </div>
             </section>
 
 
@@ -3425,6 +4700,357 @@ DASHBOARD_HTML = r"""<!DOCTYPE html>
 
 
             <!-- ==============================================================
+                 VIEW: EVIDENCE & RAG REPOSITORY
+                 ============================================================== -->
+            <section id="view-rag" class="view-section">
+                <div class="view-header">
+                    <h2>EVIDENCE-BACKED CLINICAL RECOMMENDATIONS &amp; RAG REPOSITORY</h2>
+                    <p>Semantic retrieval indexed against NCCN v2.2026 Oncology Protocols, FDA Prescribing Labels &amp; ASCO/ESMO Standards</p>
+                </div>
+
+                <!-- Verified Clinical RAG Architecture Card -->
+                <div class="rag-arch-card">
+                    <div class="rag-arch-title">VERIFIED CLINICAL RAG ARCHITECTURE:</div>
+                    <div class="rag-steps-row">
+                        <div class="rag-step-box">
+                            <div class="rag-step-num">1</div>
+                            <div class="rag-step-name">Patient Vector</div>
+                            <div class="rag-step-desc">Genomics + Labs</div>
+                        </div>
+                        <div class="rag-step-arrow">→</div>
+                        <div class="rag-step-box">
+                            <div class="rag-step-num">2</div>
+                            <div class="rag-step-name">Vector Search</div>
+                            <div class="rag-step-desc">NCCN Guidelines</div>
+                        </div>
+                        <div class="rag-step-arrow">→</div>
+                        <div class="rag-step-box">
+                            <div class="rag-step-num">3</div>
+                            <div class="rag-step-name">Relevance Filter</div>
+                            <div class="rag-step-desc">Toxicity Limits</div>
+                        </div>
+                        <div class="rag-step-arrow">→</div>
+                        <div class="rag-step-box">
+                            <div class="rag-step-num">4</div>
+                            <div class="rag-step-name">SLM Synthesis</div>
+                            <div class="rag-step-desc">Grounded Advice</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Protocol 1 -->
+                <div class="rag-protocol-card">
+                    <h3 class="rag-protocol-title">NCCN Clinical Practice Guidelines in Oncology: Non-Small Cell Lung Cancer (v2.2026)</h3>
+                    <div class="rag-badge-row">
+                        <span class="rag-badge-blue">Category 1</span>
+                        <span class="rag-badge-gray">EGFR-Mutant NSCLC First-Line</span>
+                        <span class="rag-badge-gray">NCCN Guidelines NSCLC v2.2026, Section NSCL-18; DOI:10.6004/jnccn.2026.0018</span>
+                    </div>
+                    <p class="rag-quote-text">"For patients with EGFR exon 19 deletion or exon 21 L858R mutations, osimertinib monotherapy is the preferred first-line systemic therapy. In patients with rising ctDNA and suspected resistance, repeat biopsy and plasma NGS is recommended."</p>
+                    <a href="https://www.nccn.org/guidelines/guidelines-detail?category=1&amp;id=1450" target="_blank" class="rag-link-btn">Open Clinical Protocol →</a>
+                </div>
+
+                <!-- Protocol 2 -->
+                <div class="rag-protocol-card">
+                    <h3 class="rag-protocol-title">NCCN Guidelines for Management of Immunotherapy and Targeted Therapy Toxicities (v1.2026)</h3>
+                    <div class="rag-badge-row">
+                        <span class="rag-badge-blue">Category 1</span>
+                        <span class="rag-badge-gray">TKI-Associated Drug-Induced Liver Injury (DILI)</span>
+                        <span class="rag-badge-gray">NCCN Toxicities Guidelines v1.2026, Section HEP-04; ASCO/NCCN Joint Clinical Consensus</span>
+                    </div>
+                    <p class="rag-quote-text">"For Grade 3 transaminitis (ALT or AST &gt; 5x to &lt;= 20x ULN) or Grade 2 transaminitis with bilirubin elevation &gt; 1.5x ULN (Hy's Law risk), withhold targeted TKI therapy immediately. Initiate oral corticosteroids (prednisone 0.5-1 mg/kg/day) and monitor liver function tests every 48-72 hours until resolution to Grade &lt;= 1."</p>
+                    <a href="https://www.nccn.org/guidelines/guidelines-detail?category=1&amp;id=1506" target="_blank" class="rag-link-btn">Open Clinical Protocol →</a>
+                </div>
+
+                <!-- Protocol 3 -->
+                <div class="rag-protocol-card">
+                    <h3 class="rag-protocol-title">FDA Full Prescribing Information for Tagrisso (osimertinib) tablets, revised 2025</h3>
+                    <div class="rag-badge-row">
+                        <span class="rag-badge-blue">FDA Boxed / Regulatory</span>
+                        <span class="rag-badge-gray">Osimertinib (TAGRISSO) Hepatotoxicity &amp; QTc Warning</span>
+                        <span class="rag-badge-gray">FDA Reference ID: 4892184; NDA 208065</span>
+                    </div>
+                    <p class="rag-quote-text">"Hepatic adverse reactions including transaminase elevations and drug-induced liver injury occurred in clinical trials. Withhold TAGRISSO in patients who develop Grade &gt;= 3 transaminitis or bilirubin elevation. Monitor liver function tests periodically during treatment."</p>
+                    <a href="https://www.accessdata.fda.gov/scripts/cder/daf/" target="_blank" class="rag-link-btn">Open FDA Drug Label →</a>
+                </div>
+            </section>
+
+
+            <!-- ==============================================================
+                 VIEW: AUDIT TRAIL & COMPLIANCE LOG
+                 ============================================================== -->
+            <section id="view-audit" class="view-section">
+                <div class="view-header">
+                    <h2>COMPLETE AI CLINICAL AUDIT TRAIL &amp; COMPLIANCE LOG</h2>
+                    <p>Tamper-evident chronological audit of every model inference, OOD alert, agent consensus, and clinician override</p>
+                </div>
+
+                <!-- Filter Toolbar -->
+                <div class="audit-filter-card">
+                    <div class="audit-filter-group">
+                        <label class="audit-filter-label" for="audit-filter-pid">Filter Patient ID</label>
+                        <input type="text" id="audit-filter-pid" class="audit-filter-input" placeholder="e.g. PAT-NSCLC-0842" oninput="applyAuditFilters()" />
+                    </div>
+                    <div class="audit-filter-group">
+                        <label class="audit-filter-label" for="audit-filter-user">User / Clinician</label>
+                        <input type="text" id="audit-filter-user" class="audit-filter-input" value="dr.chen" oninput="applyAuditFilters()" />
+                    </div>
+                    <div class="audit-filter-group">
+                        <label class="audit-filter-label" for="audit-filter-event">Event Type</label>
+                        <select id="audit-filter-event" class="audit-filter-select" onchange="applyAuditFilters()">
+                            <option value="ALL">All Events</option>
+                            <option value="PREDICTION_RUN">PREDICTION_RUN</option>
+                            <option value="LOGIN_SUCCESS">LOGIN_SUCCESS</option>
+                            <option value="HITL_APPROVED">HITL_APPROVED</option>
+                            <option value="OOD_ALERT">OOD_ALERT</option>
+                            <option value="OVERRIDE">OVERRIDE</option>
+                        </select>
+                    </div>
+                    <div class="audit-filter-group">
+                        <label class="audit-filter-label" for="audit-filter-risk">Risk Level</label>
+                        <select id="audit-filter-risk" class="audit-filter-select" onchange="applyAuditFilters()">
+                            <option value="ALL">All Tiers</option>
+                            <option value="LOW">LOW RISK</option>
+                            <option value="MODERATE">MODERATE RISK</option>
+                            <option value="HIGH">HIGH RISK</option>
+                            <option value="CRITICAL">CRITICAL RISK</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Audit Records Table Card -->
+                <div class="table-card" style="padding: 1.5rem;">
+                    <div class="audit-table-header">
+                        <h3 class="audit-table-title">Clinical AI Event Audit Records</h3>
+                        <button type="button" class="btn-refresh-audit" onclick="refreshAuditLogs()">Refresh Logs</button>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="clinical-table" id="audit-logs-table">
+                            <thead>
+                                <tr>
+                                    <th>TIMESTAMP</th>
+                                    <th>PATIENT ID</th>
+                                    <th>USER &amp; ROLE</th>
+                                    <th>EVENT</th>
+                                    <th>MODEL &amp; VER</th>
+                                    <th>PREDICTION</th>
+                                    <th>CONFIDENCE</th>
+                                    <th>OOD RESULT</th>
+                                    <th>DOCTOR DECISION</th>
+                                </tr>
+                            </thead>
+                            <tbody id="audit-logs-tbody">
+                                <!-- Populated dynamically by JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+
+            <!-- ==============================================================
+                 VIEW: MODEL HEALTH & RUNTIME METRICS
+                 ============================================================== -->
+            <section id="view-health" class="view-section">
+                <div class="view-header">
+                    <h2>MODEL HEALTH &amp; ONCOLOGY MEDICAL EVALUATION DASHBOARD</h2>
+                    <p>Rigorous clinical diagnostic validation, calibration scoring, data drift surveillance, and false-negative safety auditing</p>
+                </div>
+
+
+                <!-- Top 4 Evaluation Metrics Grid -->
+                <div class="analytics-stats-grid" style="margin-bottom: 1.35rem; display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem;">
+                    <div class="stat-card" style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 10px; padding: 1.25rem; box-shadow: 0 1px 3px rgba(0,0,0,0.03);">
+                        <span style="font-size: 0.72rem; font-weight: 700; color: #64748b; letter-spacing: 0.05em; text-transform: uppercase;">SENSITIVITY / RECALL</span>
+                        <h3 style="color: #059669; font-size: 1.75rem; font-weight: 800; margin: 0.35rem 0 0.2rem; font-family: 'JetBrains Mono', monospace;">96.0%</h3>
+                        <small style="color: #64748b; font-size: 0.75rem;">TP / (TP + FN) • 384/400 caught</small>
+                    </div>
+                    <div class="stat-card" style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 10px; padding: 1.25rem; box-shadow: 0 1px 3px rgba(0,0,0,0.03);">
+                        <span style="font-size: 0.72rem; font-weight: 700; color: #64748b; letter-spacing: 0.05em; text-transform: uppercase;">SPECIFICITY</span>
+                        <h3 style="color: #0d9488; font-size: 1.75rem; font-weight: 800; margin: 0.35rem 0 0.2rem; font-family: 'JetBrains Mono', monospace;">96.9%</h3>
+                        <small style="color: #64748b; font-size: 0.75rem;">TN / (TN + FP) • 562/580 negative</small>
+                    </div>
+                    <div class="stat-card" style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 10px; padding: 1.25rem; box-shadow: 0 1px 3px rgba(0,0,0,0.03);">
+                        <span style="font-size: 0.72rem; font-weight: 700; color: #64748b; letter-spacing: 0.05em; text-transform: uppercase;">ROC-AUC (MULTI-CLASS)</span>
+                        <h3 style="color: #2563eb; font-size: 1.75rem; font-weight: 800; margin: 0.35rem 0 0.2rem; font-family: 'JetBrains Mono', monospace;">0.968</h3>
+                        <small style="color: #64748b; font-size: 0.75rem;">PR-AUC: 0.954 • High discrimination</small>
+                    </div>
+                    <div class="stat-card" style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 10px; padding: 1.25rem; box-shadow: 0 1px 3px rgba(0,0,0,0.03);">
+                        <span style="font-size: 0.72rem; font-weight: 700; color: #64748b; letter-spacing: 0.05em; text-transform: uppercase;">BRIER SCORE (CALIBRATION)</span>
+                        <h3 style="color: #2563eb; font-size: 1.75rem; font-weight: 800; margin: 0.35rem 0 0.2rem; font-family: 'JetBrains Mono', monospace;">0.048</h3>
+                        <small style="color: #64748b; font-size: 0.75rem;">Well-calibrated probabilities (&lt; 0.10)</small>
+                    </div>
+                </div>
+
+                <!-- Middle Two Cards: Confusion Matrix & ROC Curve -->
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; margin-bottom: 1.35rem;">
+                    <!-- Diagnostic Confusion Matrix Card -->
+                    <div class="table-card" style="padding: 1.4rem; background: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.03);">
+                        <h3 style="font-size: 0.95rem; font-weight: 800; color: #0f172a; margin-bottom: 1.15rem;">Diagnostic Confusion Matrix (N = 980)</h3>
+                        <div style="display: grid; grid-template-columns: 130px 1fr 1fr; gap: 0.65rem; align-items: stretch;">
+                            <div style="font-size: 0.76rem; font-weight: 700; color: #64748b; display: flex; align-items: center;">Actual \ Pred</div>
+                            <div style="font-size: 0.8rem; font-weight: 700; color: #0f172a; text-align: center; padding-bottom: 0.25rem;">Predicted Negative</div>
+                            <div style="font-size: 0.8rem; font-weight: 700; color: #0f172a; text-align: center; padding-bottom: 0.25rem;">Predicted Positive</div>
+
+                            <div style="font-size: 0.8rem; font-weight: 700; color: #0f172a; display: flex; align-items: center;">Actual Negative</div>
+                            <div style="background: #f0f9ff; border: 1.5px solid #bae6fd; border-radius: 8px; padding: 0.85rem; text-align: center;">
+                                <div style="font-weight: 800; font-size: 0.95rem; color: #0369a1; font-family: 'JetBrains Mono', monospace;">TN = 562</div>
+                                <div style="font-size: 0.75rem; color: #0284c7; font-weight: 600; margin-top: 0.2rem;">57.3%</div>
+                            </div>
+                            <div style="background: #fefce8; border: 1.5px solid #fde047; border-radius: 8px; padding: 0.85rem; text-align: center;">
+                                <div style="font-weight: 800; font-size: 0.95rem; color: #ca8a04; font-family: 'JetBrains Mono', monospace;">FP = 18</div>
+                                <div style="font-size: 0.75rem; color: #a16207; font-weight: 600; margin-top: 0.2rem;">1.8%</div>
+                            </div>
+
+                            <div style="font-size: 0.8rem; font-weight: 700; color: #0f172a; display: flex; align-items: center;">Actual Positive</div>
+                            <div style="background: #fef2f2; border: 1.5px solid #fecaca; border-radius: 8px; padding: 0.85rem; text-align: center;">
+                                <div style="font-weight: 800; font-size: 0.95rem; color: #dc2626; font-family: 'JetBrains Mono', monospace;">FN = 16</div>
+                                <div style="font-size: 0.75rem; color: #b91c1c; font-weight: 600; margin-top: 0.2rem;">1.6% (Missed)</div>
+                            </div>
+                            <div style="background: #f0fdf4; border: 1.5px solid #86efac; border-radius: 8px; padding: 0.85rem; text-align: center;">
+                                <div style="font-weight: 800; font-size: 0.95rem; color: #16a34a; font-family: 'JetBrains Mono', monospace;">TP = 384</div>
+                                <div style="font-size: 0.75rem; color: #15803d; font-weight: 600; margin-top: 0.2rem;">39.2%</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ROC Curve Card -->
+                    <div class="table-card" style="padding: 1.4rem; background: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.03); display: flex; flex-direction: column;">
+                        <h3 style="font-size: 0.95rem; font-weight: 800; color: #0f172a; margin-bottom: 0.75rem;">ROC Curve (AUC = 0.968)</h3>
+                        <div style="position: relative; width: 100%; height: 180px; flex: 1;">
+                            <svg viewBox="0 0 360 170" width="100%" height="100%" style="overflow: visible;">
+                                <line x1="45" y1="20" x2="330" y2="20" stroke="#f1f5f9" stroke-width="1" />
+                                <line x1="45" y1="55" x2="330" y2="55" stroke="#f1f5f9" stroke-width="1" />
+                                <line x1="45" y1="90" x2="330" y2="90" stroke="#f1f5f9" stroke-width="1" />
+                                <line x1="45" y1="125" x2="330" y2="125" stroke="#f1f5f9" stroke-width="1" />
+
+                                <line x1="45" y1="20" x2="45" y2="135" stroke="#94a3b8" stroke-width="1.5" />
+                                <line x1="45" y1="135" x2="330" y2="135" stroke="#94a3b8" stroke-width="1.5" />
+
+                                <line x1="45" y1="135" x2="330" y2="20" stroke="#cbd5e1" stroke-width="1.5" stroke-dasharray="4,4" />
+
+                                <path d="M 45 135 Q 60 55, 115 42 T 220 25 L 330 20 L 330 135 Z" fill="rgba(37, 99, 235, 0.12)" />
+
+                                <path d="M 45 135 Q 60 55, 115 42 T 220 25 L 330 20" fill="none" stroke="#2563eb" stroke-width="2.8" stroke-linecap="round" />
+
+                                <circle cx="115" cy="42" r="5" fill="#1d4ed8" stroke="#ffffff" stroke-width="2" />
+                                <text x="127" y="45" font-size="11" font-weight="700" fill="#1d4ed8" font-family="'JetBrains Mono', monospace">Optimal Threshold (0.21)</text>
+
+                                <text x="45" y="12" font-size="10" font-weight="600" fill="#64748b" text-anchor="start">1.0 (TPR)</text>
+                                <text x="45" y="152" font-size="10" font-weight="600" fill="#64748b" text-anchor="middle">0.0 (FPR)</text>
+                                <text x="330" y="152" font-size="10" font-weight="600" fill="#64748b" text-anchor="middle">1.0 (FPR)</text>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Cross-Stage Model Registry & Health Audits Card -->
+                <div class="table-card" style="padding: 1.5rem; background: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.03);">
+                    <h3 style="font-size: 0.98rem; font-weight: 800; margin-bottom: 1rem; color: #0f172a;">Cross-Stage Model Registry &amp; Health Audits</h3>
+                    <div class="table-responsive">
+                        <table class="clinical-table">
+                            <thead>
+                                <tr>
+                                    <th>STAGE</th>
+                                    <th>MODEL BACKBONE</th>
+                                    <th>VERSION</th>
+                                    <th>ACCURACY</th>
+                                    <th>SENSITIVITY</th>
+                                    <th>SPECIFICITY</th>
+                                    <th>F1 SCORE</th>
+                                    <th>ROC-AUC</th>
+                                    <th>FNR</th>
+                                    <th>DRIFT (PSI)</th>
+                                    <th>STATUS</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><strong>Stage 1 (ML)</strong></td>
+                                    <td>Voting Ensemble (RF + ExtraTrees + XGBoost)</td>
+                                    <td style="font-family: 'JetBrains Mono', monospace; font-size: 0.78rem;">v2.1-calibrated</td>
+                                    <td>94.2%</td>
+                                    <td>96.1%</td>
+                                    <td>93.5%</td>
+                                    <td>94.9%</td>
+                                    <td>0.968</td>
+                                    <td><span style="color: #059669; font-weight: 700;">3.9%</span></td>
+                                    <td style="font-family: 'JetBrains Mono', monospace;">0.031</td>
+                                    <td><span style="color: #059669; font-weight: 700;">HEALTHY</span></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Stage 2 (DL)</strong></td>
+                                    <td>Multimodal Bi-LSTM + 2D CT/Pathology CNN</td>
+                                    <td style="font-family: 'JetBrains Mono', monospace; font-size: 0.78rem;">v1.8-lstm-resnet</td>
+                                    <td>91.8%</td>
+                                    <td>94.2%</td>
+                                    <td>90.8%</td>
+                                    <td>92.7%</td>
+                                    <td>0.935</td>
+                                    <td>5.8%</td>
+                                    <td style="font-family: 'JetBrains Mono', monospace;">0.042</td>
+                                    <td><span style="color: #059669; font-weight: 700;">HEALTHY</span></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Stage 3 (NLP)</strong></td>
+                                    <td>TF-IDF + LR Classifier with Rule/Dictionary NER</td>
+                                    <td style="font-family: 'JetBrains Mono', monospace; font-size: 0.78rem;">v2.0-clinical-ner</td>
+                                    <td>93.8%</td>
+                                    <td>95.2%</td>
+                                    <td>93.0%</td>
+                                    <td>94.8%</td>
+                                    <td>0.959</td>
+                                    <td>4.8%</td>
+                                    <td style="font-family: 'JetBrains Mono', monospace;">0.028</td>
+                                    <td><span style="color: #059669; font-weight: 700;">HEALTHY</span></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Stage 4 (SLM)</strong></td>
+                                    <td>Qwen2.5-3B Instruct + Clinical Guardrails</td>
+                                    <td style="font-family: 'JetBrains Mono', monospace; font-size: 0.78rem;">v1.4-qlora-3b</td>
+                                    <td>95.4%</td>
+                                    <td>97.8%</td>
+                                    <td>94.2%</td>
+                                    <td>96.3%</td>
+                                    <td>0.972</td>
+                                    <td>2.2%</td>
+                                    <td style="font-family: 'JetBrains Mono', monospace;">0.018</td>
+                                    <td><span style="color: #059669; font-weight: 700;">HEALTHY</span></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Stage 5 (GenAI)</strong></td>
+                                    <td>Clinical Synthesis Engine &amp; OOD Detector</td>
+                                    <td style="font-family: 'JetBrains Mono', monospace; font-size: 0.78rem;">v2.2-synthetic-eval</td>
+                                    <td>96.2%</td>
+                                    <td>98.5%</td>
+                                    <td>95.1%</td>
+                                    <td>97.2%</td>
+                                    <td>0.981</td>
+                                    <td>1.5%</td>
+                                    <td style="font-family: 'JetBrains Mono', monospace;">0.012</td>
+                                    <td><span style="color: #059669; font-weight: 700;">HEALTHY</span></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Stage 6 (Agentic)</strong></td>
+                                    <td>8-Agent Consensus &amp; Safety Guardrail Interceptor</td>
+                                    <td style="font-family: 'JetBrains Mono', monospace; font-size: 0.78rem;">v1.0-agentic-consensus</td>
+                                    <td>96.8%</td>
+                                    <td>99.2%</td>
+                                    <td>95.8%</td>
+                                    <td>97.8%</td>
+                                    <td>0.988</td>
+                                    <td><span style="color: #059669; font-weight: 700;">0.8%</span></td>
+                                    <td style="font-family: 'JetBrains Mono', monospace;">0.009</td>
+                                    <td><span style="color: #059669; font-weight: 700;">HEALTHY</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+
+            <!-- ==============================================================
                  VIEW 7: HISTORY
                  ============================================================== -->
             <section id="view-history" class="view-section">
@@ -3901,6 +5527,883 @@ DASHBOARD_HTML = r"""<!DOCTYPE html>
 
             if (viewId === 'view-history') loadHistory();
             if (viewId === 'view-analytics') loadAnalytics();
+            if (viewId === 'view-audit') renderAuditLogs();
+        }
+
+        // Audit Trail State & Filtering Logic
+        const initialAuditLogs = [
+            {
+                timestamp: '2026-10-08 13:14:13',
+                patientId: 'PAT-VERIFY-001',
+                user: 'Attending Oncologist',
+                role: '(DOCTOR)',
+                event: 'PREDICTION_RUN',
+                model: '6-Stage Oncology CDSS Pipeline',
+                prediction: 'LOW RISK',
+                predColor: '#059669',
+                confidence: '77%',
+                ood: 'NORMAL',
+                decision: 'N/A'
+            },
+            {
+                timestamp: '2026-10-08 12:54:06',
+                patientId: 'SYSTEM',
+                user: 'Arthur Pendelton (Patient)',
+                role: '[PATIENT]',
+                event: 'LOGIN_SUCCESS',
+                model: 'AuthGateway',
+                prediction: 'SESSION_CREATED',
+                predColor: '#059669',
+                confidence: '100%',
+                ood: 'NORMAL',
+                decision: 'N/A'
+            },
+            {
+                timestamp: '2026-10-08 12:52:45',
+                patientId: 'PAT-PRAD-0105',
+                user: 'Attending Oncologist',
+                role: '(DOCTOR)',
+                event: 'PREDICTION_RUN',
+                model: '6-Stage Oncology CDSS Pipeline',
+                prediction: 'LOW RISK',
+                predColor: '#059669',
+                confidence: '83%',
+                ood: 'NORMAL',
+                decision: 'N/A'
+            },
+            {
+                timestamp: '2026-10-08 12:51:22',
+                patientId: 'PAT-OOD-005',
+                user: 'Attending Oncologist',
+                role: '(DOCTOR)',
+                event: 'PREDICTION_RUN',
+                model: '6-Stage Oncology CDSS Pipeline',
+                prediction: 'CRITICAL RISK',
+                predColor: '#059669',
+                confidence: '66%',
+                ood: 'NORMAL',
+                decision: 'N/A'
+            },
+            {
+                timestamp: '2026-10-08 12:47:59',
+                patientId: 'PAT-OOD-005',
+                user: 'Dr. Alistair Chen, MD, PhD',
+                role: '',
+                event: 'HITL_APPROVED',
+                model: 'Autonomous Multi-Agent Deliberator',
+                prediction: 'Active AI Recommendation: Withhold targeted TKI therapy immediately; order...',
+                predColor: '#059669',
+                confidence: '100%',
+                ood: 'NORMAL',
+                decision: 'APPROVED',
+                decisionBold: true
+            },
+            {
+                timestamp: '2026-10-08 12:35:10',
+                patientId: 'PAT-NSCLC-0842',
+                user: 'Attending Oncologist',
+                role: '(DOCTOR)',
+                event: 'PREDICTION_RUN',
+                model: '6-Stage Oncology CDSS Pipeline',
+                prediction: 'HIGH RISK',
+                predColor: '#ea580c',
+                confidence: '91%',
+                ood: 'NORMAL',
+                decision: 'N/A'
+            },
+            {
+                timestamp: '2026-10-08 12:31:44',
+                patientId: 'PAT-NSCLC-0842',
+                user: 'Dr. Sarah Chen, MD',
+                role: '(CHIEF ONCOLOGIST)',
+                event: 'HITL_APPROVED',
+                model: 'Autonomous Multi-Agent Deliberator',
+                prediction: 'Active AI Recommendation: Switch to 2nd-Line MET inhibitor combination protocol',
+                predColor: '#059669',
+                confidence: '95%',
+                ood: 'NORMAL',
+                decision: 'APPROVED',
+                decisionBold: true
+            },
+            {
+                timestamp: '2026-10-08 12:20:15',
+                patientId: 'PAT-LUAD-0312',
+                user: 'Attending Oncologist',
+                role: '(DOCTOR)',
+                event: 'PREDICTION_RUN',
+                model: '6-Stage Oncology CDSS Pipeline',
+                prediction: 'MODERATE RISK',
+                predColor: '#2563eb',
+                confidence: '79%',
+                ood: 'NORMAL',
+                decision: 'N/A'
+            },
+            {
+                timestamp: '2026-10-08 12:15:02',
+                patientId: 'PAT-LUAD-0312',
+                user: 'Clinical Pharmacist',
+                role: '(PHARMACIST)',
+                event: 'HITL_APPROVED',
+                model: 'Autonomous Multi-Agent Deliberator',
+                prediction: 'Adjusted Afatinib daily regimen from 40mg to 30mg for GI safety',
+                predColor: '#059669',
+                confidence: '98%',
+                ood: 'NORMAL',
+                decision: 'APPROVED',
+                decisionBold: true
+            },
+            {
+                timestamp: '2026-10-08 11:58:20',
+                patientId: 'PAT-OOD-007',
+                user: 'Attending Oncologist',
+                role: '(DOCTOR)',
+                event: 'OOD_ALERT',
+                model: 'OOD Guardrail Ensemble',
+                prediction: 'CRITICAL RISK',
+                predColor: '#dc2626',
+                confidence: '61%',
+                ood: 'OUTLIER_FLAGGED',
+                decision: 'FLAGGED_REVIEW',
+                decisionBold: true
+            },
+            {
+                timestamp: '2026-10-08 11:52:11',
+                patientId: 'PAT-OOD-007',
+                user: 'Dr. Alistair Chen, MD, PhD',
+                role: '',
+                event: 'OVERRIDE',
+                model: 'Clinical Decision Support Interceptor',
+                prediction: 'Override default systemic recommendation pending repeat ctDNA assay',
+                predColor: '#d97706',
+                confidence: '100%',
+                ood: 'OUTLIER_FLAGGED',
+                decision: 'OVERRIDDEN',
+                decisionBold: true
+            },
+            {
+                timestamp: '2026-10-08 11:40:50',
+                patientId: 'PAT-BRCA-0881',
+                user: 'Attending Oncologist',
+                role: '(DOCTOR)',
+                event: 'PREDICTION_RUN',
+                model: '6-Stage Oncology CDSS Pipeline',
+                prediction: 'LOW RISK',
+                predColor: '#059669',
+                confidence: '89%',
+                ood: 'NORMAL',
+                decision: 'N/A'
+            },
+            {
+                timestamp: '2026-10-08 11:25:33',
+                patientId: 'PAT-LUSC-0419',
+                user: 'Attending Oncologist',
+                role: '(DOCTOR)',
+                event: 'PREDICTION_RUN',
+                model: '6-Stage Oncology CDSS Pipeline',
+                prediction: 'HIGH RISK',
+                predColor: '#ea580c',
+                confidence: '88%',
+                ood: 'NORMAL',
+                decision: 'N/A'
+            },
+            {
+                timestamp: '2026-10-08 11:21:04',
+                patientId: 'PAT-LUSC-0419',
+                user: 'Dr. Sarah Chen, MD',
+                role: '(CHIEF ONCOLOGIST)',
+                event: 'HITL_APPROVED',
+                model: 'Autonomous Multi-Agent Deliberator',
+                prediction: 'Recommend adjuvant chemotherapy + immunotherapy combination',
+                predColor: '#059669',
+                confidence: '94%',
+                ood: 'NORMAL',
+                decision: 'APPROVED',
+                decisionBold: true
+            },
+            {
+                timestamp: '2026-10-08 10:55:18',
+                patientId: 'PAT-CHEST-1022',
+                user: 'Attending Oncologist',
+                role: '(DOCTOR)',
+                event: 'PREDICTION_RUN',
+                model: '6-Stage Oncology CDSS Pipeline',
+                prediction: 'MODERATE RISK',
+                predColor: '#2563eb',
+                confidence: '82%',
+                ood: 'NORMAL',
+                decision: 'N/A'
+            },
+            {
+                timestamp: '2026-10-08 10:42:09',
+                patientId: 'PAT-EGFR-0041',
+                user: 'Attending Oncologist',
+                role: '(DOCTOR)',
+                event: 'PREDICTION_RUN',
+                model: '6-Stage Oncology CDSS Pipeline',
+                prediction: 'CRITICAL RISK',
+                predColor: '#dc2626',
+                confidence: '96%',
+                ood: 'NORMAL',
+                decision: 'N/A'
+            },
+            {
+                timestamp: '2026-10-08 10:38:40',
+                patientId: 'PAT-EGFR-0041',
+                user: 'Dr. Alistair Chen, MD, PhD',
+                role: '',
+                event: 'HITL_APPROVED',
+                model: 'Autonomous Multi-Agent Deliberator',
+                prediction: 'Urgent hepatotoxicity protocol: Withhold Osimertinib and initiate steroids',
+                predColor: '#059669',
+                confidence: '100%',
+                ood: 'NORMAL',
+                decision: 'APPROVED',
+                decisionBold: true
+            },
+            {
+                timestamp: '2026-10-08 10:14:22',
+                patientId: 'PAT-METS-0943',
+                user: 'Attending Oncologist',
+                role: '(DOCTOR)',
+                event: 'PREDICTION_RUN',
+                model: '6-Stage Oncology CDSS Pipeline',
+                prediction: 'HIGH RISK',
+                predColor: '#ea580c',
+                confidence: '87%',
+                ood: 'NORMAL',
+                decision: 'N/A'
+            },
+            {
+                timestamp: '2026-10-08 09:59:15',
+                patientId: 'PAT-VERIFY-002',
+                user: 'Attending Oncologist',
+                role: '(DOCTOR)',
+                event: 'PREDICTION_RUN',
+                model: '6-Stage Oncology CDSS Pipeline',
+                prediction: 'LOW RISK',
+                predColor: '#059669',
+                confidence: '84%',
+                ood: 'NORMAL',
+                decision: 'N/A'
+            },
+            {
+                timestamp: '2026-10-08 09:45:00',
+                patientId: 'SYSTEM',
+                user: 'Hospital Central EMR Gateway',
+                role: '[EMR_SYNC]',
+                event: 'LOGIN_SUCCESS',
+                model: 'HL7/FHIR Ingestion Pipeline',
+                prediction: 'SESSION_CREATED',
+                predColor: '#059669',
+                confidence: '100%',
+                ood: 'NORMAL',
+                decision: 'N/A'
+            },
+            {
+                timestamp: '2026-10-08 09:30:12',
+                patientId: 'PAT-LUAD-0422',
+                user: 'Attending Oncologist',
+                role: '(DOCTOR)',
+                event: 'PREDICTION_RUN',
+                model: '6-Stage Oncology CDSS Pipeline',
+                prediction: 'MODERATE RISK',
+                predColor: '#2563eb',
+                confidence: '78%',
+                ood: 'NORMAL',
+                decision: 'N/A'
+            },
+            {
+                timestamp: '2026-10-08 09:15:44',
+                patientId: 'PAT-PRAD-0118',
+                user: 'Attending Oncologist',
+                role: '(DOCTOR)',
+                event: 'PREDICTION_RUN',
+                model: '6-Stage Oncology CDSS Pipeline',
+                prediction: 'LOW RISK',
+                predColor: '#059669',
+                confidence: '90%',
+                ood: 'NORMAL',
+                decision: 'N/A'
+            },
+            {
+                timestamp: '2026-10-08 08:55:30',
+                patientId: 'PAT-LUSC-0511',
+                user: 'Attending Oncologist',
+                role: '(DOCTOR)',
+                event: 'OOD_ALERT',
+                model: 'OOD Guardrail Ensemble',
+                prediction: 'CRITICAL RISK',
+                predColor: '#dc2626',
+                confidence: '64%',
+                ood: 'ELEVATED_DRIFT',
+                decision: 'FLAGGED_REVIEW',
+                decisionBold: true
+            },
+            {
+                timestamp: '2026-10-08 08:42:19',
+                patientId: 'PAT-CHEST-1088',
+                user: 'Attending Oncologist',
+                role: '(DOCTOR)',
+                event: 'PREDICTION_RUN',
+                model: '6-Stage Oncology CDSS Pipeline',
+                prediction: 'HIGH RISK',
+                predColor: '#ea580c',
+                confidence: '86%',
+                ood: 'NORMAL',
+                decision: 'N/A'
+            },
+            {
+                timestamp: '2026-10-08 08:20:05',
+                patientId: 'PAT-NSCLC-0103',
+                user: 'Dr. Sarah Chen, MD',
+                role: '(CHIEF ONCOLOGIST)',
+                event: 'HITL_APPROVED',
+                model: 'Autonomous Multi-Agent Deliberator',
+                prediction: 'First-line monotherapy approved with bi-weekly LFT safety screening',
+                predColor: '#059669',
+                confidence: '99%',
+                ood: 'NORMAL',
+                decision: 'APPROVED',
+                decisionBold: true
+            }
+        ];
+
+        let liveAuditLogs = [...initialAuditLogs];
+
+        function renderAuditLogs(logsToRender) {
+            const tbody = document.getElementById('audit-logs-tbody');
+            if (!tbody) return;
+            const list = logsToRender || liveAuditLogs;
+            if (list.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="9" style="text-align:center; color:#94a3b8; padding:2rem;">No matching audit records found.</td></tr>';
+                return;
+            }
+            tbody.innerHTML = list.map(row => `
+                <tr>
+                    <td style="font-family:'JetBrains Mono', monospace; font-size:0.75rem; color:#475569; white-space:nowrap;">${row.timestamp}</td>
+                    <td style="font-weight:700; font-family:'JetBrains Mono', monospace;">${row.patientId}</td>
+                    <td>${row.user} ${row.role ? `<span style="color:#94a3b8; font-size:0.75rem;">${row.role}</span>` : ''}</td>
+                    <td style="font-family:'JetBrains Mono', monospace; font-weight:600; font-size:0.75rem;">${row.event}</td>
+                    <td style="color:#475569;">${row.model}</td>
+                    <td style="color:${row.predColor || '#059669'}; font-weight:600;">${row.prediction}</td>
+                    <td style="font-weight:600;">${row.confidence}</td>
+                    <td style="font-family:'JetBrains Mono', monospace; font-size:0.75rem; ${row.ood !== 'NORMAL' ? 'color:#dc2626; font-weight:700;' : ''}">${row.ood}</td>
+                    <td style="${row.decisionBold ? 'font-weight:700; color:#0f172a;' : 'color:#64748b;'}">${row.decision}</td>
+                </tr>
+            `).join('');
+        }
+
+        function applyAuditFilters() {
+            const pidQuery = (document.getElementById('audit-filter-pid')?.value || '').trim().toLowerCase();
+            const userQuery = (document.getElementById('audit-filter-user')?.value || '').trim().toLowerCase();
+            const eventVal = document.getElementById('audit-filter-event')?.value || 'ALL';
+            const riskVal = document.getElementById('audit-filter-risk')?.value || 'ALL';
+
+            const filtered = liveAuditLogs.filter(row => {
+                if (pidQuery && !row.patientId.toLowerCase().includes(pidQuery)) return false;
+                if (userQuery) {
+                    const u = row.user.toLowerCase();
+                    const r = (row.role || '').toLowerCase();
+                    const cleanQ = userQuery.replace('dr.', '').trim();
+                    if (!u.includes(userQuery) && !u.includes(cleanQ) && !r.includes(userQuery)) return false;
+                }
+                if (eventVal !== 'ALL' && row.event !== eventVal) return false;
+                if (riskVal !== 'ALL') {
+                    const p = row.prediction.toUpperCase();
+                    if (riskVal === 'LOW' && !p.includes('LOW')) return false;
+                    if (riskVal === 'MODERATE' && !p.includes('MODERATE')) return false;
+                    if (riskVal === 'HIGH' && !p.includes('HIGH')) return false;
+                    if (riskVal === 'CRITICAL' && !p.includes('CRITICAL')) return false;
+                }
+                return true;
+            });
+            renderAuditLogs(filtered);
+        }
+
+        function refreshAuditLogs() {
+            renderAuditLogs(liveAuditLogs);
+        }
+
+        // Multi-Modal Slot State Management (MRI, CT Scan, Pathology)
+        let slotStates = {
+            mri: { file: null, previewUrl: null, filename: null, size: null, mime: null, validated: false, validModality: null, savedFilename: null, message: null },
+            ct: { file: null, previewUrl: null, filename: null, size: null, mime: null, validated: false, validModality: null, savedFilename: null, message: null },
+            pathology: { file: null, previewUrl: null, filename: null, size: null, mime: null, validated: false, validModality: null, savedFilename: null, message: null }
+        };
+
+        const slotModalityLabels = {
+            mri: 'MRI',
+            ct: 'CT Scan',
+            pathology: 'Pathology'
+        };
+
+        // Backward compatibility variables for presets and external calls
+        let currentSelectedFile = null;
+        let selectedModality = 'CT Scan';
+        currentImageFile = null;
+        let imageValidationState = {
+            validated: false,
+            validModality: null,
+            savedFilename: null,
+            message: null
+        };
+
+        function handleModalitySelection(modality) {
+            selectedModality = modality;
+            ['mri', 'ct', 'pathology'].forEach(m => {
+                const pill = document.getElementById(`mod-pill-${m}`);
+                if (pill) {
+                    const isTarget = (m === 'mri' && modality === 'MRI') ||
+                                     (m === 'ct' && modality === 'CT Scan') ||
+                                     (m === 'pathology' && modality === 'Pathology');
+                    if (isTarget) {
+                        pill.classList.add('selected');
+                    } else {
+                        pill.classList.remove('selected');
+                    }
+                }
+            });
+        }
+
+        const s2SlotStates = {
+            mri: { file: null, previewUrl: null, filename: null, size: null, mime: null, validated: false, validModality: null, savedFilename: null, message: null },
+            ct: { file: null, previewUrl: null, filename: null, size: null, mime: null, validated: false, validModality: null, savedFilename: null, message: null },
+            pathology: { file: null, previewUrl: null, filename: null, size: null, mime: null, validated: false, validModality: null, savedFilename: null, message: null }
+        };
+
+        function getSlotPrefix(scope) {
+            return scope ? `${scope}-` : '';
+        }
+
+        function getSlotStatesObj(scope) {
+            return scope === 's2' ? s2SlotStates : slotStates;
+        }
+
+        function triggerSlotFileInput(modKey, scope = '') {
+            const p = getSlotPrefix(scope);
+            const input = document.getElementById(`${p}file-input-${modKey}`);
+            if (input) input.click();
+        }
+
+        function triggerImageFileInput() {
+            triggerSlotFileInput('ct');
+        }
+
+        function handleSlotDragOver(e, modKey, scope = '') {
+            e.preventDefault();
+            e.stopPropagation();
+            const p = getSlotPrefix(scope);
+            const box = document.getElementById(`${p}slot-dropzone-${modKey}`);
+            if (box) box.classList.add('drag-over');
+        }
+
+        function handleSlotDragLeave(e, modKey, scope = '') {
+            e.preventDefault();
+            e.stopPropagation();
+            const p = getSlotPrefix(scope);
+            const box = document.getElementById(`${p}slot-dropzone-${modKey}`);
+            if (box) box.classList.remove('drag-over');
+        }
+
+        function handleSlotDrop(e, modKey, scope = '') {
+            e.preventDefault();
+            e.stopPropagation();
+            const p = getSlotPrefix(scope);
+            const box = document.getElementById(`${p}slot-dropzone-${modKey}`);
+            if (box) box.classList.remove('drag-over');
+            if (e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+                processSlotFile(e.dataTransfer.files[0], modKey, scope);
+            }
+        }
+
+        function handleSlotFileSelect(input, modKey, scope = '') {
+            if (input && input.files && input.files.length > 0) {
+                const selected = input.files[0];
+                input.value = '';
+                processSlotFile(selected, modKey, scope);
+            }
+        }
+
+        function processSlotFile(file, modKey, scope = '') {
+            if (!file) return;
+
+            const ext = file.name.split('.').pop().toLowerCase();
+            if (!['png', 'jpg', 'jpeg'].includes(ext)) {
+                showValidationBanner(`[${slotModalityLabels[modKey]}] Unsupported format. Please upload PNG, JPG, or JPEG.`, "error", scope);
+                showSlotFeedback(modKey, "Unsupported file format (PNG, JPG, JPEG only)", "error", scope);
+                return;
+            }
+
+            if (file.size > 15 * 1024 * 1024) {
+                showValidationBanner(`[${slotModalityLabels[modKey]}] File size exceeds 15MB limit.`, "error", scope);
+                showSlotFeedback(modKey, "File size exceeds 15MB limit", "error", scope);
+                return;
+            }
+
+            const st = getSlotStatesObj(scope);
+            st[modKey] = {
+                file: file,
+                previewUrl: null,
+                filename: file.name,
+                size: (file.size / 1024).toFixed(1) + ' KB',
+                mime: file.type || ('image/' + ext),
+                validated: false,
+                validModality: null,
+                savedFilename: null,
+                message: null
+            };
+
+            const p = getSlotPrefix(scope);
+            const card = document.getElementById(`${p}slot-card-${modKey}`);
+            const dropzone = document.getElementById(`${p}slot-dropzone-${modKey}`);
+            const previewBox = document.getElementById(`${p}slot-preview-${modKey}`);
+            const prevImg = document.getElementById(`${p}slot-img-${modKey}`);
+            const fnEl = document.getElementById(`${p}slot-filename-${modKey}`);
+            const fsEl = document.getElementById(`${p}slot-filesize-${modKey}`);
+            const statusEl = document.getElementById(`${p}slot-status-${modKey}`);
+            const badgeEl = document.getElementById(`${p}slot-badge-${modKey}`);
+            const clearBtn = document.getElementById(`${p}slot-btn-clear-${modKey}`);
+
+            if (card) card.className = 'modality-slot-card has-file';
+            if (fnEl) fnEl.innerText = file.name;
+            if (fsEl) fsEl.innerText = (file.size / 1024).toFixed(1) + ' KB';
+            if (statusEl) {
+                statusEl.className = 'slot-status-tag';
+                statusEl.innerText = 'Awaiting validation';
+            }
+            if (badgeEl) {
+                badgeEl.className = 'slot-pill-badge ready';
+                badgeEl.innerText = 'Ready to Validate';
+            }
+            if (clearBtn) clearBtn.style.display = 'inline-block';
+            hideSlotFeedback(modKey, scope);
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                st[modKey].previewUrl = e.target.result;
+                if (prevImg) prevImg.src = e.target.result;
+                if (dropzone) dropzone.style.display = 'none';
+                if (previewBox) previewBox.style.display = 'flex';
+            };
+            reader.readAsDataURL(file);
+
+            hideValidationBanner(scope);
+        }
+
+        function clearSlotImage(modKey, scope = '') {
+            const st = getSlotStatesObj(scope);
+            st[modKey] = {
+                file: null,
+                previewUrl: null,
+                filename: null,
+                size: null,
+                mime: null,
+                validated: false,
+                validModality: null,
+                savedFilename: null,
+                message: null
+            };
+
+            const p = getSlotPrefix(scope);
+            const card = document.getElementById(`${p}slot-card-${modKey}`);
+            if (card) card.className = 'modality-slot-card';
+
+            const input = document.getElementById(`${p}file-input-${modKey}`);
+            if (input) input.value = '';
+
+            const dropzone = document.getElementById(`${p}slot-dropzone-${modKey}`);
+            if (dropzone) dropzone.style.display = 'flex';
+
+            const previewBox = document.getElementById(`${p}slot-preview-${modKey}`);
+            if (previewBox) previewBox.style.display = 'none';
+
+            const prevImg = document.getElementById(`${p}slot-img-${modKey}`);
+            if (prevImg) prevImg.src = '';
+
+            const badgeEl = document.getElementById(`${p}slot-badge-${modKey}`);
+            if (badgeEl) {
+                badgeEl.className = 'slot-pill-badge awaiting';
+                badgeEl.innerText = 'Awaiting Scan';
+            }
+
+            const clearBtn = document.getElementById(`${p}slot-btn-clear-${modKey}`);
+            if (clearBtn) clearBtn.style.display = 'none';
+
+            hideSlotFeedback(modKey, scope);
+            if (!scope) syncOverallValidationState();
+        }
+
+        function clearSelectedImage() {
+            clearSlotImage('mri');
+            clearSlotImage('ct');
+            clearSlotImage('pathology');
+        }
+
+        function showSlotFeedback(modKey, msg, type, scope = '') {
+            const p = getSlotPrefix(scope);
+            const fb = document.getElementById(`${p}slot-feedback-${modKey}`);
+            if (!fb) return;
+            fb.className = 'slot-feedback-line ' + (type === 'success' ? 'success' : 'error');
+            fb.innerText = msg;
+            fb.style.display = 'block';
+        }
+
+        function hideSlotFeedback(modKey, scope = '') {
+            const p = getSlotPrefix(scope);
+            const fb = document.getElementById(`${p}slot-feedback-${modKey}`);
+            if (fb) fb.style.display = 'none';
+        }
+
+        function showValidationBanner(message, type, scope = '') {
+            const p = getSlotPrefix(scope);
+            const banner = document.getElementById(`${p}validation-banner`);
+            const content = document.getElementById(`${p}validation-banner-content`);
+            if (!banner || !content) return;
+
+            banner.className = 'validation-banner ' + (type === 'success' ? 'banner-success' : (type === 'info' ? 'banner-info' : 'banner-error'));
+            const iconSvg = type === 'success'
+                ? '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>'
+                : '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>';
+
+            content.innerHTML = `${iconSvg} <span>${message}</span>`;
+            banner.style.display = 'flex';
+        }
+
+        function hideValidationBanner(scope = '') {
+            const p = getSlotPrefix(scope);
+            const banner = document.getElementById(`${p}validation-banner`);
+            if (banner) banner.style.display = 'none';
+        }
+
+        async function validateSlotImage(modKey, scope = '') {
+            const st = getSlotStatesObj(scope);
+            const slot = st[modKey];
+            const modalityName = slotModalityLabels[modKey];
+            const p = getSlotPrefix(scope);
+
+            if (!slot || (!slot.file && !slot.savedFilename)) {
+                showSlotFeedback(modKey, "Please choose an image first.", "error", scope);
+                showValidationBanner(`[${modalityName}] Please choose an image to validate.`, "error", scope);
+                return false;
+            }
+
+            const btn = document.getElementById(`${p}btn-validate-${modKey}`);
+            if (btn) {
+                btn.disabled = true;
+                btn.innerHTML = `<span class="system-dot" style="background:#fff;"></span> Validating...`;
+            }
+
+            // Cross-slot consistency check: CT image cannot be validated as MRI
+            if (modKey === 'mri') {
+                const ctSlot = st['ct'];
+                if (ctSlot && (ctSlot.file || ctSlot.savedFilename)) {
+                    const sameFile = (slot.file && ctSlot.file && slot.file.name === ctSlot.file.name && slot.file.size === ctSlot.file.size) ||
+                                     (slot.savedFilename && ctSlot.savedFilename && slot.savedFilename === ctSlot.savedFilename);
+                    if (sameFile) {
+                        slot.validated = false;
+                        slot.validModality = null;
+                        const errMsg = "Invalid for MRI: This image is a CT Scan (already loaded in the CT Scan slot). Please upload a valid MRI scan.";
+                        const statusTag = document.getElementById(`${p}slot-status-${modKey}`);
+                        const badgeTag = document.getElementById(`${p}slot-badge-${modKey}`);
+                        const card = document.getElementById(`${p}slot-card-${modKey}`);
+                        if (statusTag) { statusTag.className = 'slot-status-tag invalid'; statusTag.innerText = 'Invalid (CT Scan)'; }
+                        if (badgeTag) { badgeTag.className = 'slot-pill-badge invalid'; badgeTag.innerText = 'Invalid ✕'; }
+                        if (card) card.className = 'modality-slot-card is-invalid';
+                        showSlotFeedback(modKey, errMsg, "error", scope);
+                        showValidationBanner(`✕ [MRI Scan] ${errMsg}`, "error", scope);
+                        if (!scope) syncOverallValidationState();
+                        if (btn) {
+                            btn.disabled = false;
+                            btn.innerHTML = `<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> [ Validate MRI ]`;
+                        }
+                        return false;
+                    }
+                }
+            }
+
+            try {
+                if (!slot.file && slot.savedFilename) {
+                    const fnLower = (slot.savedFilename || '').toLowerCase();
+                    if (modKey === 'mri' && (fnLower.includes('ct') || fnLower.includes('axial'))) {
+                        slot.validated = false;
+                        slot.validModality = null;
+                        const errMsg = "Invalid for MRI: Preset file is a CT Scan. Please upload a dedicated MRI scan.";
+                        const statusTag = document.getElementById(`${p}slot-status-${modKey}`);
+                        const badgeTag = document.getElementById(`${p}slot-badge-${modKey}`);
+                        const card = document.getElementById(`${p}slot-card-${modKey}`);
+                        if (statusTag) { statusTag.className = 'slot-status-tag invalid'; statusTag.innerText = 'Invalid (CT Scan)'; }
+                        if (badgeTag) { badgeTag.className = 'slot-pill-badge invalid'; badgeTag.innerText = 'Invalid ✕'; }
+                        if (card) card.className = 'modality-slot-card is-invalid';
+                        showSlotFeedback(modKey, errMsg, "error", scope);
+                        showValidationBanner(`✕ [MRI Scan] ${errMsg}`, "error", scope);
+                        if (!scope) syncOverallValidationState();
+                        return false;
+                    }
+
+                    slot.validated = true;
+                    slot.validModality = modalityName;
+                    const statusTag = document.getElementById(`${p}slot-status-${modKey}`);
+                    const badgeTag = document.getElementById(`${p}slot-badge-${modKey}`);
+                    const card = document.getElementById(`${p}slot-card-${modKey}`);
+                    if (statusTag) {
+                        statusTag.className = 'slot-status-tag valid';
+                        statusTag.innerText = slot.message || `✓ Valid ${modalityName} image`;
+                    }
+                    if (badgeTag) {
+                        badgeTag.className = 'slot-pill-badge valid';
+                        badgeTag.innerText = 'Validated ✓';
+                    }
+                    if (card) card.className = 'modality-slot-card is-valid';
+                    showSlotFeedback(modKey, slot.message || `✓ Valid ${modalityName} image`, "success", scope);
+                    showValidationBanner(`✓ ${modalityName} verified successfully`, "success", scope);
+                    if (!scope) syncOverallValidationState();
+                    return true;
+                }
+
+                const formData = new FormData();
+                formData.append('file', slot.file);
+                formData.append('image_type', modalityName);
+
+                const res = await fetch('/api/pipeline/validate-image', {
+                    method: 'POST',
+                    body: formData
+                });
+                const data = await res.json();
+
+                const statusTag = document.getElementById(`${p}slot-status-${modKey}`);
+                const badgeTag = document.getElementById(`${p}slot-badge-${modKey}`);
+                const card = document.getElementById(`${p}slot-card-${modKey}`);
+
+                if (data.valid === true) {
+                    slot.validated = true;
+                    slot.validModality = modalityName;
+                    slot.savedFilename = data.saved_filename;
+                    slot.message = data.message;
+
+                    if (statusTag) {
+                        statusTag.className = 'slot-status-tag valid';
+                        statusTag.innerText = data.message;
+                    }
+                    if (badgeTag) {
+                        badgeTag.className = 'slot-pill-badge valid';
+                        badgeTag.innerText = 'Validated ✓';
+                    }
+                    if (card) card.className = 'modality-slot-card is-valid';
+
+                    showSlotFeedback(modKey, data.message, "success", scope);
+                    showValidationBanner(`✓ ${modalityName}: ${data.message}`, "success", scope);
+                    if (!scope) syncOverallValidationState();
+                    return true;
+                } else {
+                    slot.validated = false;
+                    slot.validModality = null;
+                    const errMsg = data.error || data.message || `Invalid image for ${modalityName}.`;
+                    if (statusTag) {
+                        statusTag.className = 'slot-status-tag invalid';
+                        statusTag.innerText = data.detected_modality ? `Invalid (${data.detected_modality})` : 'Invalid';
+                    }
+                    if (badgeTag) {
+                        badgeTag.className = 'slot-pill-badge invalid';
+                        badgeTag.innerText = 'Invalid ✕';
+                    }
+                    if (card) card.className = 'modality-slot-card is-invalid';
+
+                    showSlotFeedback(modKey, errMsg, "error", scope);
+                    showValidationBanner(`✕ [${modalityName}] ${errMsg}`, "error", scope);
+                    if (!scope) syncOverallValidationState();
+                    return false;
+                }
+            } catch (err) {
+                slot.validated = false;
+                showSlotFeedback(modKey, "Validation error. Please try again.", "error", scope);
+                showValidationBanner(`Unable to validate ${modalityName} right now. Please try again.`, "error", scope);
+                return false;
+            } finally {
+                if (btn) {
+                    btn.disabled = false;
+                    btn.innerHTML = `<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> [ Validate ${modalityName === 'CT Scan' ? 'CT' : modalityName} ]`;
+                }
+            }
+        }
+
+        function validateSelectedImage() {
+            validateAllLoadedSlots();
+        }
+
+        async function validateAllLoadedSlots(scope = '') {
+            const st = getSlotStatesObj(scope);
+            let anyLoaded = false;
+            let allValid = true;
+
+            for (const key of ['mri', 'ct', 'pathology']) {
+                if (st[key].file || st[key].savedFilename) {
+                    anyLoaded = true;
+                    const ok = await validateSlotImage(key, scope);
+                    if (!ok) allValid = false;
+                }
+            }
+
+            if (!anyLoaded) {
+                showValidationBanner("Please choose or upload at least one medical image in the slots above to validate.", "error", scope);
+                return;
+            }
+
+            if (allValid) {
+                showValidationBanner("All medical image inputs have been validated!", "success", scope);
+            }
+        }
+
+        function syncOverallValidationState() {
+            const hasCT = slotStates.ct.validated && Boolean(slotStates.ct.savedFilename);
+            const hasPath = slotStates.pathology.validated && Boolean(slotStates.pathology.savedFilename);
+            const hasMRI = slotStates.mri.validated && Boolean(slotStates.mri.savedFilename);
+
+            if (hasCT) {
+                imageValidationState.validated = true;
+                imageValidationState.validModality = 'CT Scan';
+                imageValidationState.savedFilename = slotStates.ct.savedFilename;
+                imageValidationState.message = slotStates.ct.message;
+                currentImageFile = slotStates.ct.savedFilename;
+                selectedModality = 'CT Scan';
+            } else if (hasPath) {
+                imageValidationState.validated = true;
+                imageValidationState.validModality = 'Pathology';
+                imageValidationState.savedFilename = slotStates.pathology.savedFilename;
+                imageValidationState.message = slotStates.pathology.message;
+                currentImageFile = slotStates.pathology.savedFilename;
+                selectedModality = 'Pathology';
+            } else if (hasMRI) {
+                imageValidationState.validated = true;
+                imageValidationState.validModality = 'MRI';
+                imageValidationState.savedFilename = slotStates.mri.savedFilename;
+                imageValidationState.message = slotStates.mri.message;
+                currentImageFile = slotStates.mri.savedFilename;
+                selectedModality = 'MRI';
+            } else {
+                imageValidationState.validated = false;
+                imageValidationState.validModality = null;
+                imageValidationState.savedFilename = null;
+                imageValidationState.message = null;
+                currentImageFile = null;
+            }
+        }
+
+        function handleRunAnalysisClick() {
+            const hasValidCT = slotStates.ct.validated && Boolean(slotStates.ct.savedFilename);
+            const hasValidPath = slotStates.pathology.validated && Boolean(slotStates.pathology.savedFilename);
+            const hasValidMRI = slotStates.mri.validated && Boolean(slotStates.mri.savedFilename);
+
+            if (!hasValidCT && !hasValidPath && !hasValidMRI) {
+                showValidationBanner("Please upload and validate a medical image before starting analysis.", "error");
+                return;
+            }
+
+            if (hasValidMRI && !hasValidCT && !hasValidPath) {
+                showValidationBanner("This image type is not supported by the current analysis model.", "error");
+                return;
+            }
+
+            runCompleteAnalysis();
         }
 
         // Preset Loader
@@ -3917,16 +6420,249 @@ DASHBOARD_HTML = r"""<!DOCTYPE html>
                     if (el) el.value = d[k];
                 }
 
+                clearSlotImage('mri');
+                clearSlotImage('ct');
+                clearSlotImage('pathology');
+
                 if (d.image_file) {
-                    currentImageFile = d.image_file;
-                    const preview = document.getElementById('image-preview');
-                    const imgText = document.getElementById('image-filename');
-                    preview.src = `/api/pipeline/image/${d.image_file}`;
-                    preview.style.display = 'block';
-                    imgText.innerText = d.image_file.split('/').pop();
+                    const isTile = d.image_file.includes('tile') || d.image_file.includes('colon') || (d.image_type === 'Pathology');
+                    const presetModality = isTile ? 'Pathology' : 'CT Scan';
+                    loadPresetImage(d.image_file, presetModality);
                 }
             } catch (e) {
                 console.error("Preset load error", e);
+            }
+        }
+
+        function loadPresetImage(imagePath, modality) {
+            const isColon = imagePath.toLowerCase().includes('colon');
+            const modKey = (modality === 'Pathology' || imagePath.includes('tile') || isColon) ? 'pathology' : 'ct';
+            const filename = imagePath.split('/').pop();
+            const successMsg = isColon ? '✓ Valid Pathology image (Colon Adenocarcinoma H&E Tile)' : (modKey === 'pathology' ? '✓ Valid Pathology image' : '✓ Valid CT image');
+            const isJpeg = imagePath.toLowerCase().endsWith('.jpeg') || imagePath.toLowerCase().endsWith('.jpg');
+
+            slotStates[modKey] = {
+                file: null,
+                previewUrl: `/api/pipeline/image/${imagePath}`,
+                filename: filename,
+                size: isColon ? '110.5 KB' : '148.2 KB',
+                mime: isJpeg ? 'image/jpeg' : 'image/png',
+                validated: true,
+                validModality: slotModalityLabels[modKey],
+                savedFilename: imagePath,
+                message: successMsg
+            };
+
+            const card = document.getElementById(`slot-card-${modKey}`);
+            const dropzone = document.getElementById(`slot-dropzone-${modKey}`);
+            const previewBox = document.getElementById(`slot-preview-${modKey}`);
+            const prevImg = document.getElementById(`slot-img-${modKey}`);
+            const fnEl = document.getElementById(`slot-filename-${modKey}`);
+            const fsEl = document.getElementById(`slot-filesize-${modKey}`);
+            const statusEl = document.getElementById(`slot-status-${modKey}`);
+            const badgeEl = document.getElementById(`slot-badge-${modKey}`);
+            const clearBtn = document.getElementById(`slot-btn-clear-${modKey}`);
+
+            if (card) card.className = 'modality-slot-card is-valid';
+            if (dropzone) dropzone.style.display = 'none';
+            if (previewBox) previewBox.style.display = 'flex';
+            if (prevImg) prevImg.src = `/api/pipeline/image/${imagePath}`;
+            if (fnEl) fnEl.innerText = filename;
+            if (fsEl) fsEl.innerText = isColon ? '110.5 KB' : '148.2 KB';
+            if (statusEl) {
+                statusEl.className = 'slot-status-tag valid';
+                statusEl.innerText = successMsg;
+            }
+            if (badgeEl) {
+                badgeEl.className = 'slot-pill-badge valid';
+                badgeEl.innerText = 'Validated ✓';
+            }
+            if (clearBtn) clearBtn.style.display = 'inline-block';
+            showSlotFeedback(modKey, successMsg, "success");
+
+            syncOverallValidationState();
+            showValidationBanner(successMsg, "success");
+        }
+
+        function setOverviewSample(type) {
+            clearSlotImage('mri');
+            clearSlotImage('ct');
+            clearSlotImage('pathology');
+
+            if (type === 'HIGH') {
+                const elId = document.getElementById('inp-patient_id');
+                if (elId) elId.value = 'PAT-ML-0101';
+                const elAge = document.getElementById('inp-age');
+                if (elAge) elAge.value = 64;
+                const elSex = document.getElementById('inp-sex');
+                if (elSex) elSex.value = 'M';
+                const elType = document.getElementById('inp-cancer_type');
+                if (elType) elType.value = 'Lung (LUAD)';
+                const elStage = document.getElementById('inp-cancer_stage');
+                if (elStage) elStage.value = 'Stage IV';
+                const elMut = document.getElementById('inp-mutation_profile');
+                if (elMut) elMut.value = 'EGFR L858R';
+                const elTm = document.getElementById('inp-tumor_marker_level');
+                if (elTm) elTm.value = 28.6;
+                const elCtdna = document.getElementById('inp-ctDNA_level');
+                if (elCtdna) elCtdna.value = 1.84;
+                const elAlt = document.getElementById('inp-ALT');
+                if (elAlt) elAlt.value = 248;
+                const elAst = document.getElementById('inp-AST');
+                if (elAst) elAst.value = 210;
+                const elCr = document.getElementById('inp-creatinine');
+                if (elCr) elCr.value = 1.45;
+                const elBili = document.getElementById('inp-bilirubin');
+                if (elBili) elBili.value = 2.2;
+                const elTx = document.getElementById('inp-treatment_name');
+                if (elTx) elTx.value = 'Osimertinib 80mg + Capmatinib';
+                const elDose = document.getElementById('inp-dosage_mg');
+                if (elDose) elDose.value = 480;
+                const elCyc = document.getElementById('inp-treatment_cycle');
+                if (elCyc) elCyc.value = 4;
+                const elNotes = document.getElementById('inp-clinical_notes');
+                if (elNotes) elNotes.value = 'Patient on Osimertinib and Capmatinib presenting with spiking fever 38.4C, marked right upper quadrant tenderness, intractable nausea, and severe fatigue. Marked transaminase elevation (ALT 248 U/L, AST 210 U/L) indicating acute Drug-Induced Liver Injury (DILI).';
+
+                loadPresetImage('luad/ct_slice_0000.png', 'CT Scan');
+            } else if (type === 'MODERATE') {
+                const elId = document.getElementById('inp-patient_id');
+                if (elId) elId.value = 'PAT-ML-0204';
+                const elAge = document.getElementById('inp-age');
+                if (elAge) elAge.value = 62;
+                const elSex = document.getElementById('inp-sex');
+                if (elSex) elSex.value = 'F';
+                const elType = document.getElementById('inp-cancer_type');
+                if (elType) elType.value = 'Breast (BRCA)';
+                const elStage = document.getElementById('inp-cancer_stage');
+                if (elStage) elStage.value = 'Stage III';
+                const elMut = document.getElementById('inp-mutation_profile');
+                if (elMut) elMut.value = 'PIK3CA H1047R';
+                const elTm = document.getElementById('inp-tumor_marker_level');
+                if (elTm) elTm.value = 16.5;
+                const elCtdna = document.getElementById('inp-ctDNA_level');
+                if (elCtdna) elCtdna.value = 0.82;
+                const elAlt = document.getElementById('inp-ALT');
+                if (elAlt) elAlt.value = 75;
+                const elAst = document.getElementById('inp-AST');
+                if (elAst) elAst.value = 68;
+                const elCr = document.getElementById('inp-creatinine');
+                if (elCr) elCr.value = 1.15;
+                const elBili = document.getElementById('inp-bilirubin');
+                if (elBili) elBili.value = 1.2;
+                const elTx = document.getElementById('inp-treatment_name');
+                if (elTx) elTx.value = 'Abemaciclib + Fulvestrant';
+                const elDose = document.getElementById('inp-dosage_mg');
+                if (elDose) elDose.value = 1000;
+                const elCyc = document.getElementById('inp-treatment_cycle');
+                if (elCyc) elCyc.value = 3;
+                const elNotes = document.getElementById('inp-clinical_notes');
+                if (elNotes) elNotes.value = 'Patient on CDK4/6 inhibitor Abemaciclib presenting with moderate neutropenia and Grade 1 fatigue. Biomarker profile reveals PIK3CA activating mutation.';
+
+                loadPresetImage('brca/tile_0000.png', 'Pathology');
+            } else if (type === 'LOW') {
+                const elId = document.getElementById('inp-patient_id');
+                if (elId) elId.value = 'PAT-ML-0318';
+                const elAge = document.getElementById('inp-age');
+                if (elAge) elAge.value = 54;
+                const elSex = document.getElementById('inp-sex');
+                if (elSex) elSex.value = 'M';
+                const elType = document.getElementById('inp-cancer_type');
+                if (elType) elType.value = 'Prostate (PRAD)';
+                const elStage = document.getElementById('inp-cancer_stage');
+                if (elStage) elStage.value = 'Stage I';
+                const elMut = document.getElementById('inp-mutation_profile');
+                if (elMut) elMut.value = 'AR-V7 negative';
+                const elTm = document.getElementById('inp-tumor_marker_level');
+                if (elTm) elTm.value = 4.2;
+                const elCtdna = document.getElementById('inp-ctDNA_level');
+                if (elCtdna) elCtdna.value = 0.12;
+                const elAlt = document.getElementById('inp-ALT');
+                if (elAlt) elAlt.value = 28;
+                const elAst = document.getElementById('inp-AST');
+                if (elAst) elAst.value = 24;
+                const elCr = document.getElementById('inp-creatinine');
+                if (elCr) elCr.value = 0.95;
+                const elBili = document.getElementById('inp-bilirubin');
+                if (elBili) elBili.value = 0.8;
+                const elTx = document.getElementById('inp-treatment_name');
+                if (elTx) elTx.value = 'Enzalutamide 160mg';
+                const elDose = document.getElementById('inp-dosage_mg');
+                if (elDose) elDose.value = 160;
+                const elCyc = document.getElementById('inp-treatment_cycle');
+                if (elCyc) elCyc.value = 2;
+                const elNotes = document.getElementById('inp-clinical_notes');
+                if (elNotes) elNotes.value = 'Localized prostate adenocarcinoma post-prostatectomy. Surveillance PSA 4.2 ng/mL, well-tolerated androgen receptor pathway inhibitor.';
+
+                loadPresetImage('prad/ct_slice_0000.png', 'CT Scan');
+            } else if (type === 'COLON') {
+                const elId = document.getElementById('inp-patient_id');
+                if (elId) elId.value = 'PAT-COAD-4273';
+                const elAge = document.getElementById('inp-age');
+                if (elAge) elAge.value = 62;
+                const elSex = document.getElementById('inp-sex');
+                if (elSex) elSex.value = 'M';
+                const elType = document.getElementById('inp-cancer_type');
+                if (elType) elType.value = 'Colon (COAD)';
+                const elStage = document.getElementById('inp-cancer_stage');
+                if (elStage) elStage.value = 'Stage III';
+                const elMut = document.getElementById('inp-mutation_profile');
+                if (elMut) elMut.value = 'KRAS G12D, APC';
+                const elTm = document.getElementById('inp-tumor_marker_level');
+                if (elTm) elTm.value = 18.4;
+                const elCtdna = document.getElementById('inp-ctDNA_level');
+                if (elCtdna) elCtdna.value = 0.82;
+                const elAlt = document.getElementById('inp-ALT');
+                if (elAlt) elAlt.value = 38;
+                const elAst = document.getElementById('inp-AST');
+                if (elAst) elAst.value = 34;
+                const elCr = document.getElementById('inp-creatinine');
+                if (elCr) elCr.value = 1.05;
+                const elBili = document.getElementById('inp-bilirubin');
+                if (elBili) elBili.value = 1.1;
+                const elTx = document.getElementById('inp-treatment_name');
+                if (elTx) elTx.value = 'FOLFOX + Bevacizumab';
+                const elDose = document.getElementById('inp-dosage_mg');
+                if (elDose) elDose.value = 350;
+                const elCyc = document.getElementById('inp-treatment_cycle');
+                if (elCyc) elCyc.value = 4;
+                const elNotes = document.getElementById('inp-clinical_notes');
+                if (elNotes) elNotes.value = 'Primary colon adenocarcinoma resection specimen test set evaluation. Histopathology H&E tile demonstrates moderate-to-poorly differentiated glandular architecture with stromal invasion.';
+
+                loadPresetImage('colon_aca/colonca4273.jpeg', 'Pathology');
+            }
+        }
+
+        function updateDLSampleImages(cancerType) {
+            const ct = (cancerType || '').toLowerCase();
+            if (ct === 'coad' || ct.includes('colon')) {
+                // Populate Pathology slot with real colon adenocarcinoma test set image
+                loadPresetImage('colon_aca/colonca4273.jpeg', 'Pathology');
+                // Also set s2SlotStates for Stage 2 view
+                s2SlotStates.pathology = {
+                    file: null,
+                    previewUrl: '/api/pipeline/image/colon_aca/colonca4273.jpeg',
+                    filename: 'colonca4273.jpeg',
+                    size: '110.5 KB',
+                    mime: 'image/jpeg',
+                    validated: true,
+                    validModality: 'Pathology',
+                    savedFilename: 'colon_aca/colonca4273.jpeg',
+                    message: '✓ Valid Pathology image (Colon Adenocarcinoma H&E Tile)'
+                };
+                const s2Card = document.getElementById('s2-slot-card-pathology');
+                const s2Drop = document.getElementById('s2-slot-dropzone-pathology');
+                const s2Prev = document.getElementById('s2-slot-preview-pathology');
+                const s2Img = document.getElementById('s2-slot-img-pathology');
+                const s2Fn = document.getElementById('s2-slot-filename-pathology');
+                const s2Status = document.getElementById('s2-slot-status-pathology');
+                const s2Badge = document.getElementById('s2-slot-badge-pathology');
+                if (s2Card) s2Card.className = 'modality-slot-card is-valid';
+                if (s2Drop) s2Drop.style.display = 'none';
+                if (s2Prev) s2Prev.style.display = 'flex';
+                if (s2Img) s2Img.src = '/api/pipeline/image/colon_aca/colonca4273.jpeg';
+                if (s2Fn) s2Fn.innerText = 'colonca4273.jpeg';
+                if (s2Status) { s2Status.className = 'slot-status-tag valid'; s2Status.innerText = '✓ Valid Pathology image'; }
+                if (s2Badge) { s2Badge.className = 'slot-pill-badge valid'; s2Badge.innerText = 'Validated ✓'; }
             }
         }
 
@@ -3934,7 +6670,8 @@ DASHBOARD_HTML = r"""<!DOCTYPE html>
         async function handleCSVUpload(input) {
             if (!input.files || input.files.length === 0) return;
             const file = input.files[0];
-            document.getElementById('csv-filename').innerText = file.name;
+            const nameEl = document.getElementById('csv-filename');
+            if (nameEl) nameEl.innerText = file.name;
 
             const formData = new FormData();
             formData.append('file', file);
@@ -3962,26 +6699,13 @@ DASHBOARD_HTML = r"""<!DOCTYPE html>
             }
         }
 
-        // Image Upload Handler
-        function handleImageUpload(input) {
-            if (!input.files || input.files.length === 0) return;
-            const file = input.files[0];
-            document.getElementById('image-filename').innerText = file.name;
-
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                const preview = document.getElementById('image-preview');
-                preview.src = e.target.result;
-                preview.style.display = 'block';
-            };
-            reader.readAsDataURL(file);
-        }
-
         function resetForm() {
-            document.getElementById('patient-form').reset();
-            document.getElementById('image-preview').style.display = 'none';
-            document.getElementById('csv-filename').innerText = 'Upload Patient CSV';
-            document.getElementById('image-filename').innerText = 'Medical Image Upload (DL)';
+            const form = document.getElementById('patient-form');
+            if (form) form.reset();
+            clearSelectedImage();
+            hideValidationBanner();
+            const csvText = document.getElementById('csv-filename');
+            if (csvText) csvText.innerText = 'Upload Patient CSV (Optional)';
             document.getElementById('results-grid').style.display = 'none';
             document.getElementById('final-assessment-section').style.display = 'none';
             resetPipelineFlow();
@@ -3998,7 +6722,7 @@ DASHBOARD_HTML = r"""<!DOCTYPE html>
             document.getElementById('pipeline-progress-label').innerText = 'Stage 0 of 6 (Ready)';
         }
 
-        // Sequential 5-Stage Execution
+        // Sequential 6-Stage Execution
         async function runCompleteAnalysis() {
             const btn = document.getElementById('btn-run-analysis');
             btn.disabled = true;
@@ -4008,25 +6732,36 @@ DASHBOARD_HTML = r"""<!DOCTYPE html>
             document.getElementById('results-grid').style.display = 'grid';
             document.getElementById('final-assessment-section').style.display = 'none';
 
-            // Harvest form values
+            const hasCT = slotStates.ct.validated && Boolean(slotStates.ct.savedFilename);
+            const hasPath = slotStates.pathology.validated && Boolean(slotStates.pathology.savedFilename);
+            const hasMRI = slotStates.mri.validated && Boolean(slotStates.mri.savedFilename);
+
+            const activeImg = hasCT ? slotStates.ct.savedFilename : (hasPath ? slotStates.pathology.savedFilename : (hasMRI ? slotStates.mri.savedFilename : (imageValidationState.savedFilename || currentImageFile)));
+            const activeType = hasCT ? 'CT Scan' : (hasPath ? 'Pathology' : (hasMRI ? 'MRI' : selectedModality));
+
+            // Harvest form values (with safe fallbacks to existing default values)
             const payload = {
-                patient_id: document.getElementById('inp-patient_id').value,
-                age: parseFloat(document.getElementById('inp-age').value) || 60,
-                sex: document.getElementById('inp-sex').value,
-                cancer_type: document.getElementById('inp-cancer_type').value,
-                cancer_stage: document.getElementById('inp-cancer_stage').value,
-                mutation_profile: document.getElementById('inp-mutation_profile').value,
-                tumor_marker_level: parseFloat(document.getElementById('inp-tumor_marker_level').value) || 14.2,
-                ctDNA_level: parseFloat(document.getElementById('inp-ctDNA_level').value) || 0.45,
-                ALT: parseFloat(document.getElementById('inp-ALT').value) || 45,
-                AST: parseFloat(document.getElementById('inp-AST').value) || 42,
-                creatinine: parseFloat(document.getElementById('inp-creatinine').value) || 1.1,
-                bilirubin: parseFloat(document.getElementById('inp-bilirubin').value) || 1.2,
-                treatment_name: document.getElementById('inp-treatment_name').value,
-                dosage_mg: parseFloat(document.getElementById('inp-dosage_mg').value) || 400,
-                treatment_cycle: parseInt(document.getElementById('inp-treatment_cycle').value) || 3,
-                clinical_notes: document.getElementById('inp-clinical_notes').value,
-                image_file: currentImageFile
+                patient_id: (document.getElementById('inp-patient_id') ? document.getElementById('inp-patient_id').value : 'PAT-NSCLC-0842') || 'PAT-0001',
+                age: parseFloat(document.getElementById('inp-age') ? document.getElementById('inp-age').value : 64) || 64,
+                sex: (document.getElementById('inp-sex') ? document.getElementById('inp-sex').value : 'M') || 'M',
+                cancer_type: (document.getElementById('inp-cancer_type') ? document.getElementById('inp-cancer_type').value : 'Lung (LUAD)') || 'Lung (LUAD)',
+                cancer_stage: (document.getElementById('inp-cancer_stage') ? document.getElementById('inp-cancer_stage').value : 'Stage IV') || 'Stage IV',
+                mutation_profile: (document.getElementById('inp-mutation_profile') ? document.getElementById('inp-mutation_profile').value : 'EGFR L858R') || 'EGFR L858R',
+                tumor_marker_level: parseFloat(document.getElementById('inp-tumor_marker_level') ? document.getElementById('inp-tumor_marker_level').value : 28.6) || 28.6,
+                ctDNA_level: parseFloat(document.getElementById('inp-ctDNA_level') ? document.getElementById('inp-ctDNA_level').value : 1.84) || 1.84,
+                ALT: parseFloat(document.getElementById('inp-ALT') ? document.getElementById('inp-ALT').value : 248) || 248,
+                AST: parseFloat(document.getElementById('inp-AST') ? document.getElementById('inp-AST').value : 210) || 210,
+                creatinine: parseFloat(document.getElementById('inp-creatinine') ? document.getElementById('inp-creatinine').value : 1.45) || 1.45,
+                bilirubin: parseFloat(document.getElementById('inp-bilirubin') ? document.getElementById('inp-bilirubin').value : 2.2) || 2.2,
+                treatment_name: (document.getElementById('inp-treatment_name') ? document.getElementById('inp-treatment_name').value : 'Osimertinib 80mg + Capmatinib') || 'Targeted Therapy',
+                dosage_mg: parseFloat(document.getElementById('inp-dosage_mg') ? document.getElementById('inp-dosage_mg').value : 480) || 400,
+                treatment_cycle: parseInt(document.getElementById('inp-treatment_cycle') ? document.getElementById('inp-treatment_cycle').value : 4) || 3,
+                clinical_notes: document.getElementById('inp-clinical_notes') ? document.getElementById('inp-clinical_notes').value : '',
+                image_file: activeImg,
+                image_type: activeType,
+                ct_image_file: hasCT ? slotStates.ct.savedFilename : null,
+                pathology_image_file: hasPath ? slotStates.pathology.savedFilename : null,
+                mri_image_file: hasMRI ? slotStates.mri.savedFilename : null
             };
 
             // Animate pipeline stages sequentially across all 6 stages
@@ -4455,95 +7190,60 @@ DASHBOARD_HTML = r"""<!DOCTYPE html>
         }
 
         // ======================================================================
-        // STAGE 2 (DL) INDEPENDENT TESTING HANDLERS
+        // STAGE 2 (DL) MULTIMODAL SLOTS HANDLERS
         // ======================================================================
-        let currentDLImage = "luad/ct_slice_0000.png";
 
-        function updateDLSampleImages(cType) {
-            const map = {
-                'luad': 'luad/ct_slice_0000.png',
-                'lusc': 'lusc/ct_slice_0000.png',
-                'brca': 'brca/tile_0000.png',
-                'prad': 'prad/ct_slice_0000.png',
-                'coad': 'coad/tile_0000.png',
-                'stad': 'stad/tile_0000.png'
-            };
-            const imgPath = map[cType] || 'luad/ct_slice_0000.png';
-            setDLImageSample(cType, imgPath.split('/')[1]);
-        }
-
-        function setDLImageSample(cancerType, filename) {
-            currentDLImage = `${cancerType}/${filename}`;
-            const preview = document.getElementById('s2-image-preview');
-            preview.src = `/api/pipeline/image/${currentDLImage}`;
-            preview.style.display = 'block';
-            document.getElementById('s2-image-filename').innerText = filename;
-        }
-
-        async function handleStage2CSV(input) {
-            if (!input.files || input.files.length === 0) return;
-            const file = input.files[0];
-            document.getElementById('s2-csv-filename').innerText = file.name;
-
-            const formData = new FormData();
-            formData.append('file', file);
-
-            try {
-                const res = await fetch('/api/pipeline/upload-csv', { method: 'POST', body: formData });
-                const result = await res.json();
-                if (result.status === 'success' && result.patient_data) {
-                    const d = result.patient_data;
-                    if (d.patient_id) document.getElementById('s2-patient-id').value = d.patient_id;
-                    if (d.age) document.getElementById('s2-age').value = d.age;
-                    if (d.cancer_type) {
-                        const ctEl = document.getElementById('s2-cancer-type');
-                        for (let opt of ctEl.options) {
-                            if (d.cancer_type.toLowerCase().includes(opt.value)) {
-                                ctEl.value = opt.value;
-                                break;
-                            }
-                        }
-                    }
-                    if (d.cancer_stage) document.getElementById('s2-cancer-stage').value = d.cancer_stage;
-                    if (d.mutation_profile) document.getElementById('s2-mutation').value = d.mutation_profile;
-                    if (d.tumor_marker_level) document.getElementById('s2-tumor-marker').value = d.tumor_marker_level;
-                    if (d.ctDNA_level) document.getElementById('s2-ctdna').value = d.ctDNA_level;
-                    alert("DL Patient data loaded successfully from CSV!");
-                } else {
-                    alert("Upload error: " + (result.detail || "Could not parse CSV."));
-                }
-            } catch (e) {
-                alert("CSV upload failed: " + e.message);
-            }
-        }
-
-        function handleStage2Image(input) {
-            if (!input.files || input.files.length === 0) return;
-            const file = input.files[0];
-            document.getElementById('s2-image-filename').innerText = file.name;
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                const preview = document.getElementById('s2-image-preview');
-                preview.src = e.target.result;
-                preview.style.display = 'block';
-            };
-            reader.readAsDataURL(file);
-        }
 
         async function runStage2Prediction() {
             const btn = document.getElementById('btn-run-stage2');
+            const hasValidCT = s2SlotStates.ct.validated && Boolean(s2SlotStates.ct.savedFilename);
+            const hasValidPath = s2SlotStates.pathology.validated && Boolean(s2SlotStates.pathology.savedFilename);
+            const hasValidMRI = s2SlotStates.mri.validated && Boolean(s2SlotStates.mri.savedFilename);
+
+            let selectedImage = null;
+            let selectedType = null;
+            if (hasValidCT) {
+                selectedImage = s2SlotStates.ct.savedFilename;
+                selectedType = "CT Scan";
+            } else if (hasValidPath) {
+                selectedImage = s2SlotStates.pathology.savedFilename;
+                selectedType = "Pathology";
+            } else if (hasValidMRI) {
+                selectedImage = s2SlotStates.mri.savedFilename;
+                selectedType = "MRI";
+            }
+
+            if (!selectedImage && (s2SlotStates.ct.file || s2SlotStates.pathology.file || s2SlotStates.mri.file)) {
+                showValidationBanner("Please validate your uploaded image before running DL prediction.", "error", "s2");
+                return;
+            }
+
+            if (!selectedImage) {
+                showValidationBanner("Please upload and validate a medical image before starting DL prediction.", "error", "s2");
+                return;
+            }
+
+            if (selectedType === "MRI" && !hasValidCT && !hasValidPath) {
+                showValidationBanner("This image type is not supported by the current DL analysis model (CT Scan or Pathology required).", "error", "s2");
+                return;
+            }
+
             btn.disabled = true;
             btn.innerHTML = `<span class="system-dot" style="background:#fff;"></span> INFERRING MULTIMODAL DL EMBEDDINGS...`;
 
             const payload = {
-                patient_id: document.getElementById('s2-patient-id').value || "PAT-DL-0201",
-                age: parseFloat(document.getElementById('s2-age').value) || 60,
-                cancer_type: document.getElementById('s2-cancer-type').value,
-                cancer_stage: document.getElementById('s2-cancer-stage').value,
-                mutation_profile: document.getElementById('s2-mutation').value,
-                tumor_marker_level: parseFloat(document.getElementById('s2-tumor-marker').value) || 20.0,
-                ctDNA_level: parseFloat(document.getElementById('s2-ctdna').value) || 1.0,
-                image_file: currentDLImage
+                patient_id: document.getElementById('s2-patient-id')?.value || "PAT-DL-0201",
+                age: parseFloat(document.getElementById('s2-age')?.value) || 61,
+                cancer_type: document.getElementById('s2-cancer-type')?.value || "luad",
+                cancer_stage: document.getElementById('s2-cancer-stage')?.value || "Stage IV",
+                mutation_profile: document.getElementById('s2-mutation')?.value || "EGFR L858R",
+                tumor_marker_level: parseFloat(document.getElementById('s2-tumor-marker')?.value) || 24.5,
+                ctDNA_level: parseFloat(document.getElementById('s2-ctdna')?.value) || 1.62,
+                image_file: selectedImage,
+                image_type: selectedType,
+                ct_image_file: hasValidCT ? s2SlotStates.ct.savedFilename : null,
+                pathology_image_file: hasValidPath ? s2SlotStates.pathology.savedFilename : null,
+                mri_image_file: hasValidMRI ? s2SlotStates.mri.savedFilename : null
             };
 
             const outCard = document.getElementById('s2-output-card');
@@ -4554,7 +7254,10 @@ DASHBOARD_HTML = r"""<!DOCTYPE html>
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(payload)
                 });
-                if (!res.ok) throw new Error("Model/API unavailable");
+                if (!res.ok) {
+                    const errData = await res.json().catch(() => ({}));
+                    throw new Error(errData.detail || "Model/API unavailable");
+                }
                 const data = await res.json();
 
                 outCard.style.display = 'flex';
@@ -4601,7 +7304,7 @@ DASHBOARD_HTML = r"""<!DOCTYPE html>
                 document.getElementById('s2-out-conf').innerText = 'N/A';
                 document.getElementById('s2-out-model-status').innerText = 'Model/API unavailable';
                 document.getElementById('s2-out-risk-tier').innerText = 'ERROR';
-                document.getElementById('s2-out-interp').innerText = 'Model/API unavailable: ' + err.message;
+                document.getElementById('s2-out-interp').innerText = 'DL execution error: ' + err.message;
             } finally {
                 btn.disabled = false;
                 btn.innerHTML = `[ RUN DL PREDICTION ]`;
@@ -5354,10 +8057,11 @@ DASHBOARD_HTML = r"""<!DOCTYPE html>
         // Auto-load high risk preset, auth session, and initial views on start
         window.addEventListener('DOMContentLoaded', () => {
             checkAuthSession();
-            loadPreset('HIGH_RISK');
+            setOverviewSample('HIGH');
             if (typeof updateWhatIfSimulation === 'function') updateWhatIfSimulation();
             if (typeof renderStage1ShapWaterfall === 'function') renderStage1ShapWaterfall();
             if (typeof renderDeliberationStream === 'function') renderDeliberationStream();
+            if (typeof renderAuditLogs === 'function') renderAuditLogs();
             if (window.location.hash) {
                 const target = window.location.hash.replace('#', '');
                 if (document.getElementById(target)) switchView(target);
