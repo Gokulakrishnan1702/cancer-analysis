@@ -362,3 +362,9 @@
 2026-10-09 05:17:02 [INFO] INFERENCE | Len=265 | Urgency=MODERATE (Conf=0.90) | Ents=0 | Latency=22.5ms | Errors=None
 2026-10-09 10:15:29 [INFO] INFERENCE | Len=265 | Urgency=MODERATE (Conf=0.90) | Ents=0 | Latency=55.1ms | Errors=None
 2026-10-09 10:15:30 [INFO] INFERENCE | Len=265 | Urgency=MODERATE (Conf=0.90) | Ents=0 | Latency=45.5ms | Errors=None
+2026-10-09 10:27:36 [INFO] INFERENCE | Len=265 | Urgency=MODERATE (Conf=0.90) | Ents=0 | Latency=15.8ms | Errors=None
+2026-10-09 10:27:36 [INFO] INFERENCE | Len=265 | Urgency=MODERATE (Conf=0.90) | Ents=0 | Latency=31.3ms | Errors=None
+2026-10-09 10:28:07 [INFO] INFERENCE | Len=247 | Urgency=MODERATE (Conf=0.63) | Ents=2 | Latency=32.5ms | Errors=None
+2026-10-09 10:28:08 [INFO] INFERENCE | Len=115 | Urgency=MODERATE (Conf=0.37) | Ents=1 | Latency=45.4ms | Errors=None
+2026-10-09 10:28:09 [INFO] INFERENCE | Len=265 | Urgency=MODERATE (Conf=0.90) | Ents=0 | Latency=33.9ms | Errors=None
+2026-10-09 10:28:10 [INFO] INFERENCE | Len=265 | Urgency=MODERATE (Conf=0.90) | Ents=0 | Latency=30.8ms | Errors=None
