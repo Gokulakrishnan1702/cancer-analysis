@@ -1,0 +1,1115 @@
+{
+  "report_generated_utc": "2026-10-13T17:00:00Z",
+  "total_cancer_types_audited": 15,
+  "total_unique_hashes_indexed": 79,
+  "duplicates_detected_count": 0,
+  "duplicate_detection_log": [],
+  "manifest_entries_count": 82,
+  "cancers": {
+    "bladder": {
+      "cancer_type": "Bladder",
+      "modalities": {
+        "pathology": {
+          "count": 5,
+          "size_mb": 134.09,
+          "files": [
+            {
+              "filename": "TCGA-2F-A9KQ-11A-01-TSA.A0E111E2-5B11-4C60-953B-48F3AF05F975.svs",
+              "size_bytes": 25151243,
+              "sha256": "9ec1b568c93c972e...",
+              "patient_id": "TCGA-2F-A9KQ",
+              "extension": ".svs"
+            },
+            {
+              "filename": "TCGA-CU-A0YR-11A-01-TS1.35ccad4f-e144-4781-b26c-90eb0f395e7e.svs",
+              "size_bytes": 33391575,
+              "sha256": "6ea7af073ea4d8db...",
+              "patient_id": "TCGA-CU-A0YR",
+              "extension": ".svs"
+            },
+            {
+              "filename": "TCGA-G2-A2ES-11A-03-TSC.8F131E09-72F3-4553-8B6D-8B87E527A6D2.svs",
+              "size_bytes": 24504573,
+              "sha256": "7cee7ab4b9a787fd...",
+              "patient_id": "TCGA-G2-A2ES",
+              "extension": ".svs"
+            },
+            {
+              "filename": "TCGA-GD-A2C5-11A-01-TS1.58935BAD-933A-44D8-AA45-6CBD6362C5AB.svs",
+              "size_bytes": 24898373,
+              "sha256": "38046b8cf60e511b...",
+              "patient_id": "TCGA-GD-A2C5",
+              "extension": ".svs"
+            },
+            {
+              "filename": "TCGA-K4-A6FZ-11A-01-TS1.0696AA79-BB72-480B-8F7E-F49F89039CD5.svs",
+              "size_bytes": 32652985,
+              "sha256": "71be82b87fc9c256...",
+              "patient_id": "TCGA-K4-A6FZ",
+              "extension": ".svs"
+            }
+          ]
+        }
+      },
+      "total_files": 5,
+      "total_size_mb": 134.09,
+      "patients": [
+        "TCGA-2F-A9KQ",
+        "TCGA-CU-A0YR",
+        "TCGA-G2-A2ES",
+        "TCGA-GD-A2C5",
+        "TCGA-K4-A6FZ"
+      ],
+      "patient_count": 5,
+      "patient_level_splits": {
+        "train": [
+          "TCGA-2F-A9KQ",
+          "TCGA-CU-A0YR",
+          "TCGA-G2-A2ES"
+        ],
+        "validation": [
+          "TCGA-GD-A2C5"
+        ],
+        "test": [
+          "TCGA-K4-A6FZ"
+        ]
+      }
+    },
+    "breast": {
+      "cancer_type": "Breast",
+      "modalities": {
+        "mri": {
+          "count": 1,
+          "size_mb": 0.5,
+          "files": [
+            {
+              "filename": "breast_mr_slice_01.dcm",
+              "size_bytes": 526600,
+              "sha256": "7ec8cc153d866915...",
+              "patient_id": "breast",
+              "extension": ".dcm"
+            }
+          ]
+        },
+        "pathology": {
+          "count": 4,
+          "size_mb": 45.34,
+          "files": [
+            {
+              "filename": "TCGA-A7-A26J-01B-02-BS2.2BDFB544-F62A-402C-9D97-DE2B6766DEDC.svs",
+              "size_bytes": 6488325,
+              "sha256": "117b04c5d0fbad94...",
+              "patient_id": "TCGA-A7-A26J",
+              "extension": ".svs"
+            },
+            {
+              "filename": "TCGA-AC-A2FB-11A-01-TSA.BE184AB7-924E-4564-9296-B6B71B1C7D43.svs",
+              "size_bytes": 13863433,
+              "sha256": "8b5e8d74a0b70ba9...",
+              "patient_id": "TCGA-AC-A2FB",
+              "extension": ".svs"
+            },
+            {
+              "filename": "TCGA-AC-A2QJ-11A-02-TS2.85792F0A-9C14-4723-8799-A751AC07CEC1.svs",
+              "size_bytes": 13009249,
+              "sha256": "568b36f9acc1223d...",
+              "patient_id": "TCGA-AC-A2QJ",
+              "extension": ".svs"
+            },
+            {
+              "filename": "TCGA-BH-A5IZ-11A-01-TS1.9345C1EC-2A27-49F1-AE61-7B056A982A34.svs",
+              "size_bytes": 14178247,
+              "sha256": "e3931d584e5d006d...",
+              "patient_id": "TCGA-BH-A5IZ",
+              "extension": ".svs"
+            }
+          ]
+        }
+      },
+      "total_files": 5,
+      "total_size_mb": 45.84,
+      "patients": [
+        "TCGA-A7-A26J",
+        "TCGA-AC-A2FB",
+        "TCGA-AC-A2QJ",
+        "TCGA-BH-A5IZ",
+        "breast"
+      ],
+      "patient_count": 5,
+      "patient_level_splits": {
+        "train": [
+          "TCGA-A7-A26J",
+          "TCGA-AC-A2FB",
+          "TCGA-AC-A2QJ"
+        ],
+        "validation": [
+          "TCGA-BH-A5IZ"
+        ],
+        "test": [
+          "breast"
+        ]
+      }
+    },
+    "colorectal": {
+      "cancer_type": "Colorectal",
+      "modalities": {
+        "ct": {
+          "count": 1,
+          "size_mb": 0.5,
+          "files": [
+            {
+              "filename": "colorectal_ct_slice_01.dcm",
+              "size_bytes": 526150,
+              "sha256": "7278b7e116a2977d...",
+              "patient_id": "colorectal",
+              "extension": ".dcm"
+            }
+          ]
+        },
+        "pathology": {
+          "count": 5,
+          "size_mb": 39.47,
+          "files": [
+            {
+              "filename": "TCGA-AA-3488-01Z-00-DX1.EDF60198-F7AB-45BB-9A1B-C2E2FA141989.svs",
+              "size_bytes": 8169406,
+              "sha256": "d9fc6489ba39d762...",
+              "patient_id": "TCGA-AA-3488",
+              "extension": ".svs"
+            },
+            {
+              "filename": "TCGA-AA-3489-01Z-00-DX1.AE299B70-B14C-4FFE-B1F9-38B2EB267FA9.svs",
+              "size_bytes": 7610002,
+              "sha256": "634ea32957727b68...",
+              "patient_id": "TCGA-AA-3489",
+              "extension": ".svs"
+            },
+            {
+              "filename": "TCGA-AA-3712-01Z-00-DX1.00E0ACE2-8CC5-4063-9C65-3CDD7F21B189.svs",
+              "size_bytes": 8597952,
+              "sha256": "d50333046ff86fdd...",
+              "patient_id": "TCGA-AA-3712",
+              "extension": ".svs"
+            },
+            {
+              "filename": "TCGA-AA-3713-01Z-00-DX1.8148ACEB-7C1E-4D29-B908-F3729657EA4F.svs",
+              "size_bytes": 8573530,
+              "sha256": "07c5b2e8efbb7af4...",
+              "patient_id": "TCGA-AA-3713",
+              "extension": ".svs"
+            },
+            {
+              "filename": "TCGA-D5-6922-01A-01-TS1.6581ec04-ba19-49b3-8ae8-04b4259a8a53.svs",
+              "size_bytes": 8438181,
+              "sha256": "d13fcef327240bb3...",
+              "patient_id": "TCGA-D5-6922",
+              "extension": ".svs"
+            }
+          ]
+        }
+      },
+      "total_files": 6,
+      "total_size_mb": 39.97,
+      "patients": [
+        "TCGA-AA-3488",
+        "TCGA-AA-3489",
+        "TCGA-AA-3712",
+        "TCGA-AA-3713",
+        "TCGA-D5-6922",
+        "colorectal"
+      ],
+      "patient_count": 6,
+      "patient_level_splits": {
+        "train": [
+          "TCGA-AA-3488",
+          "TCGA-AA-3489",
+          "TCGA-AA-3712",
+          "TCGA-AA-3713"
+        ],
+        "validation": [
+          "TCGA-D5-6922"
+        ],
+        "test": [
+          "colorectal"
+        ]
+      }
+    },
+    "endometrial": {
+      "cancer_type": "Endometrial",
+      "modalities": {
+        "pathology": {
+          "count": 5,
+          "size_mb": 159.9,
+          "files": [
+            {
+              "filename": "TCGA-AX-A1CF-11A-01-TS1.fee0b9b5-08f2-4fc8-88c0-545f078b8185.svs",
+              "size_bytes": 36546743,
+              "sha256": "ab7e6399bb7bce49...",
+              "patient_id": "TCGA-AX-A1CF",
+              "extension": ".svs"
+            },
+            {
+              "filename": "TCGA-DI-A1NN-11A-02-TSB.d7489823-28b5-4a02-ada6-7dbfe145e9ba.svs",
+              "size_bytes": 31777611,
+              "sha256": "0823d4d1ce725f73...",
+              "patient_id": "TCGA-DI-A1NN",
+              "extension": ".svs"
+            },
+            {
+              "filename": "TCGA-EO-A22R-11A-01-TS1.F63CC8A0-F9DB-4036-BE52-2C5701E8F898.svs",
+              "size_bytes": 28079251,
+              "sha256": "20e04b86675a50a7...",
+              "patient_id": "TCGA-EO-A22R",
+              "extension": ".svs"
+            },
+            {
+              "filename": "TCGA-FL-A1YG-11A-01-TSA.489186e6-19cf-4f65-859f-ac1b187a95af.svs",
+              "size_bytes": 37715653,
+              "sha256": "f905af01ced59128...",
+              "patient_id": "TCGA-FL-A1YG",
+              "extension": ".svs"
+            },
+            {
+              "filename": "TCGA-FL-A1YH-11A-01-TSA.a2a056a5-8da6-45c1-b2fe-a8e3c8e0a4d0.svs",
+              "size_bytes": 33549799,
+              "sha256": "295137812a4a88a3...",
+              "patient_id": "TCGA-FL-A1YH",
+              "extension": ".svs"
+            }
+          ]
+        }
+      },
+      "total_files": 5,
+      "total_size_mb": 159.9,
+      "patients": [
+        "TCGA-AX-A1CF",
+        "TCGA-DI-A1NN",
+        "TCGA-EO-A22R",
+        "TCGA-FL-A1YG",
+        "TCGA-FL-A1YH"
+      ],
+      "patient_count": 5,
+      "patient_level_splits": {
+        "train": [
+          "TCGA-AX-A1CF",
+          "TCGA-DI-A1NN",
+          "TCGA-EO-A22R"
+        ],
+        "validation": [
+          "TCGA-FL-A1YG"
+        ],
+        "test": [
+          "TCGA-FL-A1YH"
+        ]
+      }
+    },
+    "esophageal": {
+      "cancer_type": "Esophageal",
+      "modalities": {
+        "pathology": {
+          "count": 5,
+          "size_mb": 95.99,
+          "files": [
+            {
+              "filename": "TCGA-2H-A9GF-11A-01-TS1.D38C6B5C-0514-4794-AF4E-E95B820E9280.svs",
+              "size_bytes": 23176889,
+              "sha256": "bcff506156bcb2be...",
+              "patient_id": "TCGA-2H-A9GF",
+              "extension": ".svs"
+            },
+            {
+              "filename": "TCGA-L5-A8NE-11A-01-TS1.C07B1F97-EB33-4778-BFFC-EC2FD085C59C.svs",
+              "size_bytes": 30204235,
+              "sha256": "4792a5a37cd26692...",
+              "patient_id": "TCGA-L5-A8NE",
+              "extension": ".svs"
+            },
+            {
+              "filename": "TCGA-L5-A8NI-11A-01-TS1.FC44F2C6-84EE-4841-B499-927F2B22FDCB.svs",
+              "size_bytes": 24420423,
+              "sha256": "ce9d8f23958db321...",
+              "patient_id": "TCGA-L5-A8NI",
+              "extension": ".svs"
+            },
+            {
+              "filename": "TCGA-V5-A7RE-11A-01-TS1.57401526-EF9E-49AC-8FF6-B4F9652311CE.svs",
+              "size_bytes": 15458019,
+              "sha256": "0562cc873c8cd9b0...",
+              "patient_id": "TCGA-V5-A7RE",
+              "extension": ".svs"
+            },
+            {
+              "filename": "TCGA-V5-AASX-11A-01-TS1.3CF34ACE-18EB-42A3-88E3-5A75686601B2.svs",
+              "size_bytes": 7392773,
+              "sha256": "fe1fa9dcf5b48a78...",
+              "patient_id": "TCGA-V5-AASX",
+              "extension": ".svs"
+            }
+          ]
+        }
+      },
+      "total_files": 5,
+      "total_size_mb": 95.99,
+      "patients": [
+        "TCGA-2H-A9GF",
+        "TCGA-L5-A8NE",
+        "TCGA-L5-A8NI",
+        "TCGA-V5-A7RE",
+        "TCGA-V5-AASX"
+      ],
+      "patient_count": 5,
+      "patient_level_splits": {
+        "train": [
+          "TCGA-2H-A9GF",
+          "TCGA-L5-A8NE",
+          "TCGA-L5-A8NI"
+        ],
+        "validation": [
+          "TCGA-V5-A7RE"
+        ],
+        "test": [
+          "TCGA-V5-AASX"
+        ]
+      }
+    },
+    "gastric": {
+      "cancer_type": "Gastric",
+      "modalities": {
+        "pathology": {
+          "count": 5,
+          "size_mb": 2.26,
+          "files": [
+            {
+              "filename": "TCGA-BR-4267-01Z-00-DX1.74687868-fdfb-4b11-8c72-a42703b5d06d.svs",
+              "size_bytes": 467454,
+              "sha256": "1d87524a629016b6...",
+              "patient_id": "TCGA-BR-4267",
+              "extension": ".svs"
+            },
+            {
+              "filename": "TCGA-BR-4279-01Z-00-DX1.3d749e63-3614-4475-b840-5401640f13d8.svs",
+              "size_bytes": 476402,
+              "sha256": "7808b737061340a3...",
+              "patient_id": "TCGA-BR-4279",
+              "extension": ".svs"
+            },
+            {
+              "filename": "TCGA-BR-4294-01Z-00-DX1.247c5447-23e3-4620-a981-19d5f572235a.svs",
+              "size_bytes": 475878,
+              "sha256": "3cae58e690791e31...",
+              "patient_id": "TCGA-BR-4294",
+              "extension": ".svs"
+            },
+            {
+              "filename": "TCGA-BR-4357-01Z-00-DX1.63cd361b-d8a7-4a99-aed7-4355b32397f6.svs",
+              "size_bytes": 475670,
+              "sha256": "9b393ec3ea6b6d71...",
+              "patient_id": "TCGA-BR-4357",
+              "extension": ".svs"
+            },
+            {
+              "filename": "TCGA-BR-4371-01Z-00-DX1.b45af289-5e56-40dd-80ba-7b8752d0344e.svs",
+              "size_bytes": 474558,
+              "sha256": "2ae5ed77a111b1dd...",
+              "patient_id": "TCGA-BR-4371",
+              "extension": ".svs"
+            }
+          ]
+        }
+      },
+      "total_files": 5,
+      "total_size_mb": 2.26,
+      "patients": [
+        "TCGA-BR-4267",
+        "TCGA-BR-4279",
+        "TCGA-BR-4294",
+        "TCGA-BR-4357",
+        "TCGA-BR-4371"
+      ],
+      "patient_count": 5,
+      "patient_level_splits": {
+        "train": [
+          "TCGA-BR-4267",
+          "TCGA-BR-4279",
+          "TCGA-BR-4294"
+        ],
+        "validation": [
+          "TCGA-BR-4357"
+        ],
+        "test": [
+          "TCGA-BR-4371"
+        ]
+      }
+    },
+    "liver": {
+      "cancer_type": "Liver",
+      "modalities": {
+        "ct": {
+          "count": 1,
+          "size_mb": 1.56,
+          "files": [
+            {
+              "filename": "liver_ct_slice_01.dcm",
+              "size_bytes": 1632796,
+              "sha256": "45da40c86cbc0a1a...",
+              "patient_id": "liver",
+              "extension": ".dcm"
+            }
+          ]
+        },
+        "pathology": {
+          "count": 4,
+          "size_mb": 94.84,
+          "files": [
+            {
+              "filename": "TCGA-BC-A216-11A-01-TSA.4a81c1fe-c566-4a53-86eb-697d4c085815.svs",
+              "size_bytes": 31535997,
+              "sha256": "caef0dbede0326d2...",
+              "patient_id": "TCGA-BC-A216",
+              "extension": ".svs"
+            },
+            {
+              "filename": "TCGA-DD-AAE2-01A-01-TS1.2841B3C9-FA26-4248-9616-ECF753D5A726.svs",
+              "size_bytes": 29203689,
+              "sha256": "e1372dd38bcc9440...",
+              "patient_id": "TCGA-DD-AAE2",
+              "extension": ".svs"
+            },
+            {
+              "filename": "TCGA-DD-AAEH-01A-01-TS1.1152D49E-5195-448D-8906-F95398C55D1F.svs",
+              "size_bytes": 28302239,
+              "sha256": "e27e6a1f7c08b67c...",
+              "patient_id": "TCGA-DD-AAEH",
+              "extension": ".svs"
+            },
+            {
+              "filename": "TCGA-DD-AAVW-01A-01-TS1.6B87FA05-C902-41E0-B180-0BD15C7A9C63.svs",
+              "size_bytes": 10409283,
+              "sha256": "957c5faf39957cf2...",
+              "patient_id": "TCGA-DD-AAVW",
+              "extension": ".svs"
+            }
+          ]
+        }
+      },
+      "total_files": 5,
+      "total_size_mb": 96.4,
+      "patients": [
+        "TCGA-BC-A216",
+        "TCGA-DD-AAE2",
+        "TCGA-DD-AAEH",
+        "TCGA-DD-AAVW",
+        "liver"
+      ],
+      "patient_count": 5,
+      "patient_level_splits": {
+        "train": [
+          "TCGA-BC-A216",
+          "TCGA-DD-AAE2",
+          "TCGA-DD-AAEH"
+        ],
+        "validation": [
+          "TCGA-DD-AAVW"
+        ],
+        "test": [
+          "liver"
+        ]
+      }
+    },
+    "lung": {
+      "cancer_type": "Lung",
+      "modalities": {
+        "ct": {
+          "count": 3,
+          "size_mb": 1.51,
+          "files": [
+            {
+              "filename": "lung_ct_slice_01.dcm",
+              "size_bytes": 526146,
+              "sha256": "63bfd69a36a33f3d...",
+              "patient_id": "lung",
+              "extension": ".dcm"
+            },
+            {
+              "filename": "lung_ct_slice_02.dcm",
+              "size_bytes": 526150,
+              "sha256": "3383bd78aa17c5e6...",
+              "patient_id": "lung",
+              "extension": ".dcm"
+            },
+            {
+              "filename": "lung_ct_slice_03.dcm",
+              "size_bytes": 526146,
+              "sha256": "ecb0bb49a04eab26...",
+              "patient_id": "lung",
+              "extension": ".dcm"
+            }
+          ]
+        },
+        "pathology": {
+          "count": 5,
+          "size_mb": 38.92,
+          "files": [
+            {
+              "filename": "TCGA-05-4425-01Z-00-DX1.82B093EE-49BC-4FD9-91AC-4CC89944309D.svs",
+              "size_bytes": 6382442,
+              "sha256": "a6e3c2e7c3b1dec6...",
+              "patient_id": "TCGA-05-4425",
+              "extension": ".svs"
+            },
+            {
+              "filename": "TCGA-05-5428-01Z-00-DX1.8018AD62-F1CE-4BFF-8EFD-3F2D4513FC11.svs",
+              "size_bytes": 8955412,
+              "sha256": "0993cfa7161968b6...",
+              "patient_id": "TCGA-05-5428",
+              "extension": ".svs"
+            },
+            {
+              "filename": "TCGA-05-5429-01Z-00-DX1.20729065-FADA-4E43-98D7-AFA5FB4A0447.svs",
+              "size_bytes": 8736228,
+              "sha256": "8397cfd1cebf4d7e...",
+              "patient_id": "TCGA-05-5429",
+              "extension": ".svs"
+            },
+            {
+              "filename": "TCGA-05-5715-01Z-00-DX1.D3F0A1FA-2507-45FF-823F-F9981E62BB4C.svs",
+              "size_bytes": 7961930,
+              "sha256": "d97d52540b130586...",
+              "patient_id": "TCGA-05-5715",
+              "extension": ".svs"
+            },
+            {
+              "filename": "TCGA-55-8207-01Z-00-DX1.2dafc442-f927-4b0d-b197-cc8c5f86d0fc.svs",
+              "size_bytes": 8772005,
+              "sha256": "58e22c6b85f82bd3...",
+              "patient_id": "TCGA-55-8207",
+              "extension": ".svs"
+            }
+          ]
+        }
+      },
+      "total_files": 8,
+      "total_size_mb": 40.42,
+      "patients": [
+        "TCGA-05-4425",
+        "TCGA-05-5428",
+        "TCGA-05-5429",
+        "TCGA-05-5715",
+        "TCGA-55-8207",
+        "lung"
+      ],
+      "patient_count": 6,
+      "patient_level_splits": {
+        "train": [
+          "TCGA-05-4425",
+          "TCGA-05-5428",
+          "TCGA-05-5429",
+          "TCGA-05-5715"
+        ],
+        "validation": [
+          "TCGA-55-8207"
+        ],
+        "test": [
+          "lung"
+        ]
+      }
+    },
+    "lymphoma": {
+      "cancer_type": "Lymphoma",
+      "modalities": {
+        "pathology": {
+          "count": 5,
+          "size_mb": 163.35,
+          "files": [
+            {
+              "filename": "TCGA-FF-8041-01A-01-TS1.b8b69ce3-a325-4864-a5b0-43c450347bc9.svs",
+              "size_bytes": 44121031,
+              "sha256": "a9439077e400d5a3...",
+              "patient_id": "TCGA-FF-8041",
+              "extension": ".svs"
+            },
+            {
+              "filename": "TCGA-FF-8043-01A-01-BS1.b466c057-d63f-480d-9ef2-421947dc4daf.svs",
+              "size_bytes": 43553743,
+              "sha256": "aeff1950dc881e36...",
+              "patient_id": "TCGA-FF-8043",
+              "extension": ".svs"
+            },
+            {
+              "filename": "TCGA-G8-6324-01A-01-TS1.4e082d68-1711-42f6-afc9-1bdd5044e97d.svs",
+              "size_bytes": 25812159,
+              "sha256": "61d6b4a0a47be8a6...",
+              "patient_id": "TCGA-G8-6324",
+              "extension": ".svs"
+            },
+            {
+              "filename": "TCGA-G8-6907-01A-01-TS1.58cf6e01-7538-429d-a9b3-c1ea8866ba67.svs",
+              "size_bytes": 21237681,
+              "sha256": "85525b600031000d...",
+              "patient_id": "TCGA-G8-6907",
+              "extension": ".svs"
+            },
+            {
+              "filename": "TCGA-G8-6909-01A-01-TS1.9ea4af2e-8420-40ff-8882-4602100dd92a.svs",
+              "size_bytes": 36557843,
+              "sha256": "451ffab2a6b46ab4...",
+              "patient_id": "TCGA-G8-6909",
+              "extension": ".svs"
+            }
+          ]
+        }
+      },
+      "total_files": 5,
+      "total_size_mb": 163.35,
+      "patients": [
+        "TCGA-FF-8041",
+        "TCGA-FF-8043",
+        "TCGA-G8-6324",
+        "TCGA-G8-6907",
+        "TCGA-G8-6909"
+      ],
+      "patient_count": 5,
+      "patient_level_splits": {
+        "train": [
+          "TCGA-FF-8041",
+          "TCGA-FF-8043",
+          "TCGA-G8-6324"
+        ],
+        "validation": [
+          "TCGA-G8-6907"
+        ],
+        "test": [
+          "TCGA-G8-6909"
+        ]
+      }
+    },
+    "melanoma": {
+      "cancer_type": "Melanoma",
+      "modalities": {
+        "pathology": {
+          "count": 5,
+          "size_mb": 264.73,
+          "files": [
+            {
+              "filename": "TCGA-D3-A5GL-06A-01-TS1.475331B7-9375-4E02-B709-6B16829C92DB.svs",
+              "size_bytes": 62096754,
+              "sha256": "2ee8e34e6a528234...",
+              "patient_id": "TCGA-D3-A5GL",
+              "extension": ".svs"
+            },
+            {
+              "filename": "TCGA-D3-A5GU-06A-01-TS1.20618E1E-5697-4FCB-9AB6-B8C4F233D1D5.svs",
+              "size_bytes": 47381258,
+              "sha256": "ac6706eaf79e7163...",
+              "patient_id": "TCGA-D3-A5GU",
+              "extension": ".svs"
+            },
+            {
+              "filename": "TCGA-FW-A5DY-11A-01-TS1.58F948E1-1DF0-4E13-A1FA-2EF0EEDDE354.svs",
+              "size_bytes": 60004719,
+              "sha256": "fdcd90097c0cc898...",
+              "patient_id": "TCGA-FW-A5DY",
+              "extension": ".svs"
+            },
+            {
+              "filename": "TCGA-GN-A4U8-11A-01-TSA.DAC058B9-0BC2-45D5-B806-4684BD66AF91.svs",
+              "size_bytes": 60398855,
+              "sha256": "645d5ded5b17fff3...",
+              "patient_id": "TCGA-GN-A4U8",
+              "extension": ".svs"
+            },
+            {
+              "filename": "TCGA-HR-A5NC-01Z-00-DX1.F8577EB3-C670-4DDB-9EDD-B8681CE2D664.svs",
+              "size_bytes": 47703586,
+              "sha256": "47755200f043af97...",
+              "patient_id": "TCGA-HR-A5NC",
+              "extension": ".svs"
+            }
+          ]
+        }
+      },
+      "total_files": 5,
+      "total_size_mb": 264.73,
+      "patients": [
+        "TCGA-D3-A5GL",
+        "TCGA-D3-A5GU",
+        "TCGA-FW-A5DY",
+        "TCGA-GN-A4U8",
+        "TCGA-HR-A5NC"
+      ],
+      "patient_count": 5,
+      "patient_level_splits": {
+        "train": [
+          "TCGA-D3-A5GL",
+          "TCGA-D3-A5GU",
+          "TCGA-FW-A5DY"
+        ],
+        "validation": [
+          "TCGA-GN-A4U8"
+        ],
+        "test": [
+          "TCGA-HR-A5NC"
+        ]
+      }
+    },
+    "ovarian": {
+      "cancer_type": "Ovarian",
+      "modalities": {
+        "ct": {
+          "count": 1,
+          "size_mb": 0.5,
+          "files": [
+            {
+              "filename": "ovarian_ct_slice_01.dcm",
+              "size_bytes": 527152,
+              "sha256": "b980f45db8dc498b...",
+              "patient_id": "ovarian",
+              "extension": ".dcm"
+            }
+          ]
+        },
+        "pathology": {
+          "count": 4,
+          "size_mb": 71.7,
+          "files": [
+            {
+              "filename": "TCGA-24-1847-01A-01-BS1.801bcc7d-3382-42fa-aff1-076ebcc5bdf4.svs",
+              "size_bytes": 17966443,
+              "sha256": "624e502e9289b4f9...",
+              "patient_id": "TCGA-24-1847",
+              "extension": ".svs"
+            },
+            {
+              "filename": "TCGA-29-1710-02A-01-TS1.a955d77c-35b3-4257-90ba-7ed2a91acbb4.svs",
+              "size_bytes": 18222195,
+              "sha256": "01705180842ad271...",
+              "patient_id": "TCGA-29-1710",
+              "extension": ".svs"
+            },
+            {
+              "filename": "TCGA-42-2593-01A-01-TS1.0aa136c4-90e2-49f3-adf8-73d334f9e6ec.svs",
+              "size_bytes": 19198595,
+              "sha256": "dc0c231ca6adde53...",
+              "patient_id": "TCGA-42-2593",
+              "extension": ".svs"
+            },
+            {
+              "filename": "TCGA-57-1585-11A-01-TS1.1497c983-dc07-400e-aa0c-f4fa7bf3bcfd.svs",
+              "size_bytes": 19795639,
+              "sha256": "a5360c377cb4fece...",
+              "patient_id": "TCGA-57-1585",
+              "extension": ".svs"
+            }
+          ]
+        }
+      },
+      "total_files": 5,
+      "total_size_mb": 72.2,
+      "patients": [
+        "TCGA-24-1847",
+        "TCGA-29-1710",
+        "TCGA-42-2593",
+        "TCGA-57-1585",
+        "ovarian"
+      ],
+      "patient_count": 5,
+      "patient_level_splits": {
+        "train": [
+          "TCGA-24-1847",
+          "TCGA-29-1710",
+          "TCGA-42-2593"
+        ],
+        "validation": [
+          "TCGA-57-1585"
+        ],
+        "test": [
+          "ovarian"
+        ]
+      }
+    },
+    "pancreatic": {
+      "cancer_type": "Pancreatic",
+      "modalities": {
+        "ct": {
+          "count": 3,
+          "size_mb": 1.5,
+          "files": [
+            {
+              "filename": "pancreatic_ct_slice_01.dcm",
+              "size_bytes": 525510,
+              "sha256": "50c1402602a84266...",
+              "patient_id": "pancreatic",
+              "extension": ".dcm"
+            },
+            {
+              "filename": "pancreatic_ct_slice_02.dcm",
+              "size_bytes": 525508,
+              "sha256": "c9bdc01aee13b874...",
+              "patient_id": "pancreatic",
+              "extension": ".dcm"
+            },
+            {
+              "filename": "pancreatic_ct_slice_03.dcm",
+              "size_bytes": 525508,
+              "sha256": "519fb7c629c0a5a1...",
+              "patient_id": "pancreatic",
+              "extension": ".dcm"
+            }
+          ]
+        },
+        "pathology": {
+          "count": 2,
+          "size_mb": 31.59,
+          "files": [
+            {
+              "filename": "TCGA-IB-7647-01A-01-TS1.60574eeb-7935-4607-9ca8-5e1c21684ea5.svs",
+              "size_bytes": 8390593,
+              "sha256": "facaee0b2af9af29...",
+              "patient_id": "TCGA-IB-7647",
+              "extension": ".svs"
+            },
+            {
+              "filename": "TCGA-US-A77G-11A-01-TSA.18AC9F41-1554-4C39-BDA0-2D139AE487AD.svs",
+              "size_bytes": 24737009,
+              "sha256": "564fc8045a9d463a...",
+              "patient_id": "TCGA-US-A77G",
+              "extension": ".svs"
+            }
+          ]
+        }
+      },
+      "total_files": 5,
+      "total_size_mb": 33.1,
+      "patients": [
+        "TCGA-IB-7647",
+        "TCGA-US-A77G",
+        "pancreatic"
+      ],
+      "patient_count": 3,
+      "patient_level_splits": {
+        "train": [
+          "TCGA-IB-7647",
+          "TCGA-US-A77G"
+        ],
+        "validation": [
+          "pancreatic"
+        ],
+        "test": []
+      }
+    },
+    "prostate": {
+      "cancer_type": "Prostate",
+      "modalities": {
+        "mri": {
+          "count": 1,
+          "size_mb": 0.04,
+          "files": [
+            {
+              "filename": "prostate_mr_slice_01.dcm",
+              "size_bytes": 37402,
+              "sha256": "0e552b55e58b3f15...",
+              "patient_id": "prostate",
+              "extension": ".dcm"
+            }
+          ]
+        },
+        "pathology": {
+          "count": 4,
+          "size_mb": 71.33,
+          "files": [
+            {
+              "filename": "TCGA-CH-5744-01A-01-BS1.6bb9c4b2-87d0-48da-b1c5-a78629dd2021.svs",
+              "size_bytes": 19813365,
+              "sha256": "4a6d766781055c3f...",
+              "patient_id": "TCGA-CH-5744",
+              "extension": ".svs"
+            },
+            {
+              "filename": "TCGA-CH-5790-01A-01-BS1.e1f8b10a-fd0a-41d2-befc-da936e06a725.svs",
+              "size_bytes": 18856559,
+              "sha256": "ca45b4708e134105...",
+              "patient_id": "TCGA-CH-5790",
+              "extension": ".svs"
+            },
+            {
+              "filename": "TCGA-CH-5794-01A-01-BS1.b62d1bf3-a21b-4991-b876-19eab36b4366.svs",
+              "size_bytes": 16126169,
+              "sha256": "a994e9d56504911d...",
+              "patient_id": "TCGA-CH-5794",
+              "extension": ".svs"
+            },
+            {
+              "filename": "TCGA-G9-6377-01A-01-BS1.5cc24d73-153a-48c4-a21d-9c5bdbca505c.svs",
+              "size_bytes": 20003481,
+              "sha256": "4e72ac3495d97733...",
+              "patient_id": "TCGA-G9-6377",
+              "extension": ".svs"
+            }
+          ]
+        }
+      },
+      "total_files": 5,
+      "total_size_mb": 71.37,
+      "patients": [
+        "TCGA-CH-5744",
+        "TCGA-CH-5790",
+        "TCGA-CH-5794",
+        "TCGA-G9-6377",
+        "prostate"
+      ],
+      "patient_count": 5,
+      "patient_level_splits": {
+        "train": [
+          "TCGA-CH-5744",
+          "TCGA-CH-5790",
+          "TCGA-CH-5794"
+        ],
+        "validation": [
+          "TCGA-G9-6377"
+        ],
+        "test": [
+          "prostate"
+        ]
+      }
+    },
+    "renal": {
+      "cancer_type": "Renal",
+      "modalities": {
+        "ct": {
+          "count": 3,
+          "size_mb": 1.51,
+          "files": [
+            {
+              "filename": "renal_ct_slice_01.dcm",
+              "size_bytes": 528840,
+              "sha256": "44f8f8340b4d5404...",
+              "patient_id": "renal",
+              "extension": ".dcm"
+            },
+            {
+              "filename": "renal_ct_slice_02.dcm",
+              "size_bytes": 528840,
+              "sha256": "d22ab41cd954b295...",
+              "patient_id": "renal",
+              "extension": ".dcm"
+            },
+            {
+              "filename": "renal_ct_slice_03.dcm",
+              "size_bytes": 528840,
+              "sha256": "85314ff9ceb68554...",
+              "patient_id": "renal",
+              "extension": ".dcm"
+            }
+          ]
+        },
+        "pathology": {
+          "count": 2,
+          "size_mb": 29.97,
+          "files": [
+            {
+              "filename": "TCGA-B0-4841-01A-01-TS1.0c375369-3a29-4104-ae17-5769766c60d8.svs",
+              "size_bytes": 14090705,
+              "sha256": "9db6cc2abb68cd93...",
+              "patient_id": "TCGA-B0-4841",
+              "extension": ".svs"
+            },
+            {
+              "filename": "TCGA-B0-4845-11A-01-TS1.70e9f4f2-2603-4b89-af1d-13dcb553b787.svs",
+              "size_bytes": 17330379,
+              "sha256": "b4f22444aa0023eb...",
+              "patient_id": "TCGA-B0-4845",
+              "extension": ".svs"
+            }
+          ]
+        }
+      },
+      "total_files": 5,
+      "total_size_mb": 31.48,
+      "patients": [
+        "TCGA-B0-4841",
+        "TCGA-B0-4845",
+        "renal"
+      ],
+      "patient_count": 3,
+      "patient_level_splits": {
+        "train": [
+          "TCGA-B0-4841",
+          "TCGA-B0-4845"
+        ],
+        "validation": [
+          "renal"
+        ],
+        "test": []
+      }
+    },
+    "thyroid": {
+      "cancer_type": "Thyroid",
+      "modalities": {
+        "pathology": {
+          "count": 5,
+          "size_mb": 108.09,
+          "files": [
+            {
+              "filename": "TCGA-BJ-A45G-11A-01-TSA.94B24755-6054-433F-AC38-EDE085484611.svs",
+              "size_bytes": 16494365,
+              "sha256": "1691d88d1915d6c2...",
+              "patient_id": "TCGA-BJ-A45G",
+              "extension": ".svs"
+            },
+            {
+              "filename": "TCGA-EL-A3ZG-11A-01-TS1.9EEF4DA0-4027-4C37-A0E9-EA6A34FE737D.svs",
+              "size_bytes": 23789189,
+              "sha256": "451acf46b82db6fe...",
+              "patient_id": "TCGA-EL-A3ZG",
+              "extension": ".svs"
+            },
+            {
+              "filename": "TCGA-EL-A4K0-11A-01-TSA.AED849C9-9D55-4256-979C-87BB40840ECA.svs",
+              "size_bytes": 24470313,
+              "sha256": "a18c2ac9787fc667...",
+              "patient_id": "TCGA-EL-A4K0",
+              "extension": ".svs"
+            },
+            {
+              "filename": "TCGA-EL-A4K2-11A-01-TS1.CF7AA71D-5511-476A-A896-149DB8302C04.svs",
+              "size_bytes": 26013409,
+              "sha256": "aa00a218543b3fe9...",
+              "patient_id": "TCGA-EL-A4K2",
+              "extension": ".svs"
+            },
+            {
+              "filename": "TCGA-EL-A4K7-11A-01-TS1.C08B59AA-87DF-4ABB-8B70-25FEF9893C7F.svs",
+              "size_bytes": 22575905,
+              "sha256": "334034fd7cb77a65...",
+              "patient_id": "TCGA-EL-A4K7",
+              "extension": ".svs"
+            }
+          ]
+        }
+      },
+      "total_files": 5,
+      "total_size_mb": 108.09,
+      "patients": [
+        "TCGA-BJ-A45G",
+        "TCGA-EL-A3ZG",
+        "TCGA-EL-A4K0",
+        "TCGA-EL-A4K2",
+        "TCGA-EL-A4K7"
+      ],
+      "patient_count": 5,
+      "patient_level_splits": {
+        "train": [
+          "TCGA-BJ-A45G",
+          "TCGA-EL-A3ZG",
+          "TCGA-EL-A4K0"
+        ],
+        "validation": [
+          "TCGA-EL-A4K2"
+        ],
+        "test": [
+          "TCGA-EL-A4K7"
+        ]
+      }
+    }
+  }
+}

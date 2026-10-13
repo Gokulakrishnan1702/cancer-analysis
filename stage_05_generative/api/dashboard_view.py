@@ -2517,6 +2517,420 @@ DASHBOARD_HTML = r"""<!DOCTYPE html>
         .btn-refresh-audit:hover {
             background: #f1f5f9;
             border-color: #94a3b8;
+        /* ==========================================================================
+           ROLE-BASED DASHBOARD SWITCHER (DOCTOR / NURSE / PATIENT)
+           ========================================================================== */
+        .role-selector-pill-group {
+            display: inline-flex;
+            background: rgba(15, 37, 74, 0.7);
+            border: 1px solid rgba(56, 189, 248, 0.28);
+            border-radius: 24px;
+            padding: 3px;
+            gap: 3px;
+        }
+        .btn-role-tab {
+            background: transparent;
+            border: none;
+            color: #94a3b8;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.74rem;
+            font-weight: 600;
+            padding: 0.35rem 0.85rem;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.35rem;
+            white-space: nowrap;
+        }
+        .btn-role-tab:hover {
+            color: #ffffff;
+            background: rgba(255, 255, 255, 0.08);
+        }
+        .btn-role-tab.active {
+            background: #2563eb;
+            color: #ffffff;
+            font-weight: 700;
+            box-shadow: 0 2px 8px rgba(37, 99, 235, 0.45);
+        }
+
+        /* ==========================================================================
+           EXPLICIT "UNABLE TO PROVIDE RELIABLE RESULT" SAFETY BANNER
+           ========================================================================== */
+        .unreliable-alert-card {
+            background: #fff1f2;
+            border: 1.5px solid #f43f5e;
+            border-radius: var(--radius-md);
+            padding: 1.25rem 1.5rem;
+            margin-top: 1rem;
+            box-shadow: 0 4px 12px rgba(244, 63, 94, 0.12);
+            animation: fadeInAlert 0.3s ease;
+        }
+        @keyframes fadeInAlert {
+            from { opacity: 0; transform: translateY(-6px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .unreliable-header {
+            display: flex;
+            align-items: center;
+            gap: 0.85rem;
+            margin-bottom: 0.75rem;
+        }
+        .unreliable-icon {
+            font-size: 1.6rem;
+            line-height: 1;
+        }
+        .unreliable-title {
+            font-size: 1.05rem;
+            font-weight: 800;
+            color: #be123c;
+            letter-spacing: 0.01em;
+        }
+        .unreliable-subtitle {
+            font-size: 0.78rem;
+            color: #9f1239;
+            font-weight: 600;
+            margin-top: 2px;
+        }
+        .unreliable-body {
+            display: flex;
+            flex-direction: column;
+            gap: 0.65rem;
+            background: rgba(255, 255, 255, 0.65);
+            border-radius: var(--radius-sm);
+            padding: 0.85rem 1rem;
+            border: 1px solid rgba(244, 63, 94, 0.2);
+        }
+        .unreliable-err-item {
+            font-size: 0.8rem;
+            color: #991b1b;
+            font-weight: 600;
+        }
+        .unreliable-warn-item {
+            font-size: 0.78rem;
+            color: #b45309;
+            font-weight: 500;
+        }
+        .unreliable-actions-box {
+            font-size: 0.78rem;
+            color: #334155;
+            margin-top: 0.35rem;
+            border-top: 1px dashed rgba(244, 63, 94, 0.3);
+            padding-top: 0.5rem;
+        }
+
+        /* ==========================================================================
+           PATIENT SIMPLIFIED CARE VIEW
+           ========================================================================== */
+        .patient-card-view {
+            background: linear-gradient(135deg, #ffffff 0%, #f0fdf4 100%);
+            border: 1.5px solid #86efac;
+            border-radius: var(--radius-lg);
+            padding: 1.5rem;
+            margin-top: 1rem;
+            box-shadow: 0 6px 18px rgba(16, 185, 129, 0.08);
+        }
+        .patient-card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1.25rem;
+            padding-bottom: 0.85rem;
+            border-bottom: 1px solid #dcfce7;
+        }
+        .patient-card-header h3 {
+            font-size: 1.15rem;
+            font-weight: 800;
+            color: #14532d;
+        }
+        .patient-card-header p {
+            font-size: 0.82rem;
+            color: #15803d;
+            margin-top: 3px;
+        }
+        .patient-status-chip {
+            background: #dcfce7;
+            color: #166534;
+            border: 1px solid #86efac;
+            font-size: 0.75rem;
+            font-weight: 700;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+        }
+        .patient-card-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+            margin-bottom: 1.25rem;
+        }
+        @media (max-width: 900px) {
+            .patient-card-grid { grid-template-columns: 1fr; }
+        }
+        .patient-info-tile {
+            background: #ffffff;
+            border: 1px solid #bbf7d0;
+            border-radius: var(--radius-md);
+            padding: 1rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+        }
+        .patient-tile-label {
+            font-size: 0.68rem;
+            text-transform: uppercase;
+            font-weight: 700;
+            color: #15803d;
+            letter-spacing: 0.04em;
+        }
+        .patient-info-tile h4 {
+            font-size: 0.95rem;
+            font-weight: 800;
+            color: #0f172a;
+            margin: 0.35rem 0 0.25rem;
+        }
+        .patient-info-tile p {
+            font-size: 0.76rem;
+            color: #475569;
+            line-height: 1.4;
+        }
+        .patient-reassurance-box {
+            background: #ffffff;
+            border: 1px solid #bbf7d0;
+            border-radius: var(--radius-md);
+            padding: 1rem 1.25rem;
+            margin-bottom: 1rem;
+        }
+        .patient-reassurance-box h4 {
+            font-size: 0.88rem;
+            font-weight: 800;
+            color: #166534;
+            margin-bottom: 0.5rem;
+        }
+        .patient-reassurance-box ul {
+            padding-left: 1.25rem;
+            font-size: 0.8rem;
+            color: #334155;
+            line-height: 1.6;
+        }
+        .patient-disclaimer-alert {
+            background: #eff6ff;
+            border: 1px solid #bfdbfe;
+            border-radius: var(--radius-sm);
+            padding: 0.75rem 1rem;
+            font-size: 0.76rem;
+            color: #1e40af;
+            line-height: 1.45;
+        }
+
+        /* ==========================================================================
+           EXPLAINABLE AI (GRAD-CAM) VISUALIZER CARD
+           ========================================================================== */
+        .gradcam-card {
+            background: var(--bg-card);
+            border: 1.5px solid var(--border-card);
+            border-radius: var(--radius-lg);
+            padding: 1.4rem;
+            margin-top: 1rem;
+            box-shadow: var(--shadow-sm);
+        }
+        .gradcam-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1.25rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 1px solid var(--border-card);
+            flex-wrap: wrap;
+            gap: 0.85rem;
+        }
+        .gradcam-title-group {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        .gradcam-icon {
+            font-size: 1.6rem;
+        }
+        .gradcam-title-group h3 {
+            font-size: 0.98rem;
+            font-weight: 800;
+            color: var(--text-primary);
+        }
+        .gradcam-title-group p {
+            font-size: 0.72rem;
+            color: var(--text-secondary);
+            font-family: 'JetBrains Mono', monospace;
+            margin-top: 2px;
+        }
+        .gradcam-controls {
+            display: flex;
+            align-items: center;
+            gap: 0.65rem;
+            background: var(--bg-card-alt);
+            border: 1px solid var(--border-card);
+            border-radius: 20px;
+            padding: 0.35rem 0.85rem;
+        }
+        .gradcam-slider-label {
+            font-size: 0.72rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+        }
+        .gradcam-controls input[type=range] {
+            width: 110px;
+            cursor: pointer;
+        }
+        .gradcam-slider-val {
+            font-size: 0.72rem;
+            font-weight: 700;
+            color: var(--accent-blue);
+            font-family: 'JetBrains Mono', monospace;
+            width: 34px;
+        }
+        .gradcam-viewer-grid {
+            display: grid;
+            grid-template-columns: 320px 1fr;
+            gap: 1.25rem;
+        }
+        @media (max-width: 900px) {
+            .gradcam-viewer-grid { grid-template-columns: 1fr; }
+        }
+        .gradcam-image-frame {
+            display: flex;
+            flex-direction: column;
+            gap: 0.65rem;
+        }
+        .gradcam-canvas-wrapper {
+            position: relative;
+            width: 100%;
+            height: 300px;
+            background: #000000;
+            border-radius: var(--radius-md);
+            overflow: hidden;
+            border: 1px solid var(--border-card);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .gradcam-base-layer {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+        .gradcam-heat-layer {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            mix-blend-mode: screen;
+            transition: opacity 0.1s ease;
+        }
+        .gradcam-colormap-legend {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 0.68rem;
+            color: var(--text-secondary);
+            font-weight: 600;
+        }
+        .gradcam-gradient-bar {
+            height: 8px;
+            flex: 1;
+            margin: 0 0.5rem;
+            border-radius: 4px;
+            background: linear-gradient(90deg, #0000ff 0%, #00ffff 25%, #00ff00 50%, #ffff00 75%, #ff0000 100%);
+            border: 1px solid rgba(0,0,0,0.1);
+        }
+        .gradcam-details-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+        .gradcam-metric-tile {
+            background: var(--bg-card-alt);
+            border: 1px solid var(--border-card);
+            border-radius: var(--radius-sm);
+            padding: 0.65rem 0.85rem;
+        }
+        .gradcam-metric-tile span {
+            font-size: 0.68rem;
+            text-transform: uppercase;
+            font-weight: 700;
+            color: var(--text-light);
+            letter-spacing: 0.04em;
+        }
+        .gradcam-metric-tile h4 {
+            font-size: 0.88rem;
+            font-weight: 800;
+            color: var(--text-primary);
+            margin-top: 2px;
+        }
+        .gradcam-quadrant-box {
+            background: var(--bg-card-alt);
+            border: 1px solid var(--border-card);
+            border-radius: var(--radius-sm);
+            padding: 0.85rem;
+        }
+        .gradcam-quadrant-box h5 {
+            font-size: 0.74rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+            letter-spacing: 0.04em;
+        }
+        .gradcam-bar-row {
+            display: flex;
+            align-items: center;
+            gap: 0.65rem;
+            font-size: 0.72rem;
+            margin-bottom: 0.35rem;
+        }
+        .gradcam-bar-row span {
+            width: 140px;
+            color: var(--text-secondary);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .gradcam-track {
+            flex: 1;
+            height: 6px;
+            background: #e2e8f0;
+            border-radius: 3px;
+            overflow: hidden;
+        }
+        .gradcam-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #38bdf8 0%, #ef4444 100%);
+            border-radius: 3px;
+        }
+        .gradcam-bar-row strong {
+            width: 35px;
+            text-align: right;
+            font-family: 'JetBrains Mono', monospace;
+            color: var(--text-primary);
+        }
+        .gradcam-disclaimer-note {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.45rem;
+            background: #f8fafc;
+            border: 1px solid var(--border-card);
+            border-radius: var(--radius-sm);
+            padding: 0.65rem 0.85rem;
+            font-size: 0.72rem;
+            color: #64748b;
+            line-height: 1.4;
+        }
+        .gradcam-disclaimer-note svg {
+            flex-shrink: 0;
+            margin-top: 2px;
+            color: var(--accent-blue);
         }
     </style>
 </head>
@@ -2632,8 +3046,19 @@ DASHBOARD_HTML = r"""<!DOCTYPE html>
                 <div class="stage-status-chip ready" id="chip-agentic" style="border-color: #0284c7; color: #0284c7;" title="AI Care Workflow">Workflow ✓</div>
             </div>
 
-            <!-- Authenticated Clinician Widget & PDF Export -->
+            <!-- Authenticated Clinician Widget, Role Switcher & PDF Export -->
             <div class="header-auth-group">
+                <div class="role-selector-pill-group" id="header-role-tabs">
+                    <button type="button" class="btn-role-tab active" id="btn-role-doctor" onclick="setDashboardRole('doctor')" title="Full Clinical &amp; Oncologist Workstation">
+                        🩺 Doctor
+                    </button>
+                    <button type="button" class="btn-role-tab" id="btn-role-nurse" onclick="setDashboardRole('nurse')" title="Bedside Triage &amp; Vitals Alerts">
+                        🏥 Nurse
+                    </button>
+                    <button type="button" class="btn-role-tab" id="btn-role-patient" onclick="setDashboardRole('patient')" title="Simplified, Reassuring Patient Health Summary">
+                        👤 Patient
+                    </button>
+                </div>
                 <button type="button" class="btn-header-pdf" id="btn-header-export-pdf" onclick="exportTumorBoardPdf()" title="Download Official Tumor Board PDF Report">
                     <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M6 9V2h12v7M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
                     <span>Export PDF</span>
@@ -3253,6 +3678,114 @@ DASHBOARD_HTML = r"""<!DOCTYPE html>
                     <div class="disclaimer-strip">
                         <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
                         AI-generated decision support — not a replacement for clinical judgment.
+                    </div>
+                </div>
+
+                <!-- CDSS CLINICAL SAFETY ALERT: UNABLE TO PROVIDE RELIABLE RESULT -->
+                <div id="unreliable-result-banner" class="unreliable-alert-card" style="display: none;">
+                    <div class="unreliable-header">
+                        <div class="unreliable-icon">⚠️</div>
+                        <div>
+                            <h3 class="unreliable-title">Unable to provide a reliable result</h3>
+                            <p class="unreliable-subtitle" id="unreliable-reason">CDSS Clinical Safety Guardrail Activated — Execution Halted</p>
+                        </div>
+                    </div>
+                    <div class="unreliable-body">
+                        <div class="unreliable-errors-box" id="unreliable-errors-list"></div>
+                        <div class="unreliable-actions-box">
+                            <strong>Required Clinical Actions:</strong>
+                            <p id="unreliable-guidance" style="margin-top: 2px;">Please review input laboratory measurements or upload a validated CT scan or histopathology slide.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- PATIENT SIMPLIFIED CARE VIEW (REASSURING & JARGON-FREE) -->
+                <div id="patient-simplified-card" class="patient-card-view" style="display: none;">
+                    <div class="patient-card-header">
+                        <div>
+                            <h3>Your Cancer Care Summary &amp; Treatment Guide</h3>
+                            <p id="pat-sub-header">Personalized health overview prepared for your consultation</p>
+                        </div>
+                        <span class="patient-status-chip" id="pat-status-chip">Consultation Recommended</span>
+                    </div>
+                    <div class="patient-card-grid">
+                        <div class="patient-info-tile">
+                            <span class="patient-tile-label">Condition &amp; Stage</span>
+                            <h4 id="pat-condition-val">Lung Cancer (Stage IV)</h4>
+                            <p id="pat-condition-desc">Currently following targeted medical therapy.</p>
+                        </div>
+                        <div class="patient-info-tile">
+                            <span class="patient-tile-label">Treatment Tolerance</span>
+                            <h4 id="pat-tolerance-val">Monitoring Tolerability</h4>
+                            <p id="pat-tolerance-desc">Your clinical team is tracking liver and kidney indicators to keep treatment safe.</p>
+                        </div>
+                        <div class="patient-info-tile">
+                            <span class="patient-tile-label">Next Planned Step</span>
+                            <h4 id="pat-next-step-val">Oncology Follow-Up</h4>
+                            <p id="pat-next-step-desc">Discuss lab results and symptom log with Dr. Sarah Chen.</p>
+                        </div>
+                    </div>
+                    <div class="patient-reassurance-box">
+                        <h4>💡 Helpful Everyday Tips While on Therapy</h4>
+                        <ul id="pat-wellness-tips">
+                            <li>Drink 2 to 3 liters of water daily to help your kidneys filter medications smoothly.</li>
+                            <li>Record temperature if you feel chilled or have a fever over 38°C (100.4°F).</li>
+                            <li>Take prescribed anti-nausea medications exactly as directed prior to treatment.</li>
+                        </ul>
+                    </div>
+                    <div class="patient-disclaimer-alert">
+                        🛡️ <strong>Important Patient Notice:</strong> This summary is an educational review assistant designed to support your conversation with your oncologist. It is NOT an autonomous diagnosis or treatment decision. Please discuss any new symptoms or medication adjustments directly with your cancer care team.
+                    </div>
+                </div>
+
+                <!-- EXPLAINABLE AI (GRAD-CAM) VISUALIZER CARD -->
+                <div id="gradcam-inspection-card" class="gradcam-card" style="display: none;">
+                    <div class="gradcam-header">
+                        <div class="gradcam-title-group">
+                            <div class="gradcam-icon">🧠</div>
+                            <div>
+                                <h3>Convolutional Explainable AI — PyTorch Grad-CAM Feature Attribution</h3>
+                                <p id="gradcam-layer-title">Layer: CTEncoder.conv[6] (Deep Feature Block)</p>
+                            </div>
+                        </div>
+                        <div class="gradcam-controls">
+                            <span class="gradcam-slider-label">Blend Opacity:</span>
+                            <input type="range" id="gradcam-opacity-slider" min="0" max="100" value="70" oninput="adjustGradCamOpacity(this.value)">
+                            <span id="gradcam-opacity-pct" class="gradcam-slider-val">70%</span>
+                        </div>
+                    </div>
+
+                    <div class="gradcam-viewer-grid">
+                        <div class="gradcam-image-frame">
+                            <div class="gradcam-canvas-wrapper" id="gradcam-canvas-box">
+                                <img id="gradcam-orig-img" src="" alt="Original Scan" class="gradcam-base-layer">
+                                <img id="gradcam-overlay-img" src="" alt="Grad-CAM Overlay" class="gradcam-heat-layer" style="opacity: 0.7;">
+                            </div>
+                            <div class="gradcam-colormap-legend">
+                                <span>Low Activation (0.0)</span>
+                                <div class="gradcam-gradient-bar"></div>
+                                <span>High Focus (1.0)</span>
+                            </div>
+                        </div>
+
+                        <div class="gradcam-details-panel">
+                            <div class="gradcam-metric-tile">
+                                <span>Dominant Focus Region</span>
+                                <h4 id="gradcam-dominant-region">Upper-Left (Quadrant II)</h4>
+                            </div>
+                            <div class="gradcam-metric-tile">
+                                <span>Peak Heatmap Intensity</span>
+                                <h4 id="gradcam-peak-intensity">0.892 (High Focus)</h4>
+                            </div>
+                            <div class="gradcam-quadrant-box">
+                                <h5>Regional Attention Breakdown</h5>
+                                <div id="gradcam-quadrant-bars"></div>
+                            </div>
+                            <div class="gradcam-disclaimer-note">
+                                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+                                <span><strong>Clinical Notice:</strong> Heatmaps highlight neural network convolutional focus areas for clinical transparency. They do NOT represent confirmed tumor boundaries or surgical margins.</span>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
@@ -5529,6 +6062,8 @@ DASHBOARD_HTML = r"""<!DOCTYPE html>
             if (viewId === 'view-history') loadHistory();
             if (viewId === 'view-analytics') loadAnalytics();
             if (viewId === 'view-audit') renderAuditLogs();
+            if (viewId === 'view-health') loadModelHealth();
+            if (viewId === 'view-rag') loadDatasetProvenance();
         }
 
         // Audit Trail State & Filtering Logic
@@ -6029,15 +6564,15 @@ DASHBOARD_HTML = r"""<!DOCTYPE html>
             if (!file) return;
 
             const ext = file.name.split('.').pop().toLowerCase();
-            if (!['png', 'jpg', 'jpeg'].includes(ext)) {
-                showValidationBanner(`[${slotModalityLabels[modKey]}] Unsupported format. Please upload PNG, JPG, or JPEG.`, "error", scope);
-                showSlotFeedback(modKey, "Unsupported file format (PNG, JPG, JPEG only)", "error", scope);
+            if (!['png', 'jpg', 'jpeg', 'dcm', 'tif', 'tiff'].includes(ext)) {
+                showValidationBanner(`[${slotModalityLabels[modKey]}] Unsupported format. Please upload DICOM (.dcm), TIFF (.tif), PNG, or JPEG.`, "error", scope);
+                showSlotFeedback(modKey, "Unsupported file format (DICOM, TIFF, PNG, JPEG only)", "error", scope);
                 return;
             }
 
-            if (file.size > 15 * 1024 * 1024) {
-                showValidationBanner(`[${slotModalityLabels[modKey]}] File size exceeds 15MB limit.`, "error", scope);
-                showSlotFeedback(modKey, "File size exceeds 15MB limit", "error", scope);
+            if (file.size > 30 * 1024 * 1024) {
+                showValidationBanner(`[${slotModalityLabels[modKey]}] File size exceeds 30MB limit.`, "error", scope);
+                showSlotFeedback(modKey, "File size exceeds 30MB limit", "error", scope);
                 return;
             }
 
@@ -6079,14 +6614,23 @@ DASHBOARD_HTML = r"""<!DOCTYPE html>
             if (clearBtn) clearBtn.style.display = 'inline-block';
             hideSlotFeedback(modKey, scope);
 
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                st[modKey].previewUrl = e.target.result;
-                if (prevImg) prevImg.src = e.target.result;
+            if (['dcm', 'tif', 'tiff'].includes(ext)) {
+                // Raw Medical Binary (DICOM/TIFF) placeholder before server normalization
+                if (prevImg) {
+                    prevImg.src = 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="120" height="120" viewBox="0 0 24 24" fill="none" stroke="%2338bdf8" stroke-width="1.8"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="12" cy="12" r="5"/><text x="12" y="21" font-size="3.5" fill="%2338bdf8" text-anchor="middle" font-family="sans-serif" font-weight="bold">DICOM / TIFF</text></svg>';
+                }
                 if (dropzone) dropzone.style.display = 'none';
                 if (previewBox) previewBox.style.display = 'flex';
-            };
-            reader.readAsDataURL(file);
+            } else {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    st[modKey].previewUrl = e.target.result;
+                    if (prevImg) prevImg.src = e.target.result;
+                    if (dropzone) dropzone.style.display = 'none';
+                    if (previewBox) previewBox.style.display = 'flex';
+                };
+                reader.readAsDataURL(file);
+            }
 
             hideValidationBanner(scope);
         }
@@ -6280,6 +6824,11 @@ DASHBOARD_HTML = r"""<!DOCTYPE html>
                     slot.validModality = modalityName;
                     slot.savedFilename = data.saved_filename;
                     slot.message = data.message;
+
+                    if (data.view_url) {
+                        const prevImg = document.getElementById(`${p}slot-img-${modKey}`);
+                        if (prevImg) prevImg.src = data.view_url;
+                    }
 
                     if (statusTag) {
                         statusTag.className = 'slot-status-tag valid';
@@ -6807,6 +7356,21 @@ DASHBOARD_HTML = r"""<!DOCTYPE html>
                 const data = await res.json();
                 clearInterval(progressTimer);
 
+                // Handle Explicit "Unable to provide a reliable result" Safety State
+                if (data.status === "Unable to provide a reliable result" || data.reliable === false) {
+                    stages.forEach(s => {
+                        const node = document.getElementById(`node-${s.id}`);
+                        const pill = document.getElementById(`pill-${s.id}`);
+                        if (node) node.className = 'flow-node failed-stage';
+                        if (pill) pill.innerText = 'Interlock ✕';
+                    });
+                    document.getElementById('pipeline-progress-label').innerText = 'Analysis Halted: Safety Guardrail Activated';
+                    renderUnreliableState(data);
+                    return;
+                }
+
+                hideUnreliableState();
+
                 // Set all stages completed
                 stages.forEach(s => {
                     const node = document.getElementById(`node-${s.id}`);
@@ -6822,6 +7386,17 @@ DASHBOARD_HTML = r"""<!DOCTYPE html>
 
                 // Render Final Assessment
                 renderFinalAssessment(data);
+
+                // Render Grad-CAM Explanation if available
+                if (data.gradcam_explanation) {
+                    renderGradCamExplanation(data.gradcam_explanation);
+                } else {
+                    const gcard = document.getElementById('gradcam-inspection-card');
+                    if (gcard) gcard.style.display = 'none';
+                }
+
+                // Render Patient Simplified Care Summary
+                renderPatientSimplifiedView(data, payload);
 
             } catch (err) {
                 clearInterval(progressTimer);
@@ -6978,6 +7553,167 @@ DASHBOARD_HTML = r"""<!DOCTYPE html>
             }
             if (typeof renderDeliberationStream === 'function') {
                 renderDeliberationStream(data.pipeline_stages?.stage6_agentic);
+            }
+        }
+
+        // -------------------------------------------------------------
+        // ROLE-BASED ACCESS CONTROL (RBAC) & DASHBOARD VIEW MODES
+        // -------------------------------------------------------------
+        let currentActiveRole = 'doctor';
+
+        function setDashboardRole(role) {
+            currentActiveRole = role;
+            document.querySelectorAll('.btn-role-tab').forEach(b => b.classList.remove('active'));
+            const activeBtn = document.getElementById(`btn-role-${role}`);
+            if (activeBtn) activeBtn.classList.add('active');
+
+            const clinicianName = document.getElementById('header-clinician-name');
+            const clinicianRole = document.getElementById('header-clinician-role');
+            const clinicianAvatar = document.getElementById('header-clinician-avatar');
+
+            const resultsGrid = document.getElementById('results-grid');
+            const finalCard = document.getElementById('final-assessment-section');
+            const whatifCard = document.getElementById('whatif-simulator-section');
+            const patientCard = document.getElementById('patient-simplified-card');
+            const gradcamCard = document.getElementById('gradcam-inspection-card');
+
+            if (role === 'patient') {
+                if (clinicianName) clinicianName.innerText = 'Patient Portal Session';
+                if (clinicianRole) clinicianRole.innerText = 'Self-Service View • Clearance L1';
+                if (clinicianAvatar) clinicianAvatar.innerText = '👤';
+
+                // In patient view: hide technical model internals, show comforting patient summary
+                if (resultsGrid) resultsGrid.style.display = 'none';
+                if (whatifCard) whatifCard.style.display = 'none';
+                if (gradcamCard) gradcamCard.style.display = 'none';
+                if (patientCard && window.lastPipelineResults) patientCard.style.display = 'block';
+            } else if (role === 'nurse') {
+                if (clinicianName) clinicianName.innerText = 'Nurse Sarah Jenkins, RN';
+                if (clinicianRole) clinicianRole.innerText = 'Infusion Triage • Clearance L2';
+                if (clinicianAvatar) clinicianAvatar.innerText = '🏥';
+
+                if (resultsGrid && window.lastPipelineResults) resultsGrid.style.display = 'grid';
+                if (whatifCard) whatifCard.style.display = 'block';
+                if (gradcamCard && window.lastPipelineResults?.gradcam_explanation) gradcamCard.style.display = 'block';
+                if (patientCard) patientCard.style.display = 'none';
+            } else {
+                // Doctor / Oncologist
+                if (clinicianName) clinicianName.innerText = 'Dr. Sarah Chen, MD';
+                if (clinicianRole) clinicianRole.innerText = 'Chief Oncologist • Clearance L4';
+                if (clinicianAvatar) clinicianAvatar.innerText = '🩺';
+
+                if (resultsGrid && window.lastPipelineResults) resultsGrid.style.display = 'grid';
+                if (whatifCard) whatifCard.style.display = 'block';
+                if (gradcamCard && window.lastPipelineResults?.gradcam_explanation) gradcamCard.style.display = 'block';
+                if (patientCard) patientCard.style.display = 'none';
+            }
+        }
+
+        // -------------------------------------------------------------
+        // UNRELIABLE STATE / SAFETY INTERLOCK BANNER
+        // -------------------------------------------------------------
+        function renderUnreliableState(data) {
+            const banner = document.getElementById('unreliable-result-banner');
+            if (!banner) return;
+            document.getElementById('unreliable-reason').innerText = data.reason || 'Input parameters outside validated CDSS scope.';
+            const errorsList = document.getElementById('unreliable-errors-list');
+            errorsList.innerHTML = '';
+            (data.validation_errors || []).forEach(err => {
+                errorsList.innerHTML += `<div class="unreliable-err-item">❌ ${err}</div>`;
+            });
+            (data.validation_warnings || []).forEach(warn => {
+                errorsList.innerHTML += `<div class="unreliable-warn-item">⚠️ ${warn}</div>`;
+            });
+            document.getElementById('unreliable-guidance').innerText = data.clinical_guidance || 'Review physiological laboratory inputs or medical image modality before retrying.';
+            banner.style.display = 'block';
+            banner.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function hideUnreliableState() {
+            const banner = document.getElementById('unreliable-result-banner');
+            if (banner) banner.style.display = 'none';
+        }
+
+        // -------------------------------------------------------------
+        // GRAD-CAM CONVOLUTIONAL EXPLAINER RENDERER
+        // -------------------------------------------------------------
+        function renderGradCamExplanation(gcam) {
+            const card = document.getElementById('gradcam-inspection-card');
+            if (!card) return;
+            if (!gcam || gcam.status !== 'success') {
+                card.style.display = 'none';
+                return;
+            }
+            if (currentActiveRole !== 'patient') {
+                card.style.display = 'block';
+            }
+            document.getElementById('gradcam-layer-title').innerText = `Target Neural Layer: ${gcam.layer_name || 'Convolutional Latent Block'}`;
+            const origImg = document.getElementById('gradcam-orig-img');
+            const overImg = document.getElementById('gradcam-overlay-img');
+            if (origImg) origImg.src = gcam.original_image_url || '';
+            if (overImg) overImg.src = gcam.gradcam_image_url || '';
+            document.getElementById('gradcam-dominant-region').innerText = gcam.dominant_activation_region || 'Central Parenchyma';
+            document.getElementById('gradcam-peak-intensity').innerText = `${gcam.peak_activation_intensity || 0.85} (${gcam.dominant_activation_region || 'Central Focus'})`;
+
+            const qBars = document.getElementById('gradcam-quadrant-bars');
+            if (qBars && gcam.regional_activation_weights) {
+                qBars.innerHTML = '';
+                for (const [region, weight] of Object.entries(gcam.regional_activation_weights)) {
+                    const pct = Math.round(weight * 100);
+                    qBars.innerHTML += `
+                        <div class="gradcam-bar-row">
+                            <span>${region}</span>
+                            <div class="gradcam-track"><div class="gradcam-fill" style="width: ${pct}%;"></div></div>
+                            <strong>${pct}%</strong>
+                        </div>
+                    `;
+                }
+            }
+        }
+
+        function adjustGradCamOpacity(val) {
+            const overImg = document.getElementById('gradcam-overlay-img');
+            const label = document.getElementById('gradcam-opacity-pct');
+            if (overImg) overImg.style.opacity = (val / 100);
+            if (label) label.innerText = `${val}%`;
+        }
+
+        // -------------------------------------------------------------
+        // PATIENT SIMPLIFIED CARE VIEW POPULATION
+        // -------------------------------------------------------------
+        function renderPatientSimplifiedView(data, payload) {
+            const patCard = document.getElementById('patient-simplified-card');
+            if (!patCard) return;
+            document.getElementById('pat-condition-val').innerText = `${payload.cancer_type || 'Cancer Therapy'} (${payload.cancer_stage || 'Active Treatment'})`;
+            const finalRisk = data.final_clinical_assessment?.overall_risk_tier || 'MONITORED';
+            document.getElementById('pat-tolerance-val').innerText = finalRisk.includes('HIGH') ? 'Active Monitoring Needed' : 'Stable Tolerability';
+            const s4Reasoning = data.pipeline_stages?.stage4_slm?.clinical_reasoning || 'Care routine on track.';
+            document.getElementById('pat-condition-desc').innerText = s4Reasoning.split('.')[0] + '.';
+            if (currentActiveRole === 'patient') {
+                patCard.style.display = 'block';
+            }
+        }
+
+        // -------------------------------------------------------------
+        // DYNAMIC MODEL HEALTH & DATASET PROVENANCE AUDIT LOADERS
+        // -------------------------------------------------------------
+        async function loadModelHealth() {
+            try {
+                const res = await fetch('/api/pipeline/models/reliability');
+                const data = await res.json();
+                console.log("[MODEL HEALTH AUDIT LOADED]", data);
+            } catch (e) {
+                console.warn("[MODEL HEALTH] Dynamic fetch notice:", e);
+            }
+        }
+
+        async function loadDatasetProvenance() {
+            try {
+                const res = await fetch('/api/pipeline/datasets/provenance');
+                const data = await res.json();
+                console.log("[DATASET PROVENANCE AUDIT LOADED]", data);
+            } catch (e) {
+                console.warn("[DATASET PROVENANCE] Dynamic fetch notice:", e);
             }
         }
 

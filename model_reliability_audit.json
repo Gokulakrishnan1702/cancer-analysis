@@ -1,0 +1,86 @@
+{
+  "audit_timestamp": "2026-10-13T16:38:57.847613+00:00",
+  "evaluation_harness_version": "2.0.0",
+  "project_scope": "Unified Multimodal Oncology CDSS",
+  "stages": {
+    "stage1_ml": {
+      "stage": "Stage 1: Tabular ML",
+      "model_architecture": "Calibrated Voting / Stacking Classifier (XGBoost, RF, ExtraTrees)",
+      "test_samples": 400,
+      "accuracy": 0.995,
+      "precision_macro": 0.9953,
+      "recall_macro": 0.9946,
+      "f1_macro": 0.9949,
+      "f1_weighted": 0.995,
+      "roc_auc_ovr": 0.9996,
+      "high_risk_recall": 0.99,
+      "high_risk_false_negatives": 1,
+      "confusion_matrix": [
+        [
+          160,
+          1,
+          0
+        ],
+        [
+          0,
+          139,
+          0
+        ],
+        [
+          0,
+          1,
+          99
+        ]
+      ],
+      "class_labels": [
+        "Low",
+        "Moderate",
+        "High"
+      ]
+    },
+    "stage2_dl": {
+      "stage": "Stage 2: Multimodal DL",
+      "model_architecture": "ResNet-18 PathologyEncoder + 2D-CNN CTEncoder + Bi-LSTM Late Fusion",
+      "checkpoint_file": "best_stage02_multimodal_lstm.pth (51.3 MB)",
+      "patients_evaluated": 20,
+      "accuracy": 1.0,
+      "roc_auc": 0.8865,
+      "supported_cancer_cohorts": [
+        "BRCA",
+        "LUAD",
+        "LUSC",
+        "COAD",
+        "PRAD",
+        "STAD",
+        "SKCM",
+        "BLCA"
+      ],
+      "modality_support": {
+        "CT Scan": "Supported (2D-CNN Latent Embedding)",
+        "Histopathology": "Supported (ResNet-18 Residual Embedding)",
+        "MRI": "Modality Verified, Model Incompatibility Explicitly Enforced"
+      }
+    },
+    "stage3_nlp": {
+      "stage": "Stage 3: Clinical NLP",
+      "model_architecture": "Biomedical NER + ConText Negation Engine + TF-IDF Logistic Regression",
+      "urgency_triage_accuracy": 1.0,
+      "negation_detection_rate": 1.0,
+      "guideline_retrieval_chunks": 8
+    },
+    "stage4_slm": {
+      "stage": "Stage 4: SLM Safety Guardrails",
+      "model_architecture": "Qwen2.5-3B QLoRA Target Architecture + Deterministic Guardrail Interceptor",
+      "under_triage_rate": 0.0,
+      "patient_id_retention_rate": 1.0,
+      "two_sentence_compliance": 1.0
+    },
+    "stage6_agentic": {
+      "stage": "Stage 6: Multi-Agent AI",
+      "deliberation_panel_roles": 10,
+      "trial_matching_accuracy": 1.0,
+      "safety_interlock_catch_rate": 1.0,
+      "consensus_coherence": 0.933
+    }
+  }
+}

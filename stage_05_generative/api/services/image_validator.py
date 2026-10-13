@@ -20,8 +20,8 @@ from PIL import Image
 
 logger = logging.getLogger("image_validator")
 
-ALLOWED_EXTENSIONS = {".png", ".jpg", ".jpeg"}
-MAX_FILE_SIZE_BYTES = 15 * 1024 * 1024  # 15 MB
+ALLOWED_EXTENSIONS = {".png", ".jpg", ".jpeg", ".dcm", ".tif", ".tiff"}
+MAX_FILE_SIZE_BYTES = 30 * 1024 * 1024  # 30 MB
 MIN_DIMENSION = 64
 SUPPORTED_ANALYSIS_MODALITIES = {"CT Scan", "Pathology"}
 UNSUPPORTED_ANALYSIS_MODALITIES = {"MRI"}
@@ -164,30 +164,78 @@ def validate_and_save_medical_image(
                 "message": "Unsupported file format. Please upload PNG, JPG, or JPEG."
             }
 
-        # 5. Magic bytes check
+        # 5. Magic bytes & Format Identification
         is_png = file_bytes.startswith(b"\x89PNG\r\n\x1a\n")
         is_jpg = file_bytes.startswith(b"\xff\xd8")
-        if not (is_png or is_jpg):
+        is_tiff = file_bytes.startswith(b"II*\x00") or file_bytes.startswith(b"MM\x00*")
+        is_dicom = (len(file_bytes) > 132 and file_bytes[128:132] == b"DICM") or ext == ".dcm"
+
+        if not (is_png or is_jpg or is_tiff or is_dicom):
             return {
                 "valid": False,
                 "error": "Unsupported file format. Please upload PNG, JPG, or JPEG.",
                 "message": "Unsupported file format. Please upload PNG, JPG, or JPEG."
             }
 
-        # 6. Image Readability & Corruption check
-        try:
-            img_verify = Image.open(io.BytesIO(file_bytes))
-            img_verify.verify()
+        dicom_metadata = None
+        img = None
 
-            img = Image.open(io.BytesIO(file_bytes))
-            img.load()
-        except Exception as e:
-            logger.warning(f"Image read error: {e}")
-            return {
-                "valid": False,
-                "error": "This image cannot be opened. Please upload another image.",
-                "message": "This image cannot be opened. Please upload another image."
-            }
+        # 6. Reading & Image Decoding
+        if is_dicom:
+            try:
+                import pydicom
+                ds = pydicom.dcmread(io.BytesIO(file_bytes), force=True)
+                if hasattr(ds, "pixel_array") and ds.pixel_array is not None:
+                    pix = ds.pixel_array.astype(np.float32)
+                    p_min, p_max = float(pix.min()), float(pix.max())
+                    if p_max > p_min:
+                        pix_norm = ((pix - p_min) / (p_max - p_min) * 255.0).astype(np.uint8)
+                    else:
+                        pix_norm = np.zeros_like(pix, dtype=np.uint8)
+                    
+                    if pix_norm.ndim == 2:
+                        img = Image.fromarray(pix_norm, mode="L")
+                    elif pix_norm.ndim == 3:
+                        img = Image.fromarray(pix_norm)
+                    else:
+                        raise ValueError(f"Unsupported DICOM pixel dimension: {pix_norm.ndim}")
+                    
+                    dicom_metadata = {
+                        "modality": str(getattr(ds, "Modality", "UNKNOWN")).upper(),
+                        "patient_id": str(getattr(ds, "PatientID", "ANONYMOUS")),
+                        "study_description": str(getattr(ds, "StudyDescription", "N/A")),
+                        "series_description": str(getattr(ds, "SeriesDescription", "N/A")),
+                        "body_part": str(getattr(ds, "BodyPartExamined", "N/A")),
+                        "rows": int(getattr(ds, "Rows", 0)),
+                        "columns": int(getattr(ds, "Columns", 0)),
+                    }
+                else:
+                    return {
+                        "valid": False,
+                        "error": "This DICOM file contains no viewable pixel matrix.",
+                        "message": "This image cannot be opened. Please upload another image."
+                    }
+            except Exception as e:
+                logger.warning(f"DICOM parsing error: {e}")
+                return {
+                    "valid": False,
+                    "error": "This image cannot be opened. Please upload another image.",
+                    "message": "This image cannot be opened. Please upload another image."
+                }
+        else:
+            try:
+                img_verify = Image.open(io.BytesIO(file_bytes))
+                img_verify.verify()
+
+                img = Image.open(io.BytesIO(file_bytes))
+                img.load()
+            except Exception as e:
+                logger.warning(f"Image read error: {e}")
+                return {
+                    "valid": False,
+                    "error": "This image cannot be opened. Please upload another image.",
+                    "message": "This image cannot be opened. Please upload another image."
+                }
 
         # 7. Dimensions & Minimum Resolution check
         width, height = img.size
@@ -217,7 +265,41 @@ def validate_and_save_medical_image(
         gray_arr = np.mean(arr, axis=2)
 
         # Modality specific checks
-        if image_type == "Pathology":
+        if dicom_metadata and dicom_metadata.get("modality"):
+            d_mod = dicom_metadata["modality"]
+            if image_type == "CT Scan":
+                if d_mod in ["MR", "MRI"]:
+                    return {
+                        "valid": False,
+                        "error": "Invalid image for CT analysis. Authoritative DICOM header specifies MR (Magnetic Resonance Imaging).",
+                        "message": "Invalid image for CT analysis. Authoritative DICOM header specifies MR. Please upload a CT scan or use the MRI slot.",
+                        "detected_modality": "MRI",
+                        "requested_modality": "CT Scan",
+                        "dicom_metadata": dicom_metadata
+                    }
+                success_msg = f"✓ Valid CT image (DICOM {d_mod} - Patient: {dicom_metadata.get('patient_id')})"
+            elif image_type == "MRI":
+                if d_mod == "CT":
+                    return {
+                        "valid": False,
+                        "error": "Invalid image for MRI analysis. Authoritative DICOM header specifies CT (Computed Tomography).",
+                        "message": "Invalid image for MRI analysis. Authoritative DICOM header specifies CT. Please upload an MRI scan or use the CT Scan slot.",
+                        "detected_modality": "CT Scan",
+                        "requested_modality": "MRI",
+                        "dicom_metadata": dicom_metadata
+                    }
+                success_msg = f"✓ Valid MRI image (DICOM {d_mod} - Patient: {dicom_metadata.get('patient_id')})"
+            elif image_type == "Pathology":
+                if d_mod in ["CT", "MR", "MRI"]:
+                    return {
+                        "valid": False,
+                        "error": f"Invalid image for pathology analysis. Uploaded image is a {d_mod} radiological scan.",
+                        "message": f"Invalid image for pathology analysis. Uploaded image is a {d_mod} radiological scan.",
+                        "detected_modality": d_mod,
+                        "requested_modality": "Pathology"
+                    }
+                success_msg = "✓ Valid Pathology image (DICOM Whole Slide / SM)"
+        elif image_type == "Pathology":
             # Pathology images (H&E stains) are color stained with significant chromatic divergence
             if color_diff < 8.0:
                 return {
@@ -227,9 +309,9 @@ def validate_and_save_medical_image(
                 }
             fname_lower = (original_filename or "").lower()
             if "colonca" in fname_lower or "colon_aca" in fname_lower or "colon" in fname_lower:
-                success_msg = "\u2713 Valid Pathology image (Colon Adenocarcinoma H&E Tile)"
+                success_msg = "✓ Valid Pathology image (Colon Adenocarcinoma H&E Tile)"
             else:
-                success_msg = "\u2713 Valid Pathology image"
+                success_msg = "✓ Valid Pathology image"
 
         elif image_type == "CT Scan":
             # CT scans are monochrome / grayscale radiology cross-sections
@@ -248,7 +330,7 @@ def validate_and_save_medical_image(
                     "detected_modality": "MRI",
                     "requested_modality": "CT Scan"
                 }
-            success_msg = "\u2713 Valid CT image"
+            success_msg = "✓ Valid CT image"
 
         elif image_type == "MRI":
             # MRI scans are monochrome / grayscale radiology scans
@@ -267,7 +349,7 @@ def validate_and_save_medical_image(
                     "detected_modality": "CT Scan",
                     "requested_modality": "MRI"
                 }
-            success_msg = "\u2713 Valid MRI image"
+            success_msg = "✓ Valid MRI image"
 
         else:
             return {
@@ -277,15 +359,22 @@ def validate_and_save_medical_image(
             }
 
         # 10. Save validated image safely to uploads/
-        safe_filename = f"med_{uuid.uuid4().hex[:12]}_{abs(hash(original_filename)) % 10000}{ext}"
+        # Always save as PNG for reliable browser rendering & CNN ingestion
+        save_ext = ".png" if is_dicom or ext in [".tif", ".tiff"] else ext
+        safe_filename = f"med_{uuid.uuid4().hex[:12]}_{abs(hash(original_filename)) % 10000}{save_ext}"
         saved_path = os.path.join(UPLOADS_DIR, safe_filename)
-        with open(saved_path, "wb") as f:
-            f.write(file_bytes)
+        
+        # Save decoded PIL image
+        if is_dicom or ext in [".tif", ".tiff"]:
+            img.save(saved_path, format="PNG")
+        else:
+            with open(saved_path, "wb") as f:
+                f.write(file_bytes)
 
         # Relative path for frontend serving and pipeline processing
         relative_web_url = f"/api/pipeline/uploaded-image/{safe_filename}"
 
-        return {
+        result_dict = {
             "valid": True,
             "status": "success",
             "image_type": image_type,
@@ -293,7 +382,7 @@ def validate_and_save_medical_image(
             "file_size_bytes": len(file_bytes),
             "file_size_formatted": f"{len(file_bytes) / 1024:.1f} KB",
             "dimensions": [width, height],
-            "format": img.format or ext.replace(".", "").upper(),
+            "format": "DICOM" if is_dicom else (img.format or ext.replace(".", "").upper()),
             "color_mode": img.mode,
             "message": success_msg,
             "saved_filename": safe_filename,
@@ -306,6 +395,9 @@ def validate_and_save_medical_image(
                 else "This image type is not currently supported by the existing model."
             )
         }
+        if dicom_metadata:
+            result_dict["dicom_metadata"] = dicom_metadata
+        return result_dict
 
     except Exception as e:
         logger.error(f"Image validation exception: {e}", exc_info=True)

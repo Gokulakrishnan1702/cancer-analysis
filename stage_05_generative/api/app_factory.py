@@ -156,16 +156,23 @@ def create_app() -> FastAPI:
     # Authentication API Endpoint
     @app.post("/api/v1/auth/login", tags=["Authentication Gateway"])
     async def auth_login(payload: dict):
-        staff_id = payload.get("staff_id", "dr.chen@mskcc-oncology.org")
-        department = payload.get("department", "Thoracic Oncology")
-        return {
-            "status": "success",
-            "authenticated": True,
-            "staff_id": staff_id,
-            "department": department,
-            "clearance_level": "Level 4 (Authorized)",
-            "message": "Clinical Session Authorized"
-        }
+        from api.auth import authenticate_user
+        staff_id = payload.get("staff_id", "") or payload.get("email", "") or "dr.chen@mskcc-oncology.org"
+        password = payload.get("password")
+        res = authenticate_user(staff_id=staff_id, password=password)
+        if not res:
+            raise StarletteHTTPException(status_code=401, detail="Invalid clinical credentials.")
+        return res
+
+    @app.get("/api/v1/auth/verify", tags=["Authentication Gateway"])
+    async def auth_verify(request: Request):
+        from api.auth import verify_token
+        auth_header = request.headers.get("authorization", "")
+        token = auth_header.replace("Bearer ", "").strip()
+        payload = verify_token(token)
+        if not payload:
+            raise StarletteHTTPException(status_code=401, detail="Session expired or invalid token.")
+        return {"status": "valid", "user": payload}
 
     # Health Check
     @app.get("/health", tags=["Gateway Status"])

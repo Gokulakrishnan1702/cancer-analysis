@@ -14,6 +14,7 @@ Provides endpoints for:
 import os
 import io
 import csv
+import json
 import glob
 import logging
 from typing import Dict, Any, List, Optional
@@ -23,6 +24,8 @@ from pydantic import BaseModel, Field
 
 from api.services.unified_pipeline_service import get_unified_pipeline_service
 from api.services.image_validator import validate_and_save_medical_image
+from api.services.patient_validator import validate_patient_input
+from api.services.gradcam_explainer import get_gradcam_explainer
 
 logger = logging.getLogger("pipeline_routes")
 router = APIRouter(prefix="/api/pipeline", tags=["Unified Clinical AI Pipeline"])
@@ -117,14 +120,82 @@ async def serve_uploaded_medical_image(image_name: str):
 async def run_complete_analysis(req: PatientAnalysisRequest):
     """Executes ML -> DL -> NLP -> SLM -> GenAI -> Agentic sequentially and returns unified report."""
     has_actionable = bool(req.ct_image_file or req.pathology_image_file or (req.image_file and req.image_type in ["CT Scan", "Pathology"]))
+    
+    # 1. Check Modality Support Interlock
     if (req.image_type == "MRI" and not has_actionable) or (req.mri_image_file and not has_actionable):
-        raise HTTPException(status_code=400, detail="This image type is not currently supported by the existing model.")
-    if not req.image_file and not req.ct_image_file and not req.pathology_image_file and not req.mri_image_file:
-        raise HTTPException(status_code=400, detail="Please upload and validate a medical image before starting analysis.")
+        raise HTTPException(
+            status_code=400,
+            detail="MRI analysis is not currently supported: Modality outside validated DL scope. Status: Unable to provide a reliable result."
+        )
+
+    # 2. Check Image Presence
+    active_image = req.image_file or req.ct_image_file or req.pathology_image_file
+    if not active_image and not req.mri_image_file:
+        return {
+            "status": "Unable to provide a reliable result",
+            "reliable": False,
+            "reliability_state": "MISSING_REQUIRED_INPUTS",
+            "reason": "Medical scan or pathology image is required for multimodal feature extraction and clinical risk inference.",
+            "safety_interlock_active": True,
+            "validation_errors": ["Missing required medical image input."],
+            "validation_warnings": ["Please upload and validate a medical scan before starting analysis."],
+            "patient_id": req.patient_id,
+            "clinical_guidance": "Please upload a validated CT scan or pathology image to proceed."
+        }
+
+    # 3. Patient Numerical Data Validation & Safety Ranges
+    patient_dict = req.model_dump()
+    val_res = validate_patient_input(patient_dict)
+    if not val_res.is_reliable:
+        val_d = val_res.to_dict()
+        val_errors = [f"{item['field']}: {item['value']} outside safe bounds [{item.get('valid_range', '')}]" for item in val_res.out_of_range_fields] + [f"Missing critical field: {f}" for f in val_res.missing_critical_fields]
+        return {
+            "status": "Unable to provide a reliable result",
+            "reliable": False,
+            "reliability_state": "UNRELIABLE_PHYSIOLOGICAL_MEASUREMENTS",
+            "reason": val_res.reason or "Clinical input parameters violate safety validation constraints or contain out-of-range physiological measurements.",
+            "safety_interlock_active": True,
+            "validation_errors": val_errors,
+            "validation_warnings": val_res.warnings,
+            "missing_critical_fields": val_res.missing_critical_fields,
+            "out_of_range_fields": val_res.out_of_range_fields,
+            "patient_id": req.patient_id,
+            "clinical_guidance": "System cannot compute a reliable clinical risk estimate. Please review input values against standard physiological ranges."
+        }
+
     try:
         service = get_unified_pipeline_service()
-        patient_dict = req.model_dump()
-        result = service.run_full_pipeline(patient_dict, image_filename=req.image_file)
+        result = service.run_full_pipeline(patient_dict, image_filename=active_image)
+        result["patient_validation"] = val_res.to_dict()
+
+        # 4. Attach Grad-CAM Convolutional Explanation for Supported Scans
+        if active_image and (req.image_type in ["CT Scan", "Pathology"] or not req.image_type):
+            try:
+                explainer = get_gradcam_explainer()
+                modality_str = req.image_type or ("CT Scan" if "ct" in active_image.lower() else "Pathology")
+                
+                # Resolve local filesystem path for image
+                candidate_paths = [
+                    os.path.join(WORKSPACE_ROOT, "uploads", os.path.basename(active_image)),
+                    os.path.join(STAGE2_IMG_DIR, "luad", os.path.basename(active_image)),
+                    os.path.join(STAGE2_DATA_TEST_SET_DIR, "colon_aca", os.path.basename(active_image)),
+                    active_image
+                ]
+                resolved_img_path = None
+                for cp in candidate_paths:
+                    if os.path.exists(cp):
+                        resolved_img_path = cp
+                        break
+
+                if resolved_img_path:
+                    cam_explanation = explainer.generate_explanation(
+                        image_path=resolved_img_path,
+                        modality=modality_str
+                    )
+                    result["gradcam_explanation"] = cam_explanation
+            except Exception as cam_err:
+                logger.warning(f"[GRAD-CAM IN RUN-ALL] Non-blocking warning: {cam_err}")
+
         return result
     except ValueError as ve:
         raise HTTPException(status_code=400, detail=str(ve))
@@ -349,4 +420,95 @@ async def export_patient_pdf(req: PatientPdfExportRequest):
     except Exception as e:
         logger.error(f"[PDF EXPORT ERROR] {e}", exc_info=True)
         raise HTTPException(status_code=500, detail=f"Failed to generate clinical PDF: {str(e)}")
+
+
+@router.post("/validate-patient", summary="Validate Patient Numerical Measurements & Safety Constraints")
+async def validate_patient_endpoint(req: PatientAnalysisRequest):
+    """Validates patient tabular measurements against physiological thresholds and completeness criteria."""
+    return validate_patient_input(req.model_dump()).to_dict()
+
+
+class GradCamRequest(BaseModel):
+    image_filename: str
+    modality: Optional[str] = "CT Scan"
+    target_class: Optional[int] = 0
+
+
+@router.post("/explain/gradcam", summary="Generate PyTorch Grad-CAM Convolutional Heatmap Overlay")
+async def generate_gradcam_endpoint(req: GradCamRequest):
+    """
+    Computes genuine PyTorch Grad-CAM class activation maps for CT or Pathology scans.
+    Overlays Jet colormap on original scan, computes spatial quadrant attributions, and returns artifact URL.
+    """
+    safe_name = os.path.basename(req.image_filename)
+    candidate_paths = [
+        os.path.join(WORKSPACE_ROOT, "uploads", safe_name),
+        os.path.join(STAGE2_IMG_DIR, "luad", safe_name),
+        os.path.join(STAGE2_DATA_TEST_SET_DIR, "colon_aca", safe_name),
+        req.image_filename
+    ]
+    resolved_path = None
+    for p in candidate_paths:
+        if os.path.exists(p):
+            resolved_path = p
+            break
+
+    if not resolved_path:
+        raise HTTPException(status_code=404, detail=f"Image file '{safe_name}' not found for Grad-CAM generation.")
+
+    try:
+        explainer = get_gradcam_explainer()
+        res = explainer.generate_explanation(
+            image_path=resolved_path,
+            modality=req.modality or "CT Scan",
+            target_class=req.target_class or 0
+        )
+        return res
+    except Exception as e:
+        logger.error(f"[GRAD-CAM ERROR] {e}", exc_info=True)
+        raise HTTPException(status_code=500, detail=f"Grad-CAM generation failed: {str(e)}")
+
+
+@router.get("/datasets/provenance", summary="Get 15-Cohort Dataset Provenance and Patient-Level Integrity Report")
+async def get_dataset_provenance():
+    """Serves the complete audit of 15 target cancer types, genuine public datasets, split counts, and provenance."""
+    report_path = os.path.join(WORKSPACE_ROOT, "dataset_audit_report.json")
+    if os.path.exists(report_path):
+        try:
+            with open(report_path, "r", encoding="utf-8") as f:
+                return json.load(f)
+        except Exception as e:
+            logger.warning(f"Could not read cached dataset report: {e}")
+
+    try:
+        import sys
+        if WORKSPACE_ROOT not in sys.path:
+            sys.path.insert(0, WORKSPACE_ROOT)
+        from generate_dataset_report import build_dataset_audit_report
+        return build_dataset_audit_report()
+    except Exception as e:
+        logger.error(f"Failed to generate dataset report: {e}")
+        raise HTTPException(status_code=500, detail=f"Dataset provenance generation failed: {str(e)}")
+
+
+@router.get("/models/reliability", summary="Get Verifiable Multi-Stage Model Evaluation and Reliability Metrics")
+async def get_model_reliability():
+    """Serves authentic, reproducible evaluation metrics across Stages 1 to 6 without fabricated values."""
+    report_path = os.path.join(WORKSPACE_ROOT, "model_reliability_audit.json")
+    if os.path.exists(report_path):
+        try:
+            with open(report_path, "r", encoding="utf-8") as f:
+                return json.load(f)
+        except Exception as e:
+            logger.warning(f"Could not read cached model reliability report: {e}")
+
+    try:
+        import sys
+        if WORKSPACE_ROOT not in sys.path:
+            sys.path.insert(0, WORKSPACE_ROOT)
+        from evaluate_all_models import run_full_reliability_audit
+        return run_full_reliability_audit()
+    except Exception as e:
+        logger.error(f"Failed to generate model reliability report: {e}")
+        raise HTTPException(status_code=500, detail=f"Model evaluation report failed: {str(e)}")
 
