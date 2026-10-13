@@ -123,7 +123,7 @@ def run_stage_2():
     csv_file = os.path.join(stage2_dir, "data", "stage02_lstm_8types_3000samples.csv")
     if not os.path.exists(csv_file):
         csv_file = os.path.join(stage2_dir, "stage02_lstm_8types_3000samples.csv")
-    images_dir = os.path.join(stage2_dir, "2d_images_large")
+    images_dir = os.path.join(stage2_dir, "ct images") if os.path.exists(os.path.join(stage2_dir, "ct images")) else os.path.join(stage2_dir, "2d_images_large")
     ckpt_path = os.path.join(stage2_dir, "best_stage02_multimodal_lstm.pth")
 
     df = pd.read_csv(csv_file)

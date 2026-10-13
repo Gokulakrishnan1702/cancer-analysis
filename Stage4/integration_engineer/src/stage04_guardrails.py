@@ -17,15 +17,25 @@ CRITICAL_TRIGGERS = [
     r"spo2\s*<\s*88", r"acute\s+dyspnea", r"anaphylaxis", r"angioedema",
     r"stridor", r"altered\s+mental\s+status", r"respiratory\s+arrest",
     r"severe\s+chest\s+tightness", r"septic\s+shock", r"hypotension\s*\(systolic\s*78",
-    r"anc\s*<\s*300", r"hemodynamic\s+decompensation"
+    r"systolic\s*(?:7[0-9]|6[0-9])", r"anc\s*<\s*300", r"hemodynamic\s+decompensation"
 ]
 
 HIGH_TRIGGERS = [
-    r"intractable\s+vomiting", r"spiking\s+fever", r"neutropenic\s+nadir",
-    r"38\.[4-9]c", r"39\.[0-9]c", r"40\.[0-9]c", r"dehydration",
-    r">\s*5\s+episodes", r"grade\s+3\s+diarrhea", r"severe\s+mucositis",
+    r"intractable\s+vomiting", r"persistent\s+vomiting", r"severe\s+vomiting",
+    r"spiking\s+fever", r"high\s+fever", r"neutropenic\s+nadir",
+    r"38\.[3-9]\s*°?\s*c", r"39\.[0-9]\s*°?\s*c", r"40\.[0-9]\s*°?\s*c",
+    r"(?:body\s+)?temperature\s*(?:is|:|=)?\s*38\.[3-9]",
+    r"spo2\s*(?:is|:|=|<)?\s*(?:8[8-9]|9[0-3])%?", r"\bhypox(?:ia|emia)\b",
+    r"wbc\s*(?:count)?\s*(?:is|:|=)?\s*(?:1[2-9]\d{3}|[2-9]\d{4})", r"\bleukocytosis\b",
+    r"severe\s+weakness", r"intense\s+pain", r"severe\s+pain",
+    r"worsening\s+symptoms", r"urgent\s+medical\s+assessment", r"urgent\s+clinical",
+    r"\burgent\b",
+    r"dehydration", r">\s*5\s+episodes", r"grade\s+3\s+diarrhea", r"severe\s+mucositis",
     r"alt\s*248", r"ast\s*210", r"transaminase\s+elevation", r"drug-induced\s+liver\s+injury",
-    r"acute\s+transaminase", r"\bdili\b"
+    r"acute\s+transaminase", r"\bdili\b",
+    r"mutation\s+count\s*(?:of|is|:|=)?\s*(?:1[0-9]|[2-9]\d)",
+    r"ctdna\s*(?:level)?\s*(?:of|is|:|=)?\s*(?:[5-9]|\d{2,})",
+    r"tumor\s+marker\s*(?:level)?\s*(?:of|is|:|=)?\s*(?:[8-9]|\d{2,})"
 ]
 
 TIER_ACTIONS = {
@@ -115,6 +125,23 @@ def simplify_clinical_text(
         core = "Severe gastrointestinal toxicity with intractable vomiting and dehydration."
     elif any(k in note_l for k in ["mild tiredness", "slight evening fatigue", "minor dry cough", "xerosis", "dry skin", "tolerating"]):
         core = "Mild treatment fatigue and skin dryness with stable vitals."
+    elif any(k in note_l for k in ["persistent vomiting", "intense pain", "severe weakness", "urgent medical assessment", "urgent", "spo2", "wbc", "38.5"]):
+        findings = []
+        if "spo2" in note_l:
+            m_sp = re.search(r"spo2\s*(?:is|:|=)?\s*(\d+%)", note_l)
+            findings.append(f"hypoxemia (SpO2 {m_sp.group(1)})" if m_sp else "hypoxemia")
+        if re.search(r"38\.[3-9]|39\.|40\.|fever|temperature", note_l):
+            m_t = re.search(r"(\d+\.\d+)\s*°?\s*c", note_l)
+            findings.append(f"fever ({m_t.group(1)}°C)" if m_t else "fever")
+        if "wbc" in note_l:
+            m_w = re.search(r"wbc\s*(?:count)?\s*(?:is|:|=)?\s*(\d+)", note_l)
+            findings.append(f"leukocytosis (WBC {m_w.group(1)}/µL)" if m_w else "leukocytosis")
+        if "vomiting" in note_l:
+            findings.append("persistent vomiting")
+        if "pain" in note_l:
+            findings.append("intense pain")
+        symptoms_str = ", ".join(findings) if findings else "acute symptom deterioration"
+        core = f"High-acuity clinical toxicity with {symptoms_str} requiring urgent oncology assessment."
     else:
         cleaned = re.sub(r"^Patient\s+[A-Z0-9-]+\s*\([^)]*\)\s*(?:on\s+[^,]+)?\s*presents\s+with\s+", "", clinical_note, flags=re.IGNORECASE)
         cleaned = cleaned.rstrip(".")
@@ -122,6 +149,8 @@ def simplify_clinical_text(
             cleaned = cleaned[:80].rsplit(" ", 1)[0] + "..."
         core = cleaned if cleaned.endswith(".") else f"{cleaned}."
 
+    if tier and tier in ["LOW", "MODERATE", "HIGH", "CRITICAL"]:
+        return f"Patient {final_pid} ({final_diag}) presents with {tier}-tier urgency: {core}"
     return f"Patient {final_pid} ({final_diag}): {core}"
 
 

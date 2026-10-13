@@ -1,0 +1,16 @@
+cancer,verified_modalities,total_downloaded_files,modalities_breakdown,auth_required_sources,failed_sources
+lung,"ct, pathology",8,pathology: 5; ct: 3,0,0
+breast,"mr, pathology",5,mr: 1; pathology: 4,1,0
+colorectal,"ct, pathology",6,ct: 1; pathology: 5,0,0
+melanoma,pathology,5,pathology: 5,0,0
+ovarian,"ct, pathology",5,ct: 1; pathology: 4,0,0
+prostate,"mr, pathology",5,mr: 1; pathology: 4,1,0
+pancreatic,"ct, pathology",5,ct: 3; pathology: 2,0,0
+renal,"ct, pathology",5,ct: 3; pathology: 2,0,0
+gastric,pathology,5,pathology: 5,0,0
+endometrial,pathology,5,pathology: 5,0,0
+bladder,pathology,5,pathology: 5,0,0
+esophageal,pathology,5,pathology: 5,0,0
+thyroid,pathology,5,pathology: 5,0,0
+lymphoma,pathology,5,pathology: 5,0,0
+liver,"ct, pathology",5,ct: 1; pathology: 4,1,0

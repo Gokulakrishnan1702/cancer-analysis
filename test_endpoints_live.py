@@ -35,7 +35,9 @@ patient_payload = {
     "treatment_name": "Osimertinib (Targeted TKI)",
     "dosage_mg": 80.0,
     "treatment_cycle": 4,
-    "clinical_notes": "62yo male with metastatic EGFR+ NSCLC with rising ctDNA kinetics."
+    "clinical_notes": "62yo male with metastatic EGFR+ NSCLC with rising ctDNA kinetics.",
+    "ct_image_file": "med_1fcc7e4adabf_8964.png",
+    "image_type": "CT Scan"
 }
 
 req_s6 = urllib.request.Request(

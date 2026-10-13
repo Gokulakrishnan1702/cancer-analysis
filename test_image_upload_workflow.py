@@ -17,6 +17,7 @@ Tests the 10 items specified in requirements:
 import io
 import json
 import mimetypes
+import os
 import sys
 import urllib.parse
 import urllib.request
@@ -67,10 +68,13 @@ def test_suite():
     print("TESTING PATIENT INPUT / MEDICAL IMAGE UPLOAD WORKFLOW (10 CHECKS)")
     print("=" * 70)
 
-    with open("Stage2/2d_images_large/luad/ct_slice_0000.png", "rb") as f:
+    ct_path = "Stage2/ct images/blca/ct_slice_0000.png" if os.path.exists("Stage2/ct images/blca/ct_slice_0000.png") else "Stage2/2d_images_large/luad/ct_slice_0000.png"
+    tile_path = "Stage2/ct images/blca/tile_0000.png" if os.path.exists("Stage2/ct images/blca/tile_0000.png") else "Stage2/2d_images_large/luad/tile_0000.png"
+
+    with open(ct_path, "rb") as f:
         real_ct_bytes = f.read()
 
-    with open("Stage2/2d_images_large/luad/tile_0000.png", "rb") as f:
+    with open(tile_path, "rb") as f:
         real_tile_bytes = f.read()
 
     # 1. No image -> error

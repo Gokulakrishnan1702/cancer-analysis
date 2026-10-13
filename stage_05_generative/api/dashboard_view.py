@@ -4038,6 +4038,7 @@ DASHBOARD_HTML = r"""<!DOCTYPE html>
                         <div class="preset-buttons">
                             <span style="font-size: 0.68rem; color: #64748b; font-weight: 600;">SAMPLES:</span>
                             <button class="btn-preset" type="button" onclick="setSLMTextSample('TKI')">TKI Hepatic Consult</button>
+                            <button class="btn-preset" type="button" style="border-color: #ea580c; color: #ea580c;" onclick="setSLMTextSample('HIGH')">High-Acuity Toxicity (SpO2/Fever)</button>
                             <button class="btn-preset danger" type="button" onclick="setSLMTextSample('CRITICAL')">Emergency ICU Sepsis</button>
                         </div>
                     </div>
@@ -7395,6 +7396,8 @@ DASHBOARD_HTML = r"""<!DOCTYPE html>
             const el = document.getElementById('inp-stage4-text');
             if (type === 'TKI') {
                 el.value = "Patient PAT-0001 (Lung, EGFR L858R) on Targeted Therapy presents with acute transaminase elevation with ALT 248 U/L and AST 210 U/L following cycle 4 of tyrosine kinase inhibitor therapy. Clinical observation reveals persistent right upper quadrant discomfort, fever at 38.4C, and intractable nausea concerning for drug-induced liver injury requiring urgent clinical review and hydration support.";
+            } else if (type === 'HIGH') {
+                el.value = "The patient has a mutation count of 15, a chemotherapy dosage of 180 mg, a ctDNA level of 6.5, and a tumor marker level of 8.2. The patient's WBC count is 15000 cells/\u00b5L, SpO2 is 91%, and body temperature is 38.5\u00b0C. The patient reports severe weakness, persistent vomiting, intense pain, and worsening symptoms. Urgent medical assessment is required.";
             } else if (type === 'CRITICAL') {
                 el.value = "Patient PAT-0099 (Metastatic Colorectal) currently receiving 3rd line combination antineoplastic infusion presents with severe rigors, hypotension (systolic 78 mmHg), fever 39.8C, marked absolute neutropenia (ANC < 300), and rapid hemodynamic decompensation consistent with hyperacute neutropenic septic shock requiring emergent ICU transfer and immediate broad-spectrum empiric antimicrobial coverage.";
             }
@@ -7440,16 +7443,45 @@ DASHBOARD_HTML = r"""<!DOCTYPE html>
                 document.getElementById('s4-out-simplified').innerText = simplified;
 
                 // Detect Urgency Tier (LOW, MODERATE, HIGH, CRITICAL)
-                const textLower = (text + ' ' + (data.guardrail_status || '') + ' ' + (data.raw_slm_output || '')).toLowerCase();
-                let tier = 'MODERATE';
-                if (textLower.includes('critical') || textLower.includes('septic') || textLower.includes('78 mmhg') || textLower.includes('anc < 300')) {
-                    tier = 'CRITICAL';
-                } else if (textLower.includes('high') || textLower.includes('248') || textLower.includes('210') || textLower.includes('dili') || textLower.includes('liver injury')) {
-                    tier = 'HIGH';
-                } else if (textLower.includes('low') || textLower.includes('mild') || textLower.includes('xerosis')) {
-                    tier = 'LOW';
-                } else {
-                    tier = 'MODERATE';
+                let tier = (data.urgency_tier || data.predicted_urgency_tier || data.urgency_classification || data.tier || '').toUpperCase();
+                if (!['LOW', 'MODERATE', 'HIGH', 'CRITICAL'].includes(tier)) {
+                    const textCombined = (text + ' ' + (data.guardrail_status || '') + ' ' + (data.raw_slm_output || '') + ' ' + (data.simplified_explanation || '')).toLowerCase();
+                    if (textCombined.includes('critical') || textCombined.includes('septic') || textCombined.includes('78 mmhg') || textCombined.includes('anc < 300') || textCombined.includes('spo2 < 88')) {
+                        tier = 'CRITICAL';
+                    } else if (
+                        textCombined.includes('high') || 
+                        textCombined.includes('248') || 
+                        textCombined.includes('210') || 
+                        textCombined.includes('dili') || 
+                        textCombined.includes('liver injury') ||
+                        textCombined.includes('urgent') ||
+                        textCombined.includes('persistent vomiting') ||
+                        textCombined.includes('intense pain') ||
+                        textCombined.includes('severe weakness') ||
+                        textCombined.includes('worsening') ||
+                        textCombined.includes('38.5') ||
+                        textCombined.includes('38.4') ||
+                        textCombined.includes('38.6') ||
+                        textCombined.includes('38.7') ||
+                        textCombined.includes('38.8') ||
+                        textCombined.includes('38.9') ||
+                        textCombined.includes('39.') ||
+                        textCombined.includes('40.') ||
+                        textCombined.includes('spiking fever') ||
+                        textCombined.includes('15000') ||
+                        textCombined.includes('spo2 is 91') ||
+                        textCombined.includes('spo2 is 90') ||
+                        textCombined.includes('spo2 is 92') ||
+                        textCombined.includes('91%') ||
+                        textCombined.includes('90%') ||
+                        textCombined.includes('92%')
+                    ) {
+                        tier = 'HIGH';
+                    } else if (textCombined.includes('low-tier') || textCombined.includes('low protocol') || textCombined.includes('mild') || textCombined.includes('xerosis')) {
+                        tier = 'LOW';
+                    } else {
+                        tier = 'MODERATE';
+                    }
                 }
 
                 // Update 4-Tier Meter Pills

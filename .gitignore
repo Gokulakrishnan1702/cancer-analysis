@@ -20,3 +20,26 @@ __pycache__/
 Thumbs.db
 .idea/
 .vscode/
+
+# Raw clinical imaging & whole-slide pathology datasets
+data/*/ct/
+data/*/mri/
+data/*/pathology/
+data/bladder/
+data/breast/
+data/colorectal/
+data/endometrial/
+data/esophageal/
+data/gastric/
+data/liver/
+data/lung/
+data/lymphoma/
+data/melanoma/
+data/ovarian/
+data/pancreatic/
+data/prostate/
+data/renal/
+data/thyroid/
+*.dcm
+*.svs
+

@@ -65,7 +65,13 @@ def simulate_or_execute_slm_inference(
         raw_tier = "LOW"
     elif any(k in note_l for k in ["spo2 < 88", "acute dyspnea", "anaphylaxis", "stridor", "altered mental status", "septic shock", "hypotension", "anc < 300"]):
         raw_tier = "CRITICAL"
-    elif any(k in note_l for k in ["vomiting", "spiking fever", "38.", "dehydration", "neutropenic nadir", "grade 3", "mucosal", "alt 248", "transaminase", "liver injury", "dili"]):
+    elif any(k in note_l for k in [
+        "vomiting", "spiking fever", "38.", "38.5", "38.5°c", "38.5c", "dehydration",
+        "neutropenic nadir", "grade 3", "mucosal", "alt 248", "transaminase",
+        "liver injury", "dili", "urgent", "intense pain", "severe weakness",
+        "worsening", "spo2 is 91", "spo2 is 90", "spo2 is 92", "spo2 91", "91%",
+        "15000", "wbc", "hypoxemia", "leukocytosis"
+    ]):
         raw_tier = "HIGH"
     elif any(k in note_l for k in ["nausea", "diarrhea", "neuropathy", "rash", "mucositis"]):
         raw_tier = "MODERATE"

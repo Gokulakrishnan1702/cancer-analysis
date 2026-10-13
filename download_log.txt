@@ -1,0 +1,1061 @@
+=== MEDICAL IMAGE DOWNLOAD PIPELINE LOG ===
+Initialized: 2026-10-09T06:41:42.408672Z
+
+[2026-10-09 06:43:15Z] CANCER: LUNG | MODALITY: CT
+  Source/Dataset : TCIA
+  Identifier     : LIDC-IDRI
+  Action         : Initiate CT download
+  Status         : IN_PROGRESS
+  Retries        : 0
+  Notes          : LIDC-IDRI thoracic nodule studies (malignancy rated 1-5; indeterminate screening/diagnostic nodules).
+----------------------------------------------------------------------
+[2026-10-09 06:43:40Z] CANCER: LUNG | MODALITY: CT
+  Source/Dataset : TCIA
+  Identifier     : Series 1.3.6.1.4.1.14519.5.2.1.6279.6001.314917368146772872954571551463
+  Action         : Request series zip archive
+  Status         : IN_PROGRESS
+  Retries        : 0
+----------------------------------------------------------------------
+[2026-10-09 06:49:01Z] CANCER: LUNG | MODALITY: CT
+  Source/Dataset : TCIA
+  Identifier     : LIDC-IDRI
+  Action         : Download TCIA sample
+  Status         : DOWNLOAD_FAILED
+  Retries        : 0
+  Reason         : Exception: Response ended prematurely
+----------------------------------------------------------------------
+[2026-10-09 06:49:01Z] CANCER: LUNG | MODALITY: PATHOLOGY
+  Source/Dataset : GDC
+  Identifier     : TCGA-LUAD
+  Action         : Initiate pathology download
+  Status         : IN_PROGRESS
+  Retries        : 0
+  Notes          : Confirmed lung adenocarcinoma diagnostic whole-slide images (.svs).
+----------------------------------------------------------------------
+[2026-10-09 06:50:26Z] CANCER: LUNG | MODALITY: PATHOLOGY
+  Source/Dataset : GDC
+  Identifier     : TCGA-05-4425-01Z-00-DX1.82B093EE-49BC-4FD9-91AC-4CC89944309D.svs (6.1 MB)
+  Action         : Downloaded SVS slide
+  Status         : DOWNLOADED
+  Retries        : 0
+  Notes          : Patient: TCGA-05-4425 | Diagnosis: Adenocarcinoma with mixed subtypes | SHA256: a6e3c2e7c3b1dec666a946267288fe7177097671ba7e4a843be6a6c46d17d30c
+----------------------------------------------------------------------
+[2026-10-09 06:50:50Z] CANCER: LUNG | MODALITY: PATHOLOGY
+  Source/Dataset : GDC
+  Identifier     : TCGA-05-5715-01Z-00-DX1.D3F0A1FA-2507-45FF-823F-F9981E62BB4C.svs (7.6 MB)
+  Action         : Downloaded SVS slide
+  Status         : DOWNLOADED
+  Retries        : 0
+  Notes          : Patient: TCGA-05-5715 | Diagnosis: Adenocarcinoma with mixed subtypes | SHA256: d97d52540b130586864e03d05bc8e74cb2820426c1b4d567f3ccacf6008a21c9
+----------------------------------------------------------------------
+[2026-10-09 06:51:20Z] CANCER: LUNG | MODALITY: PATHOLOGY
+  Source/Dataset : GDC
+  Identifier     : TCGA-05-5429-01Z-00-DX1.20729065-FADA-4E43-98D7-AFA5FB4A0447.svs (8.3 MB)
+  Action         : Downloaded SVS slide
+  Status         : DOWNLOADED
+  Retries        : 0
+  Notes          : Patient: TCGA-05-5429 | Diagnosis: Adenocarcinoma, NOS | SHA256: 8397cfd1cebf4d7e40a1235e11aa1de9765a1d751fad91f723491a08ea0af780
+----------------------------------------------------------------------
+[2026-10-09 06:52:06Z] CANCER: LUNG | MODALITY: PATHOLOGY
+  Source/Dataset : GDC
+  Identifier     : TCGA-55-8207-01Z-00-DX1.2dafc442-f927-4b0d-b197-cc8c5f86d0fc.svs (8.4 MB)
+  Action         : Downloaded SVS slide
+  Status         : DOWNLOADED
+  Retries        : 0
+  Notes          : Patient: TCGA-55-8207 | Diagnosis: Adenocarcinoma, NOS | SHA256: 58e22c6b85f82bd372d51e908c3f724018f22aab6ab8f8bb67acb6a12e6c8d11
+----------------------------------------------------------------------
+[2026-10-09 06:52:32Z] CANCER: LUNG | MODALITY: PATHOLOGY
+  Source/Dataset : GDC
+  Identifier     : TCGA-05-5428-01Z-00-DX1.8018AD62-F1CE-4BFF-8EFD-3F2D4513FC11.svs (8.5 MB)
+  Action         : Downloaded SVS slide
+  Status         : DOWNLOADED
+  Retries        : 0
+  Notes          : Patient: TCGA-05-5428 | Diagnosis: Adenocarcinoma with mixed subtypes | SHA256: 0993cfa7161968b6f7a597641a102a13b2ea3e87c0db7c4caaeee9f192bad487
+----------------------------------------------------------------------
+[2026-10-09 06:52:34Z] CANCER: LUNG | MODALITY: CT
+  Source/Dataset : TCIA
+  Identifier     : LIDC-IDRI
+  Action         : Initiate CT download
+  Status         : IN_PROGRESS
+  Retries        : 0
+  Notes          : LIDC-IDRI thoracic nodule studies (malignancy rated 1-5; indeterminate screening/diagnostic nodules).
+----------------------------------------------------------------------
+[2026-10-09 06:52:47Z] CANCER: LUNG | MODALITY: CT
+  Source/Dataset : TCIA
+  Identifier     : Series 1.3.6.1.4.1.14519.5.2.1.6279.6001.314917368146772872954571551463
+  Action         : Request series zip archive
+  Status         : IN_PROGRESS
+  Retries        : 0
+----------------------------------------------------------------------
+[2026-10-09 06:53:32Z] CANCER: LUNG | MODALITY: CT
+  Source/Dataset : TCIA
+  Identifier     : lung_ct_slice_01.dcm
+  Action         : Extracted and verified DICOM slice
+  Status         : DOWNLOADED
+  Retries        : 0
+  Notes          : Patient: LIDC-IDRI-0957 | SHA256: 63bfd69a36a33f3d9a09ca1c739ad174fb53f83c7e271dbea67f189fc30cab08
+----------------------------------------------------------------------
+[2026-10-09 06:53:32Z] CANCER: LUNG | MODALITY: CT
+  Source/Dataset : TCIA
+  Identifier     : lung_ct_slice_02.dcm
+  Action         : Extracted and verified DICOM slice
+  Status         : DOWNLOADED
+  Retries        : 0
+  Notes          : Patient: LIDC-IDRI-0957 | SHA256: 3383bd78aa17c5e6f6425885f1622ddbd592a7fcf5fba7810d47aa67a5849ba5
+----------------------------------------------------------------------
+[2026-10-09 06:53:32Z] CANCER: LUNG | MODALITY: CT
+  Source/Dataset : TCIA
+  Identifier     : lung_ct_slice_03.dcm
+  Action         : Extracted and verified DICOM slice
+  Status         : DOWNLOADED
+  Retries        : 0
+  Notes          : Patient: LIDC-IDRI-0957 | SHA256: ecb0bb49a04eab2629f282027ab1409ebf70aba3538a0c1801cb85ef88178024
+----------------------------------------------------------------------
+[2026-10-09 06:53:32Z] CANCER: LUNG | MODALITY: PATHOLOGY
+  Source/Dataset : GDC
+  Identifier     : TCGA-LUAD
+  Action         : Initiate pathology download
+  Status         : IN_PROGRESS
+  Retries        : 0
+  Notes          : Confirmed lung adenocarcinoma diagnostic whole-slide images (.svs).
+----------------------------------------------------------------------
+[2026-10-09 06:54:00Z] CANCER: LUNG | MODALITY: CT
+  Source/Dataset : TCIA
+  Identifier     : LIDC-IDRI
+  Action         : Initiate CT download
+  Status         : IN_PROGRESS
+  Retries        : 0
+  Notes          : LIDC-IDRI thoracic nodule studies (malignancy rated 1-5; indeterminate screening/diagnostic nodules).
+----------------------------------------------------------------------
+[2026-10-09 06:54:00Z] CANCER: LUNG | MODALITY: PATHOLOGY
+  Source/Dataset : GDC
+  Identifier     : TCGA-LUAD
+  Action         : Initiate pathology download
+  Status         : IN_PROGRESS
+  Retries        : 0
+  Notes          : Confirmed lung adenocarcinoma diagnostic whole-slide images (.svs).
+----------------------------------------------------------------------
+[2026-10-09 06:54:01Z] CANCER: BREAST | MODALITY: MRI
+  Source/Dataset : TCIA
+  Identifier     : TCGA-BRCA
+  Action         : Initiate MRI download
+  Status         : IN_PROGRESS
+  Retries        : 0
+  Notes          : Verified MR modality series (DCE/T1/T2) on TCIA.
+----------------------------------------------------------------------
+[2026-10-09 06:54:26Z] CANCER: BREAST | MODALITY: MR
+  Source/Dataset : TCIA
+  Identifier     : Series 1.3.6.1.4.1.14519.5.2.1.9203.4002.316107347605352262747330582345
+  Action         : Request series zip archive
+  Status         : IN_PROGRESS
+  Retries        : 0
+----------------------------------------------------------------------
+[2026-10-09 06:54:29Z] CANCER: BREAST | MODALITY: MR
+  Source/Dataset : TCIA
+  Identifier     : breast_mr_slice_01.dcm
+  Action         : Extracted and verified DICOM slice
+  Status         : DOWNLOADED
+  Retries        : 0
+  Notes          : Patient: TCGA-AO-A0JF | SHA256: 7ec8cc153d866915ed429d1ffdbe27813f5737968d503b64b23869c8effce5be
+----------------------------------------------------------------------
+[2026-10-09 06:54:46Z] CANCER: BREAST | MODALITY: PATHOLOGY
+  Source/Dataset : GDC
+  Identifier     : TCGA-A7-A26J-01B-02-BS2.2BDFB544-F62A-402C-9D97-DE2B6766DEDC.svs (6.2 MB)
+  Action         : Downloaded SVS slide
+  Status         : DOWNLOADED
+  Retries        : 0
+  Notes          : Patient: TCGA-A7-A26J | Diagnosis: Infiltrating duct carcinoma, NOS | SHA256: 117b04c5d0fbad944c13cd42905518196e2c60ecf51e9a35616aade2260fb89e
+----------------------------------------------------------------------
+[2026-10-09 06:55:38Z] CANCER: BREAST | MODALITY: PATHOLOGY
+  Source/Dataset : GDC
+  Identifier     : TCGA-AC-A2QJ-11A-02-TS2.85792F0A-9C14-4723-8799-A751AC07CEC1.svs (12.4 MB)
+  Action         : Downloaded SVS slide
+  Status         : DOWNLOADED
+  Retries        : 0
+  Notes          : Patient: TCGA-AC-A2QJ | Diagnosis: Metaplastic carcinoma, NOS | SHA256: 568b36f9acc1223d56faf4537d9da22fb93bd5cbf0f1659089fd13b77b34cb38
+----------------------------------------------------------------------
+[2026-10-09 06:56:16Z] CANCER: BREAST | MODALITY: PATHOLOGY
+  Source/Dataset : GDC
+  Identifier     : TCGA-AC-A2FB-11A-01-TSA.BE184AB7-924E-4564-9296-B6B71B1C7D43.svs (13.2 MB)
+  Action         : Downloaded SVS slide
+  Status         : DOWNLOADED
+  Retries        : 0
+  Notes          : Patient: TCGA-AC-A2FB | Diagnosis: Lobular carcinoma, NOS | SHA256: 8b5e8d74a0b70ba967e22f6a125bf4d4dab5f121ac83124023aa03c0b0b30d5c
+----------------------------------------------------------------------
+[2026-10-09 06:56:55Z] CANCER: BREAST | MODALITY: PATHOLOGY
+  Source/Dataset : GDC
+  Identifier     : TCGA-BH-A5IZ-11A-01-TS1.9345C1EC-2A27-49F1-AE61-7B056A982A34.svs (13.5 MB)
+  Action         : Downloaded SVS slide
+  Status         : DOWNLOADED
+  Retries        : 0
+  Notes          : Patient: TCGA-BH-A5IZ | Diagnosis: Infiltrating duct carcinoma, NOS | SHA256: e3931d584e5d006d90c253e840ed6f23e66de6df607122c77ef4e0e79e0ccf39
+----------------------------------------------------------------------
+[2026-10-09 06:56:55Z] CANCER: BREAST | MODALITY: PATHOLOGY
+  Source/Dataset : Grand Challenge
+  Identifier     : BACH (ICIAR 2018)
+  Action         : Authentication check
+  Status         : AUTH_REQUIRED
+  Retries        : 0
+  Reason         : Credentials missing. Setup: Register at https://iciar2018-challenge.grand-challenge.org/ to receive access credentials.
+  Auth / Terms   : Required env/file: GRAND_CHALLENGE_API_TOKEN or challenge credentials
+----------------------------------------------------------------------
+[2026-10-09 06:56:55Z] CANCER: BREAST | MODALITY: PATHOLOGY
+  Source/Dataset : Grand Challenge
+  Identifier     : CAMELYON16
+  Action         : Authentication check
+  Status         : AUTH_REQUIRED
+  Retries        : 0
+  Reason         : Credentials missing. Setup: Create account at https://camelyon16.grand-challenge.org/ and request cloud mirror link.
+  Auth / Terms   : Required env/file: GRAND_CHALLENGE_ACCOUNT or cloud mirror credentials
+----------------------------------------------------------------------
+[2026-10-09 06:56:55Z] CANCER: COLORECTAL | MODALITY: CT
+  Source/Dataset : TCIA
+  Identifier     : CT COLONOGRAPHY
+  Action         : Initiate CT download
+  Status         : IN_PROGRESS
+  Retries        : 0
+  Notes          : ACRIN 6664 virtual colonoscopy screening trial (screening cohort / mostly benign polyps or normal mucosa).
+----------------------------------------------------------------------
+[2026-10-09 06:57:10Z] CANCER: COLORECTAL | MODALITY: CT
+  Source/Dataset : TCIA
+  Identifier     : Series 1.3.6.1.4.1.9328.50.4.1224
+  Action         : Request series zip archive
+  Status         : IN_PROGRESS
+  Retries        : 0
+----------------------------------------------------------------------
+[2026-10-09 06:57:15Z] CANCER: COLORECTAL | MODALITY: CT
+  Source/Dataset : TCIA
+  Identifier     : colorectal_ct_slice_01.dcm
+  Action         : Extracted and verified DICOM slice
+  Status         : DOWNLOADED
+  Retries        : 0
+  Notes          : Patient: 1.3.6.1.4.1.9328.50.4.0001 | SHA256: 7278b7e116a2977dfaab221684f6e345c61814d1259665fa2997992b6470825c
+----------------------------------------------------------------------
+[2026-10-09 06:57:53Z] CANCER: COLORECTAL | MODALITY: PATHOLOGY
+  Source/Dataset : GDC
+  Identifier     : TCGA-AA-3489-01Z-00-DX1.AE299B70-B14C-4FFE-B1F9-38B2EB267FA9.svs (7.3 MB)
+  Action         : Downloaded SVS slide
+  Status         : DOWNLOADED
+  Retries        : 0
+  Notes          : Patient: TCGA-AA-3489 | Diagnosis: Adenocarcinoma, NOS | SHA256: 634ea32957727b68e8021c10225f71659723678160d6de44497d69669caef897
+----------------------------------------------------------------------
+[2026-10-09 06:58:15Z] CANCER: COLORECTAL | MODALITY: PATHOLOGY
+  Source/Dataset : GDC
+  Identifier     : TCGA-AA-3488-01Z-00-DX1.EDF60198-F7AB-45BB-9A1B-C2E2FA141989.svs
+  Action         : Download SVS slide
+  Status         : DOWNLOAD_FAILED
+  Retries        : 0
+  Reason         : Failed after 3 attempts: Exception: ('Connection aborted.', ConnectionResetError(10054, 'An existing connection was forcibly closed by the remote host', None, 10054, None))
+----------------------------------------------------------------------
+[2026-10-09 06:58:49Z] CANCER: COLORECTAL | MODALITY: PATHOLOGY
+  Source/Dataset : GDC
+  Identifier     : TCGA-D5-6922-01A-01-TS1.6581ec04-ba19-49b3-8ae8-04b4259a8a53.svs (8.0 MB)
+  Action         : Downloaded SVS slide
+  Status         : DOWNLOADED
+  Retries        : 0
+  Notes          : Patient: TCGA-D5-6922 | Diagnosis: Adenocarcinoma, NOS | SHA256: d13fcef327240bb3dd7b59fac3087617556e89bc1db069c1e092f669466c7b8e
+----------------------------------------------------------------------
+[2026-10-09 06:59:20Z] CANCER: COLORECTAL | MODALITY: PATHOLOGY
+  Source/Dataset : GDC
+  Identifier     : TCGA-AA-3713-01Z-00-DX1.8148ACEB-7C1E-4D29-B908-F3729657EA4F.svs (8.2 MB)
+  Action         : Downloaded SVS slide
+  Status         : DOWNLOADED
+  Retries        : 0
+  Notes          : Patient: TCGA-AA-3713 | Diagnosis: Adenocarcinoma, NOS | SHA256: 07c5b2e8efbb7af4dd2efdafec4950815918e2c77c2925a9ae4bc451ef853b99
+----------------------------------------------------------------------
+[2026-10-09 06:59:54Z] CANCER: COLORECTAL | MODALITY: PATHOLOGY
+  Source/Dataset : GDC
+  Identifier     : TCGA-AA-3712-01Z-00-DX1.00E0ACE2-8CC5-4063-9C65-3CDD7F21B189.svs (8.2 MB)
+  Action         : Downloaded SVS slide
+  Status         : DOWNLOADED
+  Retries        : 0
+  Notes          : Patient: TCGA-AA-3712 | Diagnosis: Adenocarcinoma, NOS | SHA256: d50333046ff86fdd8c4d7a778f0dfda802368aa9d713d75f10048b3df1c1e665
+----------------------------------------------------------------------
+[2026-10-09 06:59:54Z] CANCER: MELANOMA | MODALITY: CT
+  Source/Dataset : N/A
+  Identifier     : MISSING_MODALITY
+  Action         : Check modality availability
+  Status         : NOT_FOUND
+  Retries        : 0
+  Reason         : No direct public CT benchmark for melanoma; disease staged clinically and via histopathology.
+  Notes          : Modality not offered as open direct benchmark for this cancer.
+----------------------------------------------------------------------
+[2026-10-09 06:59:54Z] CANCER: MELANOMA | MODALITY: MRI
+  Source/Dataset : N/A
+  Identifier     : MISSING_MODALITY
+  Action         : Check modality availability
+  Status         : NOT_FOUND
+  Retries        : 0
+  Reason         : No direct public MRI benchmark for melanoma; macroscopic imaging is dermoscopy (ISIC) rather than MRI.
+  Notes          : Modality not offered as open direct benchmark for this cancer.
+----------------------------------------------------------------------
+[2026-10-09 06:59:54Z] CANCER: MELANOMA | MODALITY: PATHOLOGY
+  Source/Dataset : GDC
+  Identifier     : TCGA-SKCM
+  Action         : Initiate pathology download
+  Status         : IN_PROGRESS
+  Retries        : 0
+  Notes          : Confirmed malignant melanoma diagnostic SVS slides.
+----------------------------------------------------------------------
+[2026-10-09 07:02:48Z] CANCER: MELANOMA | MODALITY: PATHOLOGY
+  Source/Dataset : GDC
+  Identifier     : TCGA-D3-A5GU-06A-01-TS1.20618E1E-5697-4FCB-9AB6-B8C4F233D1D5.svs (45.2 MB)
+  Action         : Downloaded SVS slide
+  Status         : DOWNLOADED
+  Retries        : 0
+  Notes          : Patient: TCGA-D3-A5GU | Diagnosis: Malignant melanoma, NOS | SHA256: ac6706eaf79e716372a17a0fc951e7f3fb43495d54fb75b68232157a56cfde97
+----------------------------------------------------------------------
+[2026-10-09 07:05:35Z] CANCER: MELANOMA | MODALITY: PATHOLOGY
+  Source/Dataset : GDC
+  Identifier     : TCGA-HR-A5NC-01Z-00-DX1.F8577EB3-C670-4DDB-9EDD-B8681CE2D664.svs (45.5 MB)
+  Action         : Downloaded SVS slide
+  Status         : DOWNLOADED
+  Retries        : 0
+  Notes          : Patient: TCGA-HR-A5NC | Diagnosis: Malignant melanoma, NOS | SHA256: 47755200f043af97b2d632252f4b57f9bc828b705db63faed1461a64d3d267de
+----------------------------------------------------------------------
+[2026-10-09 07:08:36Z] CANCER: MELANOMA | MODALITY: PATHOLOGY
+  Source/Dataset : GDC
+  Identifier     : TCGA-FW-A5DY-11A-01-TS1.58F948E1-1DF0-4E13-A1FA-2EF0EEDDE354.svs (57.2 MB)
+  Action         : Downloaded SVS slide
+  Status         : DOWNLOADED
+  Retries        : 0
+  Notes          : Patient: TCGA-FW-A5DY | Diagnosis: Malignant melanoma, NOS | SHA256: fdcd90097c0cc8982e08dfb54be661edddbc67a1bb7404e6e0c270c788153aa2
+----------------------------------------------------------------------
+[2026-10-09 07:11:22Z] CANCER: MELANOMA | MODALITY: PATHOLOGY
+  Source/Dataset : GDC
+  Identifier     : TCGA-GN-A4U8-11A-01-TSA.DAC058B9-0BC2-45D5-B806-4684BD66AF91.svs (57.6 MB)
+  Action         : Downloaded SVS slide
+  Status         : DOWNLOADED
+  Retries        : 0
+  Notes          : Patient: TCGA-GN-A4U8 | Diagnosis: Malignant melanoma, NOS | SHA256: 645d5ded5b17fff3fe84855796f6d606d479da164e2f184d59ae9f605da90cb0
+----------------------------------------------------------------------
+[2026-10-09 07:14:23Z] CANCER: MELANOMA | MODALITY: PATHOLOGY
+  Source/Dataset : GDC
+  Identifier     : TCGA-D3-A5GL-06A-01-TS1.475331B7-9375-4E02-B709-6B16829C92DB.svs (59.2 MB)
+  Action         : Downloaded SVS slide
+  Status         : DOWNLOADED
+  Retries        : 0
+  Notes          : Patient: TCGA-D3-A5GL | Diagnosis: Malignant melanoma, NOS | SHA256: 2ee8e34e6a52823411dc9ba79b07c186fa42bf6d4bed9cae6ef84295faa86288
+----------------------------------------------------------------------
+[2026-10-09 07:14:23Z] CANCER: OVARIAN | MODALITY: CT
+  Source/Dataset : TCIA
+  Identifier     : TCGA-OV
+  Action         : Initiate CT download
+  Status         : IN_PROGRESS
+  Retries        : 0
+  Notes          : TCGA-OV verified CT radiology on TCIA (note: CPTAC-OV is Slide Microscopy, not CT).
+----------------------------------------------------------------------
+[2026-10-09 07:14:39Z] CANCER: OVARIAN | MODALITY: CT
+  Source/Dataset : TCIA
+  Identifier     : Series 1.3.6.1.4.1.14519.5.2.1.7777.4007.262511712639103894364880485378
+  Action         : Request series zip archive
+  Status         : IN_PROGRESS
+  Retries        : 0
+----------------------------------------------------------------------
+[2026-10-09 07:14:50Z] CANCER: OVARIAN | MODALITY: CT
+  Source/Dataset : TCIA
+  Identifier     : ovarian_ct_slice_01.dcm
+  Action         : Extracted and verified DICOM slice
+  Status         : DOWNLOADED
+  Retries        : 0
+  Notes          : Patient: TCGA-24-1418 | SHA256: b980f45db8dc498b2a37d80055f9d4fe3527f7b5ffee36499cdede18e30d9b8b
+----------------------------------------------------------------------
+[2026-10-09 07:15:52Z] CANCER: OVARIAN | MODALITY: PATHOLOGY
+  Source/Dataset : GDC
+  Identifier     : TCGA-24-1847-01A-01-BS1.801bcc7d-3382-42fa-aff1-076ebcc5bdf4.svs (17.1 MB)
+  Action         : Downloaded SVS slide
+  Status         : DOWNLOADED
+  Retries        : 0
+  Notes          : Patient: TCGA-24-1847 | Diagnosis: Serous cystadenocarcinoma, NOS | SHA256: 624e502e9289b4f968352196652d52d6cefd9a0122abaa3b0b48f97c53d764b4
+----------------------------------------------------------------------
+[2026-10-09 07:16:55Z] CANCER: OVARIAN | MODALITY: PATHOLOGY
+  Source/Dataset : GDC
+  Identifier     : TCGA-29-1710-02A-01-TS1.a955d77c-35b3-4257-90ba-7ed2a91acbb4.svs (17.4 MB)
+  Action         : Downloaded SVS slide
+  Status         : DOWNLOADED
+  Retries        : 0
+  Notes          : Patient: TCGA-29-1710 | Diagnosis: Serous cystadenocarcinoma, NOS | SHA256: 01705180842ad271122e6cd07fac963ced58d394fd3c49d89eeff6790dd33719
+----------------------------------------------------------------------
+[2026-10-09 07:17:51Z] CANCER: OVARIAN | MODALITY: PATHOLOGY
+  Source/Dataset : GDC
+  Identifier     : TCGA-42-2593-01A-01-TS1.0aa136c4-90e2-49f3-adf8-73d334f9e6ec.svs (18.3 MB)
+  Action         : Downloaded SVS slide
+  Status         : DOWNLOADED
+  Retries        : 0
+  Notes          : Patient: TCGA-42-2593 | Diagnosis: Serous cystadenocarcinoma, NOS | SHA256: dc0c231ca6adde53b72a40a404629759b39f92c9af97c89c9a73b7c508b79c6e
+----------------------------------------------------------------------
+[2026-10-09 07:18:53Z] CANCER: OVARIAN | MODALITY: PATHOLOGY
+  Source/Dataset : GDC
+  Identifier     : TCGA-57-1585-11A-01-TS1.1497c983-dc07-400e-aa0c-f4fa7bf3bcfd.svs (18.9 MB)
+  Action         : Downloaded SVS slide
+  Status         : DOWNLOADED
+  Retries        : 0
+  Notes          : Patient: TCGA-57-1585 | Diagnosis: Serous cystadenocarcinoma, NOS | SHA256: a5360c377cb4fece20b19a0f8f2c9611019cec633f35c987c7680c27706c17f0
+----------------------------------------------------------------------
+[2026-10-09 07:18:53Z] CANCER: PROSTATE | MODALITY: MRI
+  Source/Dataset : TCIA
+  Identifier     : PROSTATEx
+  Action         : Initiate MRI download
+  Status         : IN_PROGRESS
+  Retries        : 0
+  Notes          : SPIE-AAPM-NCI PROSTATEx multiparametric MRI (T2W/ADC/DCE) with lesion significance ground truth.
+----------------------------------------------------------------------
+[2026-10-09 07:19:41Z] CANCER: PROSTATE | MODALITY: MR
+  Source/Dataset : TCIA
+  Identifier     : Series 1.3.6.1.4.1.14519.5.2.1.7310.5101.401204334876169766345751318571
+  Action         : Request series zip archive
+  Status         : IN_PROGRESS
+  Retries        : 0
+----------------------------------------------------------------------
+[2026-10-09 07:19:46Z] CANCER: PROSTATE | MODALITY: MR
+  Source/Dataset : TCIA
+  Identifier     : prostate_mr_slice_01.dcm
+  Action         : Extracted and verified DICOM slice
+  Status         : DOWNLOADED
+  Retries        : 0
+  Notes          : Patient: ProstateX-0218 | SHA256: 0e552b55e58b3f15fb77397a98e9efff22b30a37d27d1735a89ce106c792c4d0
+----------------------------------------------------------------------
+[2026-10-09 07:20:36Z] CANCER: PROSTATE | MODALITY: PATHOLOGY
+  Source/Dataset : GDC
+  Identifier     : TCGA-CH-5794-01A-01-BS1.b62d1bf3-a21b-4991-b876-19eab36b4366.svs (15.4 MB)
+  Action         : Downloaded SVS slide
+  Status         : DOWNLOADED
+  Retries        : 0
+  Notes          : Patient: TCGA-CH-5794 | Diagnosis: Acinar cell carcinoma | SHA256: a994e9d56504911d92d0880d63821b109a7d77585663a201c439833d1babede4
+----------------------------------------------------------------------
+[2026-10-09 07:21:30Z] CANCER: PROSTATE | MODALITY: PATHOLOGY
+  Source/Dataset : GDC
+  Identifier     : TCGA-CH-5790-01A-01-BS1.e1f8b10a-fd0a-41d2-befc-da936e06a725.svs (18.0 MB)
+  Action         : Downloaded SVS slide
+  Status         : DOWNLOADED
+  Retries        : 0
+  Notes          : Patient: TCGA-CH-5790 | Diagnosis: Acinar cell carcinoma | SHA256: ca45b4708e13410575f6b34103eca022ce06aa858f190f748ba77c7dd4a75e69
+----------------------------------------------------------------------
+[2026-10-09 07:22:27Z] CANCER: PROSTATE | MODALITY: PATHOLOGY
+  Source/Dataset : GDC
+  Identifier     : TCGA-CH-5744-01A-01-BS1.6bb9c4b2-87d0-48da-b1c5-a78629dd2021.svs (18.9 MB)
+  Action         : Downloaded SVS slide
+  Status         : DOWNLOADED
+  Retries        : 0
+  Notes          : Patient: TCGA-CH-5744 | Diagnosis: Acinar cell carcinoma | SHA256: 4a6d766781055c3fae559ce725aa3a2db4c4d0e220febf32d717006abab6ee76
+----------------------------------------------------------------------
+[2026-10-09 07:23:28Z] CANCER: PROSTATE | MODALITY: PATHOLOGY
+  Source/Dataset : GDC
+  Identifier     : TCGA-G9-6377-01A-01-BS1.5cc24d73-153a-48c4-a21d-9c5bdbca505c.svs (19.1 MB)
+  Action         : Downloaded SVS slide
+  Status         : DOWNLOADED
+  Retries        : 0
+  Notes          : Patient: TCGA-G9-6377 | Diagnosis: Acinar cell carcinoma | SHA256: 4e72ac3495d977331342398c95ce44e838e7d8b8cce86fe16f4a50feaf30c7fd
+----------------------------------------------------------------------
+[2026-10-09 07:23:28Z] CANCER: PROSTATE | MODALITY: PATHOLOGY
+  Source/Dataset : Kaggle
+  Identifier     : PANDA Challenge
+  Action         : Authentication check
+  Status         : AUTH_REQUIRED
+  Retries        : 0
+  Reason         : Credentials missing. Setup: 1. Create account at https://www.kaggle.com
+2. Accept rules at https://www.kaggle.com/c/prostate-cancer-grade-assessment
+3. Place kaggle.json in ~/.kaggle/kaggle.json or set KAGGLE_USERNAME & KAGGLE_KEY env vars.
+  Auth / Terms   : Required env/file: ~/.kaggle/kaggle.json or KAGGLE_USERNAME / KAGGLE_KEY
+----------------------------------------------------------------------
+[2026-10-09 07:23:28Z] CANCER: PANCREATIC | MODALITY: CT
+  Source/Dataset : TCIA
+  Identifier     : Pancreas-CT
+  Action         : Initiate CT download
+  Status         : IN_PROGRESS
+  Retries        : 0
+  Notes          : NIH Pancreas-CT (normal pancreas anatomy from healthy donors; does NOT contain cancer lesions).
+----------------------------------------------------------------------
+[2026-10-09 07:23:33Z] CANCER: PANCREATIC | MODALITY: CT
+  Source/Dataset : TCIA
+  Identifier     : Series 1.2.826.0.1.3680043.2.1125.1.41202274843063370955090296887703130
+  Action         : Request series zip archive
+  Status         : IN_PROGRESS
+  Retries        : 0
+----------------------------------------------------------------------
+[2026-10-09 07:25:35Z] CANCER: PANCREATIC | MODALITY: CT
+  Source/Dataset : TCIA
+  Identifier     : pancreatic_ct_slice_01.dcm
+  Action         : Extracted and verified DICOM slice
+  Status         : DOWNLOADED
+  Retries        : 0
+  Notes          : Patient: PANCREAS_0080 | SHA256: 50c1402602a84266bc15faff2a8f297c95ef77012bf0d582743c162701e716a8
+----------------------------------------------------------------------
+[2026-10-09 07:25:35Z] CANCER: PANCREATIC | MODALITY: CT
+  Source/Dataset : TCIA
+  Identifier     : pancreatic_ct_slice_02.dcm
+  Action         : Extracted and verified DICOM slice
+  Status         : DOWNLOADED
+  Retries        : 0
+  Notes          : Patient: PANCREAS_0080 | SHA256: c9bdc01aee13b8745c556d570b8bed49f25f6a2988340ed22256f908ce348008
+----------------------------------------------------------------------
+[2026-10-09 07:25:35Z] CANCER: PANCREATIC | MODALITY: CT
+  Source/Dataset : TCIA
+  Identifier     : pancreatic_ct_slice_03.dcm
+  Action         : Extracted and verified DICOM slice
+  Status         : DOWNLOADED
+  Retries        : 0
+  Notes          : Patient: PANCREAS_0080 | SHA256: 519fb7c629c0a5a155f5797d6f11e13e51bfa6124ded6c02bf621efc712f3e39
+----------------------------------------------------------------------
+[2026-10-09 07:26:09Z] CANCER: PANCREATIC | MODALITY: PATHOLOGY
+  Source/Dataset : GDC
+  Identifier     : TCGA-IB-7647-01A-01-TS1.60574eeb-7935-4607-9ca8-5e1c21684ea5.svs (8.0 MB)
+  Action         : Downloaded SVS slide
+  Status         : DOWNLOADED
+  Retries        : 0
+  Notes          : Patient: TCGA-IB-7647 | Diagnosis: Infiltrating duct carcinoma, NOS | SHA256: facaee0b2af9af2929040e3392e3ff9d1db57d2e4da4e1c125172b4f7933027f
+----------------------------------------------------------------------
+[2026-10-09 07:27:23Z] CANCER: PANCREATIC | MODALITY: PATHOLOGY
+  Source/Dataset : GDC
+  Identifier     : TCGA-US-A77G-11A-01-TSA.18AC9F41-1554-4C39-BDA0-2D139AE487AD.svs (23.6 MB)
+  Action         : Downloaded SVS slide
+  Status         : DOWNLOADED
+  Retries        : 0
+  Notes          : Patient: TCGA-US-A77G | Diagnosis: Infiltrating duct carcinoma, NOS | SHA256: 564fc8045a9d463a53898f51f978ab58ac65ee47fcb85adcb3a53b06c8f7c5c1
+----------------------------------------------------------------------
+[2026-10-09 07:27:23Z] CANCER: RENAL | MODALITY: CT
+  Source/Dataset : TCIA
+  Identifier     : C4KC-KiTS
+  Action         : Initiate CT download
+  Status         : IN_PROGRESS
+  Retries        : 0
+  Notes          : KiTS19 CT scans with nephrectomy-confirmed renal tumors and voxel segmentations.
+----------------------------------------------------------------------
+[2026-10-09 07:27:31Z] CANCER: RENAL | MODALITY: CT
+  Source/Dataset : TCIA
+  Identifier     : Series 1.3.6.1.4.1.14519.5.2.1.6919.4624.104676305843633157149888038227
+  Action         : Request series zip archive
+  Status         : IN_PROGRESS
+  Retries        : 0
+----------------------------------------------------------------------
+[2026-10-09 07:27:47Z] CANCER: RENAL | MODALITY: CT
+  Source/Dataset : TCIA
+  Identifier     : renal_ct_slice_01.dcm
+  Action         : Extracted and verified DICOM slice
+  Status         : DOWNLOADED
+  Retries        : 0
+  Notes          : Patient: KiTS-00019 | SHA256: 44f8f8340b4d540459d8af3637297cd7a481d22517c4e1b55a419f7985f32a8c
+----------------------------------------------------------------------
+[2026-10-09 07:27:47Z] CANCER: RENAL | MODALITY: CT
+  Source/Dataset : TCIA
+  Identifier     : renal_ct_slice_02.dcm
+  Action         : Extracted and verified DICOM slice
+  Status         : DOWNLOADED
+  Retries        : 0
+  Notes          : Patient: KiTS-00019 | SHA256: d22ab41cd954b29554ff06589e6cda0c28a116cd5d304ae60ccd6a70adbf0ad7
+----------------------------------------------------------------------
+[2026-10-09 07:27:47Z] CANCER: RENAL | MODALITY: CT
+  Source/Dataset : TCIA
+  Identifier     : renal_ct_slice_03.dcm
+  Action         : Extracted and verified DICOM slice
+  Status         : DOWNLOADED
+  Retries        : 0
+  Notes          : Patient: KiTS-00019 | SHA256: 85314ff9ceb68554202b08b4a007ebf2bf779c633e2c24fe300303c2d8ca3622
+----------------------------------------------------------------------
+[2026-10-09 07:28:33Z] CANCER: RENAL | MODALITY: PATHOLOGY
+  Source/Dataset : GDC
+  Identifier     : TCGA-B0-4841-01A-01-TS1.0c375369-3a29-4104-ae17-5769766c60d8.svs (13.4 MB)
+  Action         : Downloaded SVS slide
+  Status         : DOWNLOADED
+  Retries        : 0
+  Notes          : Patient: TCGA-B0-4841 | Diagnosis: Clear cell adenocarcinoma, NOS | SHA256: 9db6cc2abb68cd93d06f96ea8ed0af916dee0423032a24be6437ab6fdbced632
+----------------------------------------------------------------------
+[2026-10-09 07:29:32Z] CANCER: RENAL | MODALITY: PATHOLOGY
+  Source/Dataset : GDC
+  Identifier     : TCGA-B0-4845-11A-01-TS1.70e9f4f2-2603-4b89-af1d-13dcb553b787.svs (16.5 MB)
+  Action         : Downloaded SVS slide
+  Status         : DOWNLOADED
+  Retries        : 0
+  Notes          : Patient: TCGA-B0-4845 | Diagnosis: Not Reported | SHA256: b4f22444aa0023ebaecee659fd16f811bcfb95154689b1418488ba3f66977704
+----------------------------------------------------------------------
+[2026-10-09 07:29:32Z] CANCER: GASTRIC | MODALITY: CT
+  Source/Dataset : N/A
+  Identifier     : MISSING_MODALITY
+  Action         : Check modality availability
+  Status         : NOT_FOUND
+  Retries        : 0
+  Reason         : No direct open-access CT benchmark for gastric cancer; public TCGA cohort is pathology-focused.
+  Notes          : Modality not offered as open direct benchmark for this cancer.
+----------------------------------------------------------------------
+[2026-10-09 07:29:32Z] CANCER: GASTRIC | MODALITY: MRI
+  Source/Dataset : N/A
+  Identifier     : MISSING_MODALITY
+  Action         : Check modality availability
+  Status         : NOT_FOUND
+  Retries        : 0
+  Reason         : No direct open-access MRI benchmark for gastric cancer; public TCGA cohort is pathology-focused.
+  Notes          : Modality not offered as open direct benchmark for this cancer.
+----------------------------------------------------------------------
+[2026-10-09 07:29:32Z] CANCER: GASTRIC | MODALITY: PATHOLOGY
+  Source/Dataset : GDC
+  Identifier     : TCGA-STAD
+  Action         : Initiate pathology download
+  Status         : IN_PROGRESS
+  Retries        : 0
+  Notes          : Confirmed stomach adenocarcinoma diagnostic SVS slides.
+----------------------------------------------------------------------
+[2026-10-09 07:29:42Z] CANCER: GASTRIC | MODALITY: PATHOLOGY
+  Source/Dataset : GDC
+  Identifier     : TCGA-BR-4267-01Z-00-DX1.74687868-fdfb-4b11-8c72-a42703b5d06d.svs (0.4 MB)
+  Action         : Downloaded SVS slide
+  Status         : DOWNLOADED
+  Retries        : 0
+  Notes          : Patient: TCGA-BR-4267 | Diagnosis: Adenocarcinoma, NOS | SHA256: 1d87524a629016b65e1bde1141ace77c3aa57297dfe9912b6d9a04fa5925a9e5
+----------------------------------------------------------------------
+[2026-10-09 07:29:49Z] CANCER: GASTRIC | MODALITY: PATHOLOGY
+  Source/Dataset : GDC
+  Identifier     : TCGA-BR-4371-01Z-00-DX1.b45af289-5e56-40dd-80ba-7b8752d0344e.svs (0.5 MB)
+  Action         : Downloaded SVS slide
+  Status         : DOWNLOADED
+  Retries        : 0
+  Notes          : Patient: TCGA-BR-4371 | Diagnosis: Adenocarcinoma, NOS | SHA256: 2ae5ed77a111b1dd9b428f46f55d54bc15aa14dd5b822ef5f44c7dd05e7f7178
+----------------------------------------------------------------------
+[2026-10-09 07:29:55Z] CANCER: GASTRIC | MODALITY: PATHOLOGY
+  Source/Dataset : GDC
+  Identifier     : TCGA-BR-4357-01Z-00-DX1.63cd361b-d8a7-4a99-aed7-4355b32397f6.svs (0.5 MB)
+  Action         : Downloaded SVS slide
+  Status         : DOWNLOADED
+  Retries        : 0
+  Notes          : Patient: TCGA-BR-4357 | Diagnosis: Adenocarcinoma, NOS | SHA256: 9b393ec3ea6b6d71f9e5ecfcdae8d968cb804537ad74a4c4d97f770d08729104
+----------------------------------------------------------------------
+[2026-10-09 07:30:07Z] CANCER: GASTRIC | MODALITY: PATHOLOGY
+  Source/Dataset : GDC
+  Identifier     : TCGA-BR-4294-01Z-00-DX1.247c5447-23e3-4620-a981-19d5f572235a.svs (0.5 MB)
+  Action         : Downloaded SVS slide
+  Status         : DOWNLOADED
+  Retries        : 0
+  Notes          : Patient: TCGA-BR-4294 | Diagnosis: Tubular adenocarcinoma | SHA256: 3cae58e690791e31cbe05f79a3f474b8bd83bffcf1d283b414ee7b6736c2439f
+----------------------------------------------------------------------
+[2026-10-09 07:30:18Z] CANCER: GASTRIC | MODALITY: PATHOLOGY
+  Source/Dataset : GDC
+  Identifier     : TCGA-BR-4279-01Z-00-DX1.3d749e63-3614-4475-b840-5401640f13d8.svs (0.5 MB)
+  Action         : Downloaded SVS slide
+  Status         : DOWNLOADED
+  Retries        : 0
+  Notes          : Patient: TCGA-BR-4279 | Diagnosis: Adenocarcinoma, NOS | SHA256: 7808b737061340a32253ca61761db1122eebb18b8298480b730cd7eb6edfa5e8
+----------------------------------------------------------------------
+[2026-10-09 07:30:18Z] CANCER: ENDOMETRIAL | MODALITY: CT
+  Source/Dataset : N/A
+  Identifier     : MISSING_MODALITY
+  Action         : Check modality availability
+  Status         : NOT_FOUND
+  Retries        : 0
+  Reason         : No direct open-access CT benchmark for endometrial cancer; public TCGA cohort is pathology-focused.
+  Notes          : Modality not offered as open direct benchmark for this cancer.
+----------------------------------------------------------------------
+[2026-10-09 07:30:18Z] CANCER: ENDOMETRIAL | MODALITY: MRI
+  Source/Dataset : N/A
+  Identifier     : MISSING_MODALITY
+  Action         : Check modality availability
+  Status         : NOT_FOUND
+  Retries        : 0
+  Reason         : No direct open-access MRI benchmark for endometrial cancer; public TCGA cohort is pathology-focused.
+  Notes          : Modality not offered as open direct benchmark for this cancer.
+----------------------------------------------------------------------
+[2026-10-09 07:30:18Z] CANCER: ENDOMETRIAL | MODALITY: PATHOLOGY
+  Source/Dataset : GDC
+  Identifier     : TCGA-UCEC
+  Action         : Initiate pathology download
+  Status         : IN_PROGRESS
+  Retries        : 0
+  Notes          : Confirmed endometrioid adenocarcinoma diagnostic SVS slides.
+----------------------------------------------------------------------
+[2026-10-09 07:31:35Z] CANCER: ENDOMETRIAL | MODALITY: PATHOLOGY
+  Source/Dataset : GDC
+  Identifier     : TCGA-EO-A22R-11A-01-TS1.F63CC8A0-F9DB-4036-BE52-2C5701E8F898.svs (26.8 MB)
+  Action         : Downloaded SVS slide
+  Status         : DOWNLOADED
+  Retries        : 0
+  Notes          : Patient: TCGA-EO-A22R | Diagnosis: Endometrioid adenocarcinoma, NOS | SHA256: 20e04b86675a50a7eb9597e17a22258f161fca892b377556365db6c3be828171
+----------------------------------------------------------------------
+[2026-10-09 07:33:09Z] CANCER: ENDOMETRIAL | MODALITY: PATHOLOGY
+  Source/Dataset : GDC
+  Identifier     : TCGA-DI-A1NN-11A-02-TSB.d7489823-28b5-4a02-ada6-7dbfe145e9ba.svs (30.3 MB)
+  Action         : Downloaded SVS slide
+  Status         : DOWNLOADED
+  Retries        : 0
+  Notes          : Patient: TCGA-DI-A1NN | Diagnosis: Serous cystadenocarcinoma, NOS | SHA256: 0823d4d1ce725f73c5034a096d45dfefe0c2e79d02854038d1dcc17a88e75900
+----------------------------------------------------------------------
+[2026-10-09 07:34:46Z] CANCER: ENDOMETRIAL | MODALITY: PATHOLOGY
+  Source/Dataset : GDC
+  Identifier     : TCGA-FL-A1YH-11A-01-TSA.a2a056a5-8da6-45c1-b2fe-a8e3c8e0a4d0.svs (32.0 MB)
+  Action         : Downloaded SVS slide
+  Status         : DOWNLOADED
+  Retries        : 0
+  Notes          : Patient: TCGA-FL-A1YH | Diagnosis: Not Reported | SHA256: 295137812a4a88a399fa677e48778cefcfc39464c8c58499b11992df562d1058
+----------------------------------------------------------------------
+[2026-10-09 07:36:21Z] CANCER: ENDOMETRIAL | MODALITY: PATHOLOGY
+  Source/Dataset : GDC
+  Identifier     : TCGA-AX-A1CF-11A-01-TS1.fee0b9b5-08f2-4fc8-88c0-545f078b8185.svs (34.9 MB)
+  Action         : Downloaded SVS slide
+  Status         : DOWNLOADED
+  Retries        : 0
+  Notes          : Patient: TCGA-AX-A1CF | Diagnosis: Endometrioid adenocarcinoma, NOS | SHA256: ab7e6399bb7bce497a4fe9088b37d283d507e023f9d861f6fa32fccdcfa17a28
+----------------------------------------------------------------------
+[2026-10-09 07:37:57Z] CANCER: ENDOMETRIAL | MODALITY: PATHOLOGY
+  Source/Dataset : GDC
+  Identifier     : TCGA-FL-A1YG-11A-01-TSA.489186e6-19cf-4f65-859f-ac1b187a95af.svs (36.0 MB)
+  Action         : Downloaded SVS slide
+  Status         : DOWNLOADED
+  Retries        : 0
+  Notes          : Patient: TCGA-FL-A1YG | Diagnosis: Not Reported | SHA256: f905af01ced59128b793b957f9cbbcdecb208553123348c3f57b9a323ace359a
+----------------------------------------------------------------------
+[2026-10-09 07:37:57Z] CANCER: BLADDER | MODALITY: CT
+  Source/Dataset : N/A
+  Identifier     : MISSING_MODALITY
+  Action         : Check modality availability
+  Status         : NOT_FOUND
+  Retries        : 0
+  Reason         : No direct open-access CT benchmark for bladder cancer; public TCGA cohort is pathology-focused.
+  Notes          : Modality not offered as open direct benchmark for this cancer.
+----------------------------------------------------------------------
+[2026-10-09 07:37:57Z] CANCER: BLADDER | MODALITY: MRI
+  Source/Dataset : N/A
+  Identifier     : MISSING_MODALITY
+  Action         : Check modality availability
+  Status         : NOT_FOUND
+  Retries        : 0
+  Reason         : No direct open-access MRI benchmark for bladder cancer; public TCGA cohort is pathology-focused.
+  Notes          : Modality not offered as open direct benchmark for this cancer.
+----------------------------------------------------------------------
+[2026-10-09 07:37:57Z] CANCER: BLADDER | MODALITY: PATHOLOGY
+  Source/Dataset : GDC
+  Identifier     : TCGA-BLCA
+  Action         : Initiate pathology download
+  Status         : IN_PROGRESS
+  Retries        : 0
+  Notes          : Confirmed bladder urothelial carcinoma diagnostic SVS slides.
+----------------------------------------------------------------------
+[2026-10-09 07:39:16Z] CANCER: BLADDER | MODALITY: PATHOLOGY
+  Source/Dataset : GDC
+  Identifier     : TCGA-G2-A2ES-11A-03-TSC.8F131E09-72F3-4553-8B6D-8B87E527A6D2.svs (23.4 MB)
+  Action         : Downloaded SVS slide
+  Status         : DOWNLOADED
+  Retries        : 0
+  Notes          : Patient: TCGA-G2-A2ES | Diagnosis: Not Reported | SHA256: 7cee7ab4b9a787fdfd4695cdb3737925deafe13da94097fdbd31a1531752e1e5
+----------------------------------------------------------------------
+[2026-10-09 07:40:24Z] CANCER: BLADDER | MODALITY: PATHOLOGY
+  Source/Dataset : GDC
+  Identifier     : TCGA-GD-A2C5-11A-01-TS1.58935BAD-933A-44D8-AA45-6CBD6362C5AB.svs (23.7 MB)
+  Action         : Downloaded SVS slide
+  Status         : DOWNLOADED
+  Retries        : 0
+  Notes          : Patient: TCGA-GD-A2C5 | Diagnosis: Transitional cell carcinoma | SHA256: 38046b8cf60e511be46a91e155e60f37922fb74016695cf9959b00200a1a4c2d
+----------------------------------------------------------------------
+[2026-10-09 07:41:36Z] CANCER: BLADDER | MODALITY: PATHOLOGY
+  Source/Dataset : GDC
+  Identifier     : TCGA-2F-A9KQ-11A-01-TSA.A0E111E2-5B11-4C60-953B-48F3AF05F975.svs (24.0 MB)
+  Action         : Downloaded SVS slide
+  Status         : DOWNLOADED
+  Retries        : 0
+  Notes          : Patient: TCGA-2F-A9KQ | Diagnosis: Transitional cell carcinoma | SHA256: 9ec1b568c93c972ef83f4647c8bcf14b9b4037b78b553922277f313c5ce54a8b
+----------------------------------------------------------------------
+[2026-10-09 07:43:00Z] CANCER: BLADDER | MODALITY: PATHOLOGY
+  Source/Dataset : GDC
+  Identifier     : TCGA-K4-A6FZ-11A-01-TS1.0696AA79-BB72-480B-8F7E-F49F89039CD5.svs (31.1 MB)
+  Action         : Downloaded SVS slide
+  Status         : DOWNLOADED
+  Retries        : 0
+  Notes          : Patient: TCGA-K4-A6FZ | Diagnosis: Transitional cell carcinoma | SHA256: 71be82b87fc9c2560ccdf2cd3bbda677634642df6f0a02277f5bc582c6ed26dc
+----------------------------------------------------------------------
+[2026-10-09 07:44:24Z] CANCER: BLADDER | MODALITY: PATHOLOGY
+  Source/Dataset : GDC
+  Identifier     : TCGA-CU-A0YR-11A-01-TS1.35ccad4f-e144-4781-b26c-90eb0f395e7e.svs (31.8 MB)
+  Action         : Downloaded SVS slide
+  Status         : DOWNLOADED
+  Retries        : 0
+  Notes          : Patient: TCGA-CU-A0YR | Diagnosis: Adenocarcinoma, NOS | SHA256: 6ea7af073ea4d8db0c11fc93c834e2b9736a7caa91241a4217ce3223566bbf94
+----------------------------------------------------------------------
+[2026-10-09 07:44:24Z] CANCER: ESOPHAGEAL | MODALITY: CT
+  Source/Dataset : N/A
+  Identifier     : MISSING_MODALITY
+  Action         : Check modality availability
+  Status         : NOT_FOUND
+  Retries        : 0
+  Reason         : No direct open-access CT benchmark for esophageal cancer; public TCGA cohort is pathology-focused.
+  Notes          : Modality not offered as open direct benchmark for this cancer.
+----------------------------------------------------------------------
+[2026-10-09 07:44:24Z] CANCER: ESOPHAGEAL | MODALITY: MRI
+  Source/Dataset : N/A
+  Identifier     : MISSING_MODALITY
+  Action         : Check modality availability
+  Status         : NOT_FOUND
+  Retries        : 0
+  Reason         : No direct open-access MRI benchmark for esophageal cancer; public TCGA cohort is pathology-focused.
+  Notes          : Modality not offered as open direct benchmark for this cancer.
+----------------------------------------------------------------------
+[2026-10-09 07:44:24Z] CANCER: ESOPHAGEAL | MODALITY: PATHOLOGY
+  Source/Dataset : GDC
+  Identifier     : TCGA-ESCA
+  Action         : Initiate pathology download
+  Status         : IN_PROGRESS
+  Retries        : 0
+  Notes          : Confirmed esophageal squamous carcinoma and adenocarcinoma diagnostic SVS slides.
+----------------------------------------------------------------------
+[2026-10-09 07:44:48Z] CANCER: ESOPHAGEAL | MODALITY: PATHOLOGY
+  Source/Dataset : GDC
+  Identifier     : TCGA-V5-AASX-11A-01-TS1.3CF34ACE-18EB-42A3-88E3-5A75686601B2.svs (7.1 MB)
+  Action         : Downloaded SVS slide
+  Status         : DOWNLOADED
+  Retries        : 0
+  Notes          : Patient: TCGA-V5-AASX | Diagnosis: Adenocarcinoma, NOS | SHA256: fe1fa9dcf5b48a78157c55f2d694adb0a10cd875e85ca548e9aee4d28166618c
+----------------------------------------------------------------------
+[2026-10-09 07:45:28Z] CANCER: ESOPHAGEAL | MODALITY: PATHOLOGY
+  Source/Dataset : GDC
+  Identifier     : TCGA-V5-A7RE-11A-01-TS1.57401526-EF9E-49AC-8FF6-B4F9652311CE.svs (14.7 MB)
+  Action         : Downloaded SVS slide
+  Status         : DOWNLOADED
+  Retries        : 0
+  Notes          : Patient: TCGA-V5-A7RE | Diagnosis: Adenocarcinoma, NOS | SHA256: 0562cc873c8cd9b0303d2993e320c354f3e604b7544f13cea1c950313b3ffb74
+----------------------------------------------------------------------
+[2026-10-09 07:46:27Z] CANCER: ESOPHAGEAL | MODALITY: PATHOLOGY
+  Source/Dataset : GDC
+  Identifier     : TCGA-2H-A9GF-11A-01-TS1.D38C6B5C-0514-4794-AF4E-E95B820E9280.svs (22.1 MB)
+  Action         : Downloaded SVS slide
+  Status         : DOWNLOADED
+  Retries        : 0
+  Notes          : Patient: TCGA-2H-A9GF | Diagnosis: Adenocarcinoma, NOS | SHA256: bcff506156bcb2becef87213abf702c0b308eb8a7d14add4de61138f33242f7b
+----------------------------------------------------------------------
+[2026-10-09 07:47:36Z] CANCER: ESOPHAGEAL | MODALITY: PATHOLOGY
+  Source/Dataset : GDC
+  Identifier     : TCGA-L5-A8NI-11A-01-TS1.FC44F2C6-84EE-4841-B499-927F2B22FDCB.svs (23.3 MB)
+  Action         : Downloaded SVS slide
+  Status         : DOWNLOADED
+  Retries        : 0
+  Notes          : Patient: TCGA-L5-A8NI | Diagnosis: Adenocarcinoma, NOS | SHA256: ce9d8f23958db321ee89e53d85b25dfe0f57fc5967a215691033abfec22884fd
+----------------------------------------------------------------------
+[2026-10-09 07:48:58Z] CANCER: ESOPHAGEAL | MODALITY: PATHOLOGY
+  Source/Dataset : GDC
+  Identifier     : TCGA-L5-A8NE-11A-01-TS1.C07B1F97-EB33-4778-BFFC-EC2FD085C59C.svs (28.8 MB)
+  Action         : Downloaded SVS slide
+  Status         : DOWNLOADED
+  Retries        : 0
+  Notes          : Patient: TCGA-L5-A8NE | Diagnosis: Adenocarcinoma, NOS | SHA256: 4792a5a37cd266925581b2673d09e7495ddc75adb5bf48a3c22884ae8b48a34a
+----------------------------------------------------------------------
+[2026-10-09 07:48:58Z] CANCER: THYROID | MODALITY: CT
+  Source/Dataset : N/A
+  Identifier     : MISSING_MODALITY
+  Action         : Check modality availability
+  Status         : NOT_FOUND
+  Retries        : 0
+  Reason         : No direct open-access CT benchmark for thyroid carcinoma; public TCGA cohort is pathology-focused.
+  Notes          : Modality not offered as open direct benchmark for this cancer.
+----------------------------------------------------------------------
+[2026-10-09 07:48:58Z] CANCER: THYROID | MODALITY: MRI
+  Source/Dataset : N/A
+  Identifier     : MISSING_MODALITY
+  Action         : Check modality availability
+  Status         : NOT_FOUND
+  Retries        : 0
+  Reason         : No direct open-access MRI benchmark for thyroid carcinoma; public TCGA cohort is pathology-focused.
+  Notes          : Modality not offered as open direct benchmark for this cancer.
+----------------------------------------------------------------------
+[2026-10-09 07:48:58Z] CANCER: THYROID | MODALITY: PATHOLOGY
+  Source/Dataset : GDC
+  Identifier     : TCGA-THCA
+  Action         : Initiate pathology download
+  Status         : IN_PROGRESS
+  Retries        : 0
+  Notes          : Confirmed papillary thyroid carcinoma diagnostic SVS slides.
+----------------------------------------------------------------------
+[2026-10-09 07:49:48Z] CANCER: THYROID | MODALITY: PATHOLOGY
+  Source/Dataset : GDC
+  Identifier     : TCGA-BJ-A45G-11A-01-TSA.94B24755-6054-433F-AC38-EDE085484611.svs (15.7 MB)
+  Action         : Downloaded SVS slide
+  Status         : DOWNLOADED
+  Retries        : 0
+  Notes          : Patient: TCGA-BJ-A45G | Diagnosis: Papillary carcinoma, follicular variant | SHA256: 1691d88d1915d6c201aab91d308669de1f8ab1fb855c1517c0236161725036b7
+----------------------------------------------------------------------
+[2026-10-09 07:50:55Z] CANCER: THYROID | MODALITY: PATHOLOGY
+  Source/Dataset : GDC
+  Identifier     : TCGA-EL-A4K7-11A-01-TS1.C08B59AA-87DF-4ABB-8B70-25FEF9893C7F.svs (21.5 MB)
+  Action         : Downloaded SVS slide
+  Status         : DOWNLOADED
+  Retries        : 0
+  Notes          : Patient: TCGA-EL-A4K7 | Diagnosis: Papillary adenocarcinoma, NOS | SHA256: 334034fd7cb77a6571de491ba432e9d777d889a86c60c04ef6f1d677980a3981
+----------------------------------------------------------------------
+[2026-10-09 07:51:59Z] CANCER: THYROID | MODALITY: PATHOLOGY
+  Source/Dataset : GDC
+  Identifier     : TCGA-EL-A3ZG-11A-01-TS1.9EEF4DA0-4027-4C37-A0E9-EA6A34FE737D.svs (22.7 MB)
+  Action         : Downloaded SVS slide
+  Status         : DOWNLOADED
+  Retries        : 0
+  Notes          : Patient: TCGA-EL-A3ZG | Diagnosis: Papillary adenocarcinoma, NOS | SHA256: 451acf46b82db6fe965b54d632f99ac1bf1a76a617543e6d26253e532ca598f7
+----------------------------------------------------------------------
+[2026-10-09 07:53:18Z] CANCER: THYROID | MODALITY: PATHOLOGY
+  Source/Dataset : GDC
+  Identifier     : TCGA-EL-A4K0-11A-01-TSA.AED849C9-9D55-4256-979C-87BB40840ECA.svs (23.3 MB)
+  Action         : Downloaded SVS slide
+  Status         : DOWNLOADED
+  Retries        : 0
+  Notes          : Patient: TCGA-EL-A4K0 | Diagnosis: Papillary adenocarcinoma, NOS | SHA256: a18c2ac9787fc667b9fab1af3fae3e9811a1a7b5b5426115a2859f7d15639a6f
+----------------------------------------------------------------------
+[2026-10-09 07:54:37Z] CANCER: THYROID | MODALITY: PATHOLOGY
+  Source/Dataset : GDC
+  Identifier     : TCGA-EL-A4K2-11A-01-TS1.CF7AA71D-5511-476A-A896-149DB8302C04.svs (24.8 MB)
+  Action         : Downloaded SVS slide
+  Status         : DOWNLOADED
+  Retries        : 0
+  Notes          : Patient: TCGA-EL-A4K2 | Diagnosis: Papillary adenocarcinoma, NOS | SHA256: aa00a218543b3fe9dbe7c3e8d74e37a24a2b83decba6df5bc8b68e2db33185df
+----------------------------------------------------------------------
+[2026-10-09 07:54:37Z] CANCER: LYMPHOMA | MODALITY: CT
+  Source/Dataset : N/A
+  Identifier     : MISSING_MODALITY
+  Action         : Check modality availability
+  Status         : NOT_FOUND
+  Retries        : 0
+  Reason         : No direct open-access CT benchmark for lymphoma; public TCGA cohort is pathology-focused.
+  Notes          : Modality not offered as open direct benchmark for this cancer.
+----------------------------------------------------------------------
+[2026-10-09 07:54:37Z] CANCER: LYMPHOMA | MODALITY: MRI
+  Source/Dataset : N/A
+  Identifier     : MISSING_MODALITY
+  Action         : Check modality availability
+  Status         : NOT_FOUND
+  Retries        : 0
+  Reason         : No direct open-access MRI benchmark for lymphoma; public TCGA cohort is pathology-focused.
+  Notes          : Modality not offered as open direct benchmark for this cancer.
+----------------------------------------------------------------------
+[2026-10-09 07:54:37Z] CANCER: LYMPHOMA | MODALITY: PATHOLOGY
+  Source/Dataset : GDC
+  Identifier     : TCGA-DLBC
+  Action         : Initiate pathology download
+  Status         : IN_PROGRESS
+  Retries        : 0
+  Notes          : Confirmed diffuse large B-cell lymphoma (DLBCL) diagnostic SVS slides.
+----------------------------------------------------------------------
+[2026-10-09 07:55:43Z] CANCER: LYMPHOMA | MODALITY: PATHOLOGY
+  Source/Dataset : GDC
+  Identifier     : TCGA-G8-6907-01A-01-TS1.58cf6e01-7538-429d-a9b3-c1ea8866ba67.svs (20.3 MB)
+  Action         : Downloaded SVS slide
+  Status         : DOWNLOADED
+  Retries        : 0
+  Notes          : Patient: TCGA-G8-6907 | Diagnosis: Diffuse large B-cell lymphoma, NOS | SHA256: 85525b600031000d40e98380cfc122b1a9ee0f409843d5c6eb8e01a51f40906f
+----------------------------------------------------------------------
+[2026-10-09 07:56:54Z] CANCER: LYMPHOMA | MODALITY: PATHOLOGY
+  Source/Dataset : GDC
+  Identifier     : TCGA-G8-6324-01A-01-TS1.4e082d68-1711-42f6-afc9-1bdd5044e97d.svs (24.6 MB)
+  Action         : Downloaded SVS slide
+  Status         : DOWNLOADED
+  Retries        : 0
+  Notes          : Patient: TCGA-G8-6324 | Diagnosis: Diffuse large B-cell lymphoma, NOS | SHA256: 61d6b4a0a47be8a65777fea4ac1ebcbf93655d2cf3df5a68dd9249205f08a04f
+----------------------------------------------------------------------
+[2026-10-09 07:58:40Z] CANCER: LYMPHOMA | MODALITY: PATHOLOGY
+  Source/Dataset : GDC
+  Identifier     : TCGA-G8-6909-01A-01-TS1.9ea4af2e-8420-40ff-8882-4602100dd92a.svs (34.9 MB)
+  Action         : Downloaded SVS slide
+  Status         : DOWNLOADED
+  Retries        : 0
+  Notes          : Patient: TCGA-G8-6909 | Diagnosis: Diffuse large B-cell lymphoma, NOS | SHA256: 451ffab2a6b46ab4998ff892aa12d7826a751c977967339e18b46bf8daa8bf19
+----------------------------------------------------------------------
+[2026-10-09 08:00:43Z] CANCER: LYMPHOMA | MODALITY: PATHOLOGY
+  Source/Dataset : GDC
+  Identifier     : TCGA-FF-8043-01A-01-BS1.b466c057-d63f-480d-9ef2-421947dc4daf.svs (41.5 MB)
+  Action         : Downloaded SVS slide
+  Status         : DOWNLOADED
+  Retries        : 0
+  Notes          : Patient: TCGA-FF-8043 | Diagnosis: Diffuse large B-cell lymphoma, NOS | SHA256: aeff1950dc881e3698b76633a96a390ccc594e927dabeda08006389ca2c5f88c
+----------------------------------------------------------------------
+[2026-10-09 08:02:28Z] CANCER: LYMPHOMA | MODALITY: PATHOLOGY
+  Source/Dataset : GDC
+  Identifier     : TCGA-FF-8041-01A-01-TS1.b8b69ce3-a325-4864-a5b0-43c450347bc9.svs (42.1 MB)
+  Action         : Downloaded SVS slide
+  Status         : DOWNLOADED
+  Retries        : 0
+  Notes          : Patient: TCGA-FF-8041 | Diagnosis: Mediastinal (thymic) large B-cell lymphoma | SHA256: a9439077e400d5a33435107e935c55c443ca96dd2289b6c95a542273deb1b07f
+----------------------------------------------------------------------
+[2026-10-09 08:02:28Z] CANCER: LIVER | MODALITY: CT
+  Source/Dataset : TCIA
+  Identifier     : TCGA-LIHC
+  Action         : Initiate CT download
+  Status         : IN_PROGRESS
+  Retries        : 0
+  Notes          : TCGA-LIHC multiphase liver CT series on TCIA.
+----------------------------------------------------------------------
+[2026-10-09 08:02:34Z] CANCER: LIVER | MODALITY: CT
+  Source/Dataset : TCIA
+  Identifier     : Series 1.3.6.1.4.1.14519.5.2.1.3344.4008.273592291560133112928478228475
+  Action         : Request series zip archive
+  Status         : IN_PROGRESS
+  Retries        : 0
+----------------------------------------------------------------------
+[2026-10-09 08:02:43Z] CANCER: LIVER | MODALITY: CT
+  Source/Dataset : TCIA
+  Identifier     : liver_ct_slice_01.dcm
+  Action         : Extracted and verified DICOM slice
+  Status         : DOWNLOADED
+  Retries        : 0
+  Notes          : Patient: TCGA-DD-A3A9 | SHA256: 45da40c86cbc0a1a33569256be88e9d17df3978d61e7e377a931361cd69c5bc1
+----------------------------------------------------------------------
+[2026-10-09 08:03:13Z] CANCER: LIVER | MODALITY: PATHOLOGY
+  Source/Dataset : GDC
+  Identifier     : TCGA-DD-AAVW-01A-01-TS1.6B87FA05-C902-41E0-B180-0BD15C7A9C63.svs (9.9 MB)
+  Action         : Downloaded SVS slide
+  Status         : DOWNLOADED
+  Retries        : 0
+  Notes          : Patient: TCGA-DD-AAVW | Diagnosis: Hepatocellular carcinoma, NOS | SHA256: 957c5faf39957cf20c39581364635c766b72e5142538dadd3270188316087593
+----------------------------------------------------------------------
+[2026-10-09 08:04:32Z] CANCER: LIVER | MODALITY: PATHOLOGY
+  Source/Dataset : GDC
+  Identifier     : TCGA-DD-AAEH-01A-01-TS1.1152D49E-5195-448D-8906-F95398C55D1F.svs (27.0 MB)
+  Action         : Downloaded SVS slide
+  Status         : DOWNLOADED
+  Retries        : 0
+  Notes          : Patient: TCGA-DD-AAEH | Diagnosis: Hepatocellular carcinoma, NOS | SHA256: e27e6a1f7c08b67c2ee7a050bab120512b064a698ec43ce1d4455af635da43ed
+----------------------------------------------------------------------
+[2026-10-09 08:06:13Z] CANCER: LIVER | MODALITY: PATHOLOGY
+  Source/Dataset : GDC
+  Identifier     : TCGA-DD-AAE2-01A-01-TS1.2841B3C9-FA26-4248-9616-ECF753D5A726.svs (27.9 MB)
+  Action         : Downloaded SVS slide
+  Status         : DOWNLOADED
+  Retries        : 0
+  Notes          : Patient: TCGA-DD-AAE2 | Diagnosis: Hepatocellular carcinoma, NOS | SHA256: e1372dd38bcc9440ff9e1398b6766054b560403b956478cbbff8132d13aa3003
+----------------------------------------------------------------------
+[2026-10-09 08:07:40Z] CANCER: LIVER | MODALITY: PATHOLOGY
+  Source/Dataset : GDC
+  Identifier     : TCGA-BC-A216-11A-01-TSA.4a81c1fe-c566-4a53-86eb-697d4c085815.svs (30.1 MB)
+  Action         : Downloaded SVS slide
+  Status         : DOWNLOADED
+  Retries        : 0
+  Notes          : Patient: TCGA-BC-A216 | Diagnosis: Hepatocellular carcinoma, NOS | SHA256: caef0dbede0326d25964f98c5b6b1dc924e37c85839fcdd6576ce609f1da8144
+----------------------------------------------------------------------
+[2026-10-09 08:07:40Z] CANCER: LIVER | MODALITY: CT
+  Source/Dataset : Grand Challenge / CodaLab
+  Identifier     : LiTS (Liver Tumor Segmentation)
+  Action         : Authentication check
+  Status         : AUTH_REQUIRED
+  Retries        : 0
+  Reason         : Credentials missing. Setup: Register at https://competitions.codalab.org/competitions/17094 to access LiTS NIfTI files.
+  Auth / Terms   : Required env/file: CODALAB_API_TOKEN or competition credentials
+----------------------------------------------------------------------
+[2026-10-09 08:41:45Z] CANCER: COLORECTAL | MODALITY: CT
+  Source/Dataset : TCIA
+  Identifier     : CT COLONOGRAPHY
+  Action         : Initiate CT download
+  Status         : IN_PROGRESS
+  Retries        : 0
+  Notes          : ACRIN 6664 virtual colonoscopy screening trial (screening cohort / mostly benign polyps or normal mucosa).
+----------------------------------------------------------------------
+[2026-10-09 08:41:56Z] CANCER: COLORECTAL | MODALITY: CT
+  Source/Dataset : TCIA
+  Identifier     : Series 1.3.6.1.4.1.9328.50.4.1224
+  Action         : Request series zip archive
+  Status         : IN_PROGRESS
+  Retries        : 0
+----------------------------------------------------------------------
+[2026-10-09 08:42:01Z] CANCER: COLORECTAL | MODALITY: CT
+  Source/Dataset : TCIA
+  Identifier     : colorectal_ct_slice_01.dcm
+  Action         : Extracted and verified DICOM slice
+  Status         : DOWNLOADED
+  Retries        : 0
+  Notes          : Patient: 1.3.6.1.4.1.9328.50.4.0001 | SHA256: 7278b7e116a2977dfaab221684f6e345c61814d1259665fa2997992b6470825c
+----------------------------------------------------------------------
+[2026-10-09 08:42:22Z] CANCER: COLORECTAL | MODALITY: PATHOLOGY
+  Source/Dataset : GDC
+  Identifier     : TCGA-AA-3488-01Z-00-DX1.EDF60198-F7AB-45BB-9A1B-C2E2FA141989.svs (7.8 MB)
+  Action         : Downloaded SVS slide
+  Status         : DOWNLOADED
+  Retries        : 0
+  Notes          : Patient: TCGA-AA-3488 | Diagnosis: Adenocarcinoma, NOS | SHA256: d9fc6489ba39d762883622b8ddb952e715d2a57578dc5b79d9bb65e9eea488e7
+----------------------------------------------------------------------
