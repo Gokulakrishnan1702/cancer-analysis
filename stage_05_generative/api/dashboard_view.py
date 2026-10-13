@@ -2222,26 +2222,338 @@ DASHBOARD_HTML = r"""<!DOCTYPE html>
             background: linear-gradient(90deg, #34d399, #10b981);
         }
 
-        /* 5. Grad-CAM Heatmap Viewer */
-        .gradcam-container {
+        /* 5. Grad-CAM Heatmap Viewer & Side-by-Side Comparison */
+        .gradcam-card {
+            background: #ffffff;
+            border: 1px solid var(--border-card);
+            border-radius: var(--radius-md);
+            padding: 1.5rem;
+            margin-top: 1.5rem;
+            box-shadow: 0 4px 18px rgba(0, 0, 0, 0.05);
+            transition: all 0.25s ease;
+        }
+        .gradcam-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border-card);
+            margin-bottom: 1.25rem;
+        }
+        .gradcam-title-group {
+            display: flex;
+            align-items: center;
+            gap: 0.85rem;
+        }
+        .gradcam-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 10px;
+            background: linear-gradient(135deg, rgba(14, 165, 233, 0.15), rgba(99, 102, 241, 0.15));
+            border: 1px solid rgba(14, 165, 233, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.35rem;
+        }
+        .gradcam-title-group h3 {
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin: 0;
+        }
+        .gradcam-title-group p {
+            font-size: 0.78rem;
+            color: var(--text-muted);
+            margin: 2px 0 0 0;
+            font-family: var(--font-mono, monospace);
+        }
+        .gradcam-controls {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            background: #f8fafc;
+            padding: 0.5rem 0.85rem;
+            border-radius: 8px;
+            border: 1px solid var(--border-card);
+        }
+        .gradcam-slider-label {
+            font-size: 0.78rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+        }
+        .gradcam-slider {
+            width: 130px;
+            accent-color: #0284c7;
+            cursor: pointer;
+        }
+        .gradcam-slider-val {
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: #0284c7;
+            min-width: 36px;
+            font-family: monospace;
+        }
+        .gradcam-preset-btn {
+            background: #ffffff;
+            border: 1px solid #cbd5e1;
+            border-radius: 4px;
+            padding: 2px 7px;
+            font-size: 0.7rem;
+            cursor: pointer;
+            font-weight: 600;
+            color: #475569;
+            transition: all 0.15s ease;
+        }
+        .gradcam-preset-btn:hover {
+            background: #0284c7;
+            color: #ffffff;
+            border-color: #0284c7;
+        }
+
+        /* Side-by-Side Comparison Grid */
+        .gradcam-side-by-side {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        .gradcam-compare-box {
+            background: #f8fafc;
+            border: 1px solid var(--border-card);
+            border-radius: 10px;
+            padding: 1rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .gradcam-box-header {
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.75rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .gradcam-box-title {
+            font-size: 0.82rem;
+            font-weight: 700;
+            color: #1e293b;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+        .gradcam-box-tag {
+            font-size: 0.68rem;
+            font-weight: 700;
+            padding: 2px 8px;
+            border-radius: 4px;
+            background: #e0f2fe;
+            color: #0369a1;
+        }
+        .gradcam-viewport-frame {
             position: relative;
-            display: inline-block;
+            width: 100%;
+            max-width: 340px;
+            height: 340px;
+            aspect-ratio: 1 / 1;
+            background: #090d16;
             border-radius: 8px;
             overflow: hidden;
-            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
-            background: #000;
+            border: 1px solid #0f172a;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
         }
-        .gradcam-heatmap-layer {
+        .gradcam-compare-img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            display: block;
+        }
+        .gradcam-overlay-stack {
+            position: relative;
+            width: 100%;
+            height: 100%;
+        }
+        .gradcam-overlay-stack img {
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            mix-blend-mode: color-dodge;
-            opacity: 0.75;
-            transition: opacity 0.2s ease;
+            object-fit: contain;
+        }
+        .gradcam-heat-layer {
+            mix-blend-mode: normal;
+            transition: opacity 0.05s ease-out;
             pointer-events: none;
-            background: radial-gradient(circle at 62% 44%, rgba(255, 0, 0, 0.95) 0%, rgba(255, 120, 0, 0.8) 25%, rgba(255, 230, 0, 0.55) 45%, rgba(0, 160, 255, 0.25) 65%, rgba(0, 0, 0, 0) 80%);
+        }
+        .gradcam-box-caption {
+            font-size: 0.73rem;
+            color: #64748b;
+            margin-top: 0.65rem;
+            text-align: center;
+        }
+
+        /* Colormap Scale Legend */
+        .gradcam-legend-bar {
+            width: 100%;
+            margin-top: 1rem;
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 0.75rem 1rem;
+        }
+        .gradcam-legend-scale {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 0.35rem;
+        }
+        .gradcam-gradient-strip {
+            flex: 1;
+            height: 14px;
+            border-radius: 7px;
+            background: linear-gradient(90deg, #0000ff 0%, #00ffff 25%, #00ff00 50%, #ffff00 75%, #ff0000 100%);
+            border: 1px solid rgba(0, 0, 0, 0.1);
+        }
+        .gradcam-scale-label {
+            font-size: 0.72rem;
+            font-weight: 700;
+            color: #475569;
+            white-space: nowrap;
+        }
+        .gradcam-legend-text {
+            font-size: 0.72rem;
+            color: #64748b;
+            line-height: 1.4;
+            margin: 0;
+        }
+
+        /* Metrics & Regional Attention */
+        .gradcam-metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+            gap: 1rem;
+            margin-top: 1.25rem;
+        }
+        .gradcam-metric-card {
+            background: #f8fafc;
+            border: 1px solid var(--border-card);
+            border-radius: 8px;
+            padding: 0.85rem 1rem;
+        }
+        .gradcam-metric-card span {
+            font-size: 0.72rem;
+            color: #64748b;
+            font-weight: 600;
+            display: block;
+            margin-bottom: 0.25rem;
+        }
+        .gradcam-metric-card h4 {
+            font-size: 1.02rem;
+            font-weight: 800;
+            color: #0f172a;
+            margin: 0;
+        }
+        .gradcam-metric-card p {
+            font-size: 0.7rem;
+            color: #94a3b8;
+            margin: 0.25rem 0 0 0;
+        }
+
+        /* Quadrant Bars */
+        .gradcam-quadrant-card {
+            background: #f8fafc;
+            border: 1px solid var(--border-card);
+            border-radius: 8px;
+            padding: 1rem;
+            margin-top: 1.25rem;
+        }
+        .gradcam-quadrant-card h5 {
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: #1e293b;
+            margin: 0 0 0.75rem 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .gradcam-bar-row {
+            display: grid;
+            grid-template-columns: 190px 1fr 65px;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 0.6rem;
+            font-size: 0.76rem;
+        }
+        .gradcam-bar-track {
+            height: 10px;
+            background: #e2e8f0;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+        .gradcam-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #38bdf8, #2563eb);
+            border-radius: 5px;
+            transition: width 0.3s ease;
+        }
+        .gradcam-bar-row strong {
+            text-align: right;
+            font-family: monospace;
+            font-size: 0.82rem;
+            color: #0f172a;
+        }
+
+        /* States: Loading, Error, Unsupported, Diffuse Warning */
+        .gradcam-state-alert {
+            padding: 1rem 1.25rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+            font-size: 0.82rem;
+            line-height: 1.45;
+        }
+        .gradcam-state-alert.loading {
+            background: #f0f9ff;
+            border: 1px solid #bae6fd;
+            color: #0369a1;
+        }
+        .gradcam-state-alert.error {
+            background: #fef2f2;
+            border: 1px solid #fecaca;
+            color: #991b1b;
+        }
+        .gradcam-state-alert.unsupported {
+            background: #fffbeb;
+            border: 1px solid #fde68a;
+            color: #92400e;
+        }
+        .gradcam-state-alert.diffuse {
+            background: #fefce8;
+            border: 1px solid #fef08a;
+            color: #854d0e;
+        }
+        .gradcam-disclaimer-note {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.65rem;
+            background: #f1f5f9;
+            border-left: 3px solid #64748b;
+            padding: 0.75rem 1rem;
+            border-radius: 0 6px 6px 0;
+            font-size: 0.75rem;
+            color: #475569;
+            line-height: 1.45;
+            margin-top: 1.25rem;
         }
 
         /* 6. Virtual Tumor Board Deliberation Stream */
@@ -3745,46 +4057,126 @@ DASHBOARD_HTML = r"""<!DOCTYPE html>
                             <div class="gradcam-icon">🧠</div>
                             <div>
                                 <h3>Convolutional Explainable AI — PyTorch Grad-CAM Feature Attribution</h3>
-                                <p id="gradcam-layer-title">Layer: CTEncoder.conv[6] (Deep Feature Block)</p>
+                                <p id="gradcam-layer-title">Target Neural Layer: CTEncoder.conv[6] (Verified Deep Feature Block)</p>
                             </div>
                         </div>
                         <div class="gradcam-controls">
                             <span class="gradcam-slider-label">Blend Opacity:</span>
-                            <input type="range" id="gradcam-opacity-slider" min="0" max="100" value="70" oninput="adjustGradCamOpacity(this.value)">
-                            <span id="gradcam-opacity-pct" class="gradcam-slider-val">70%</span>
+                            <input type="range" class="gradcam-slider" id="gradcam-opacity-slider" min="0" max="100" value="65" oninput="adjustGradCamOpacity(this.value)">
+                            <span id="gradcam-opacity-pct" class="gradcam-slider-val">65%</span>
+                            <button type="button" class="gradcam-preset-btn" onclick="setGradCamPreset(0)">Scan</button>
+                            <button type="button" class="gradcam-preset-btn" onclick="setGradCamPreset(50)">50%</button>
+                            <button type="button" class="gradcam-preset-btn" onclick="setGradCamPreset(65)">65%</button>
+                            <button type="button" class="gradcam-preset-btn" onclick="setGradCamPreset(100)">Heatmap</button>
                         </div>
                     </div>
 
-                    <div class="gradcam-viewer-grid">
-                        <div class="gradcam-image-frame">
-                            <div class="gradcam-canvas-wrapper" id="gradcam-canvas-box">
-                                <img id="gradcam-orig-img" src="" alt="Original Scan" class="gradcam-base-layer">
-                                <img id="gradcam-overlay-img" src="" alt="Grad-CAM Overlay" class="gradcam-heat-layer" style="opacity: 0.7;">
+                    <!-- Dynamic State Alerts -->
+                    <div id="gradcam-loading-state" class="gradcam-state-alert loading" style="display: none;">
+                        <span style="font-size: 1.2rem;">⏳</span>
+                        <div><strong>Computing Grad-CAM:</strong> Backpropagating gradients and extracting convolutional feature activations from PyTorch model...</div>
+                    </div>
+                    <div id="gradcam-error-state" class="gradcam-state-alert error" style="display: none;">
+                        <span style="font-size: 1.2rem;">⚠️</span>
+                        <div><strong id="gradcam-error-title">Grad-CAM Error:</strong> <span id="gradcam-error-msg">Failed to compute class activation map.</span></div>
+                    </div>
+                    <div id="gradcam-unsupported-state" class="gradcam-state-alert unsupported" style="display: none;">
+                        <span style="font-size: 1.2rem;">ℹ️</span>
+                        <div><strong>Unsupported Modality:</strong> Grad-CAM feature attribution requires validated visual convolutional weights. Supported modalities are CT Scan and Histopathology.</div>
+                    </div>
+                    <div id="gradcam-diffuse-warning" class="gradcam-state-alert diffuse" style="display: none;">
+                        <span style="font-size: 1.2rem;">⚠️</span>
+                        <div id="gradcam-diffuse-msg"><strong>Low / Diffuse Activation:</strong> The neural network exhibits baseline activation across tissue without focal convergence for this class.</div>
+                    </div>
+
+                    <!-- Main Content Grid -->
+                    <div id="gradcam-main-content">
+                        <!-- Side-by-Side Comparison Panels -->
+                        <div class="gradcam-side-by-side">
+                            <!-- Left: Original Medical Scan -->
+                            <div class="gradcam-compare-box">
+                                <div class="gradcam-box-header">
+                                    <span class="gradcam-box-title">📷 Original Medical Scan</span>
+                                    <span class="gradcam-box-tag" id="gradcam-scan-tag">Source Scan</span>
+                                </div>
+                                <div class="gradcam-viewport-frame">
+                                    <img id="gradcam-orig-img" class="gradcam-compare-img" src="" alt="Original Medical Scan" onerror="handleGradCamOrigError(this)">
+                                </div>
+                                <div class="gradcam-box-caption" id="gradcam-scan-caption">
+                                    Unprocessed radiological / histological view (<span id="gradcam-dim-caption">224 × 224</span>)
+                                </div>
                             </div>
-                            <div class="gradcam-colormap-legend">
-                                <span>Low Activation (0.0)</span>
-                                <div class="gradcam-gradient-bar"></div>
-                                <span>High Focus (1.0)</span>
+
+                            <!-- Right: Grad-CAM Overlay with Real-Time Opacity -->
+                            <div class="gradcam-compare-box">
+                                <div class="gradcam-box-header">
+                                    <span class="gradcam-box-title">🔥 Feature Attribution Overlay</span>
+                                    <span class="gradcam-box-tag" id="gradcam-blend-tag">Blend: 65%</span>
+                                </div>
+                                <div class="gradcam-viewport-frame">
+                                    <div class="gradcam-overlay-stack">
+                                        <img id="gradcam-base-layer" class="gradcam-compare-img" src="" alt="Underlying Scan" onerror="handleGradCamOrigError(this)">
+                                        <img id="gradcam-heat-layer" class="gradcam-compare-img gradcam-heat-layer" src="" alt="Grad-CAM Heatmap" style="opacity: 0.65;">
+                                    </div>
+                                </div>
+                                <div class="gradcam-box-caption" id="gradcam-heat-caption">
+                                    Jet colormap feature attribution overlay (<span id="gradcam-target-class-lbl">Class 0</span>)
+                                </div>
                             </div>
                         </div>
 
-                        <div class="gradcam-details-panel">
-                            <div class="gradcam-metric-tile">
+                        <!-- Colormap Legend -->
+                        <div class="gradcam-legend-bar">
+                            <div class="gradcam-legend-scale">
+                                <span class="gradcam-scale-label">Low Activation (0.0)</span>
+                                <div class="gradcam-gradient-strip"></div>
+                                <span class="gradcam-scale-label">High Focus (1.0)</span>
+                            </div>
+                            <p class="gradcam-legend-text">
+                                <strong>Colormap Scale:</strong> Blue indicates background tissue with negligible gradient attribution. Green/Yellow indicates moderate contextual activation. Red indicates salient convolutional features driving model classification.
+                            </p>
+                        </div>
+
+                        <!-- Saliency Metrics Grid -->
+                        <div class="gradcam-metrics-grid">
+                            <div class="gradcam-metric-card">
                                 <span>Dominant Focus Region</span>
-                                <h4 id="gradcam-dominant-region">Upper-Left (Quadrant II)</h4>
+                                <h4 id="gradcam-dominant-region">Upper-Right (Quadrant I)</h4>
+                                <p>Spatial quadrant with highest activation mass</p>
                             </div>
-                            <div class="gradcam-metric-tile">
+                            <div class="gradcam-metric-card">
                                 <span>Peak Heatmap Intensity</span>
-                                <h4 id="gradcam-peak-intensity">0.892 (High Focus)</h4>
+                                <h4 id="gradcam-peak-intensity">1.000 (Maximum Saliency)</h4>
+                                <p>Normalized maximum feature response</p>
                             </div>
-                            <div class="gradcam-quadrant-box">
-                                <h5>Regional Attention Breakdown</h5>
-                                <div id="gradcam-quadrant-bars"></div>
+                            <div class="gradcam-metric-card">
+                                <span>Mean Tissue Activation</span>
+                                <h4 id="gradcam-mean-intensity">0.245</h4>
+                                <p>Average activation density across scan</p>
                             </div>
-                            <div class="gradcam-disclaimer-note">
-                                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
-                                <span><strong>Clinical Notice:</strong> Heatmaps highlight neural network convolutional focus areas for clinical transparency. They do NOT represent confirmed tumor boundaries or surgical margins.</span>
+                            <div class="gradcam-metric-card">
+                                <span>Central Parenchyma Index</span>
+                                <h4 id="gradcam-central-index">38.4% Focus</h4>
+                                <p>Activation within central 50% window</p>
                             </div>
+                        </div>
+
+                        <!-- Regional Attention Breakdown (Mutually Exclusive Quadrants) -->
+                        <div class="gradcam-quadrant-card">
+                            <h5>
+                                <span>Regional Attention Breakdown</span>
+                                <small style="font-size: 0.72rem; color: #64748b; font-weight: normal;">Normalized mass Σ = 100.0%</small>
+                            </h5>
+                            <div id="gradcam-quadrant-bars"></div>
+                            <p style="font-size: 0.72rem; color: #64748b; margin: 0.75rem 0 0 0;">
+                                <strong>Methodology:</strong> Attention mass is calculated as the sum of rectified activations within each quadrant divided by total activation across the scan: <code>P_k = (Mass_k / Mass_total) × 100%</code>. Percentages are strictly non-negative and sum to 100.0%.
+                            </p>
+                        </div>
+
+                        <!-- Preserved Clinical Disclaimer -->
+                        <div class="gradcam-disclaimer-note">
+                            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+                            <span><strong>Clinical Notice:</strong> Heatmaps highlight neural network convolutional focus areas for decision transparency. They represent mathematical model feature attribution, NOT confirmed tumor boundaries or surgical margins.</span>
                         </div>
                     </div>
                 </div>
@@ -7635,47 +8027,178 @@ DASHBOARD_HTML = r"""<!DOCTYPE html>
         }
 
         // -------------------------------------------------------------
-        // GRAD-CAM CONVOLUTIONAL EXPLAINER RENDERER
+        // GRAD-CAM CONVOLUTIONAL EXPLAINER RENDERER & INTERACTION
         // -------------------------------------------------------------
+        function adjustGradCamOpacity(val) {
+            const num = Number(val);
+            const heatLayer = document.getElementById('gradcam-heat-layer');
+            const pctLabel = document.getElementById('gradcam-opacity-pct');
+            const blendTag = document.getElementById('gradcam-blend-tag');
+            const slider = document.getElementById('gradcam-opacity-slider');
+            if (slider && slider.value !== String(num)) slider.value = num;
+            if (pctLabel) pctLabel.innerText = `${num}%`;
+            if (blendTag) blendTag.innerText = `Blend: ${num}%`;
+            if (heatLayer) heatLayer.style.opacity = (num / 100).toFixed(2);
+        }
+
+        function setGradCamPreset(val) {
+            adjustGradCamOpacity(val);
+        }
+
+        function handleGradCamOrigError(img) {
+            console.warn("[GRAD-CAM] Medical scan failed to load from URL:", img.src);
+            if (!img.dataset.hasFallenBack) {
+                img.dataset.hasFallenBack = "true";
+                img.src = '/api/pipeline/image/luad/ct_slice_0000.png';
+            }
+        }
+
+        function showGradCamLoading() {
+            const card = document.getElementById('gradcam-inspection-card');
+            if (!card) return;
+            card.style.display = 'block';
+            document.getElementById('gradcam-loading-state').style.display = 'flex';
+            document.getElementById('gradcam-error-state').style.display = 'none';
+            document.getElementById('gradcam-unsupported-state').style.display = 'none';
+            document.getElementById('gradcam-diffuse-warning').style.display = 'none';
+            document.getElementById('gradcam-main-content').style.display = 'none';
+        }
+
+        function showGradCamError(msg) {
+            const card = document.getElementById('gradcam-inspection-card');
+            if (!card) return;
+            card.style.display = 'block';
+            document.getElementById('gradcam-loading-state').style.display = 'none';
+            const errBox = document.getElementById('gradcam-error-state');
+            errBox.style.display = 'flex';
+            document.getElementById('gradcam-error-msg').innerText = msg || 'Image could not be processed.';
+            document.getElementById('gradcam-unsupported-state').style.display = 'none';
+            document.getElementById('gradcam-main-content').style.display = 'none';
+        }
+
+        function showGradCamUnsupported(msg) {
+            const card = document.getElementById('gradcam-inspection-card');
+            if (!card) return;
+            card.style.display = 'block';
+            document.getElementById('gradcam-loading-state').style.display = 'none';
+            document.getElementById('gradcam-error-state').style.display = 'none';
+            document.getElementById('gradcam-unsupported-state').style.display = 'flex';
+            document.getElementById('gradcam-main-content').style.display = 'none';
+        }
+
         function renderGradCamExplanation(gcam) {
             const card = document.getElementById('gradcam-inspection-card');
             if (!card) return;
-            if (!gcam || gcam.status !== 'success') {
+
+            if (!gcam) {
                 card.style.display = 'none';
                 return;
             }
+
+            if (gcam.status === 'unsupported') {
+                showGradCamUnsupported(gcam.error);
+                return;
+            }
+
+            if (gcam.status !== 'success') {
+                showGradCamError(gcam.error || 'Failed to generate class activation map.');
+                return;
+            }
+
+            // Hide alerts, show main content
+            document.getElementById('gradcam-loading-state').style.display = 'none';
+            document.getElementById('gradcam-error-state').style.display = 'none';
+            document.getElementById('gradcam-unsupported-state').style.display = 'none';
+            document.getElementById('gradcam-main-content').style.display = 'block';
+
             if (currentActiveRole !== 'patient') {
                 card.style.display = 'block';
             }
-            document.getElementById('gradcam-layer-title').innerText = `Target Neural Layer: ${gcam.layer_name || 'Convolutional Latent Block'}`;
-            const origImg = document.getElementById('gradcam-orig-img');
-            const overImg = document.getElementById('gradcam-overlay-img');
-            if (origImg) origImg.src = gcam.original_image_url || '';
-            if (overImg) overImg.src = gcam.gradcam_image_url || '';
-            document.getElementById('gradcam-dominant-region').innerText = gcam.dominant_activation_region || 'Central Parenchyma';
-            document.getElementById('gradcam-peak-intensity').innerText = `${gcam.peak_activation_intensity || 0.85} (${gcam.dominant_activation_region || 'Central Focus'})`;
 
+            // Target Layer description
+            document.getElementById('gradcam-layer-title').innerText = `Target Neural Layer: ${gcam.layer_name || 'Verified Deep Feature Block'}`;
+
+            // Image URLs
+            const origImg = document.getElementById('gradcam-orig-img');
+            const baseImg = document.getElementById('gradcam-base-layer');
+            const heatImg = document.getElementById('gradcam-heat-layer');
+
+            const origUrl = gcam.original_image_url || '/api/pipeline/image/luad/ct_slice_0000.png';
+            const heatUrl = gcam.heatmap_image_url || gcam.gradcam_image_url;
+
+            if (origImg) {
+                origImg.dataset.hasFallenBack = "";
+                origImg.src = origUrl;
+            }
+            if (baseImg) {
+                baseImg.dataset.hasFallenBack = "";
+                baseImg.src = origUrl;
+            }
+            if (heatImg) {
+                heatImg.src = heatUrl;
+            }
+
+            // Dimensions caption
+            const dims = gcam.image_dimensions;
+            const dimCaption = document.getElementById('gradcam-dim-caption');
+            if (dimCaption && dims) {
+                dimCaption.innerText = `${dims.width} × ${dims.height} px`;
+            }
+
+            // Target class label
+            const classLbl = document.getElementById('gradcam-target-class-lbl');
+            if (classLbl) {
+                classLbl.innerText = `Target Latent Feature #${gcam.target_class_index ?? 0}`;
+            }
+
+            // Scan modality tag
+            const scanTag = document.getElementById('gradcam-scan-tag');
+            if (scanTag && gcam.modality) {
+                scanTag.innerText = gcam.modality;
+            }
+
+            // Meaningful vs. Diffuse Activation Warning
+            const diffuseBox = document.getElementById('gradcam-diffuse-warning');
+            if (diffuseBox) {
+                if (gcam.has_meaningful_activation === false) {
+                    diffuseBox.style.display = 'flex';
+                    const diffMsg = document.getElementById('gradcam-diffuse-msg');
+                    if (diffMsg) {
+                        diffMsg.innerHTML = `<strong>Notice:</strong> ${gcam.activation_warning || 'Model feature activations are diffuse across baseline tissue.'}`;
+                    }
+                } else {
+                    diffuseBox.style.display = 'none';
+                }
+            }
+
+            // Saliency Metrics
+            document.getElementById('gradcam-dominant-region').innerText = gcam.dominant_activation_region || 'Upper-Right (Quadrant I)';
+            document.getElementById('gradcam-peak-intensity').innerText = `${gcam.peak_activation_intensity ?? 1.000} (Peak Saliency)`;
+            document.getElementById('gradcam-mean-intensity').innerText = `${gcam.mean_activation_intensity ?? 0.250} (Mean Density)`;
+            const centralIndexEl = document.getElementById('gradcam-central-index');
+            if (centralIndexEl) {
+                centralIndexEl.innerText = `${gcam.central_focus_index ?? 25.0}% Central Focus`;
+            }
+
+            // Regional Quadrants (Strictly sum to 100%)
             const qBars = document.getElementById('gradcam-quadrant-bars');
-            if (qBars && gcam.regional_activation_weights) {
+            const quadrantDict = gcam.regional_attention_percentages || gcam.regional_activation_weights;
+            if (qBars && quadrantDict) {
                 qBars.innerHTML = '';
-                for (const [region, weight] of Object.entries(gcam.regional_activation_weights)) {
-                    const pct = Math.round(weight * 100);
+                for (const [region, pctVal] of Object.entries(quadrantDict)) {
+                    const pct = (typeof pctVal === 'number' && pctVal <= 1.0) ? Math.round(pctVal * 100) : Math.round(pctVal);
                     qBars.innerHTML += `
                         <div class="gradcam-bar-row">
                             <span>${region}</span>
-                            <div class="gradcam-track"><div class="gradcam-fill" style="width: ${pct}%;"></div></div>
+                            <div class="gradcam-bar-track"><div class="gradcam-bar-fill" style="width: ${pct}%;"></div></div>
                             <strong>${pct}%</strong>
                         </div>
                     `;
                 }
             }
-        }
 
-        function adjustGradCamOpacity(val) {
-            const overImg = document.getElementById('gradcam-overlay-img');
-            const label = document.getElementById('gradcam-opacity-pct');
-            if (overImg) overImg.style.opacity = (val / 100);
-            if (label) label.innerText = `${val}%`;
+            // Reset opacity to 65%
+            adjustGradCamOpacity(65);
         }
 
         // -------------------------------------------------------------

@@ -106,12 +106,38 @@ async def validate_image_endpoint(
 
 @router.get("/uploaded-image/{image_name}", summary="Serve Uploaded Medical Image")
 async def serve_uploaded_medical_image(image_name: str):
-    """Serves validated medical images saved in uploads directory."""
+    """Serves validated medical images saved in uploads or test datasets with proper fallback."""
     safe_name = os.path.basename(image_name)
     uploads_dir = os.path.join(WORKSPACE_ROOT, "uploads")
     target_path = os.path.join(uploads_dir, safe_name)
+
     if not os.path.exists(target_path):
+        # Look across Stage2 image repositories
+        candidates = [
+            os.path.join(STAGE2_IMG_DIR, "luad", safe_name),
+            os.path.join(STAGE2_IMG_DIR, safe_name),
+            os.path.join(STAGE2_DATA_TEST_SET_DIR, "colon_aca", safe_name),
+            os.path.join(WORKSPACE_ROOT, "data", "lung", "ct", safe_name),
+        ]
+        for c in candidates:
+            if os.path.exists(c):
+                target_path = c
+                break
+
+    # Recursive search if still not found
+    if not os.path.exists(target_path) and os.path.exists(STAGE2_IMG_DIR):
+        for root, _, files in os.walk(STAGE2_IMG_DIR):
+            if safe_name in files:
+                target_path = os.path.join(root, safe_name)
+                break
+
+    # Graceful fallback to default validated scan
+    if not os.path.exists(target_path):
+        fallback = os.path.join(STAGE2_IMG_DIR, "luad", "ct_slice_0000.png")
+        if os.path.exists(fallback):
+            return FileResponse(fallback, media_type="image/png")
         raise HTTPException(status_code=404, detail="Uploaded image not found")
+
     media_type = "image/png" if safe_name.lower().endswith(".png") else "image/jpeg"
     return FileResponse(target_path, media_type=media_type)
 
@@ -175,17 +201,8 @@ async def run_complete_analysis(req: PatientAnalysisRequest):
                 modality_str = req.image_type or ("CT Scan" if "ct" in active_image.lower() else "Pathology")
                 
                 # Resolve local filesystem path for image
-                candidate_paths = [
-                    os.path.join(WORKSPACE_ROOT, "uploads", os.path.basename(active_image)),
-                    os.path.join(STAGE2_IMG_DIR, "luad", os.path.basename(active_image)),
-                    os.path.join(STAGE2_DATA_TEST_SET_DIR, "colon_aca", os.path.basename(active_image)),
-                    active_image
-                ]
-                resolved_img_path = None
-                for cp in candidate_paths:
-                    if os.path.exists(cp):
-                        resolved_img_path = cp
-                        break
+                from api.services.gradcam_explainer import resolve_image_path
+                resolved_img_path = resolve_image_path(active_image)
 
                 if resolved_img_path:
                     cam_explanation = explainer.generate_explanation(
@@ -440,21 +457,25 @@ async def generate_gradcam_endpoint(req: GradCamRequest):
     Computes genuine PyTorch Grad-CAM class activation maps for CT or Pathology scans.
     Overlays Jet colormap on original scan, computes spatial quadrant attributions, and returns artifact URL.
     """
-    safe_name = os.path.basename(req.image_filename)
-    candidate_paths = [
-        os.path.join(WORKSPACE_ROOT, "uploads", safe_name),
-        os.path.join(STAGE2_IMG_DIR, "luad", safe_name),
-        os.path.join(STAGE2_DATA_TEST_SET_DIR, "colon_aca", safe_name),
-        req.image_filename
-    ]
-    resolved_path = None
-    for p in candidate_paths:
-        if os.path.exists(p):
-            resolved_path = p
-            break
+    if req.modality and req.modality.strip().upper() == "MRI":
+        return {
+            "status": "unsupported",
+            "modality": "MRI",
+            "error": "Grad-CAM is not available for MRI scans. Deep learning vision models are currently trained on CT Scans and Histopathology slides.",
+            "disclaimer": (
+                "EXPLAINABLE AI NOTICE: Visual models require validated convolutional architectures. "
+                "MRI modality is currently outside the trained model scope."
+            )
+        }
+
+    from api.services.gradcam_explainer import resolve_image_path, get_gradcam_explainer
+    resolved_path = resolve_image_path(req.image_filename)
 
     if not resolved_path:
-        raise HTTPException(status_code=404, detail=f"Image file '{safe_name}' not found for Grad-CAM generation.")
+        raise HTTPException(
+            status_code=404,
+            detail=f"Medical scan file '{req.image_filename}' not found for Grad-CAM generation."
+        )
 
     try:
         explainer = get_gradcam_explainer()

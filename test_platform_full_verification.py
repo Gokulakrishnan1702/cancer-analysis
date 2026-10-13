@@ -206,9 +206,28 @@ class TestExplainableAIGradCAM(unittest.TestCase):
 
         res = explainer.generate_explanation(ct_path, modality="CT Scan")
         self.assertEqual(res.get("status"), "success")
-        self.assertIn("dominant_activation_region", res)
-        self.assertIn("gradcam_image_url", res)
+        self.assertTrue(res.get("target_layer_verified"))
+        self.assertIn("CTEncoder.conv[6]", res.get("layer_name", ""))
+        self.assertIn("original_image_url", res)
+        self.assertIn("heatmap_image_url", res)
+        self.assertIn("overlay_image_url", res)
         self.assertIn("disclaimer", res)
+
+        # Mathematical consistency: Regional quadrant percentages strictly non-negative and sum to 100.0%
+        quadrants = res.get("regional_attention_percentages", {})
+        self.assertEqual(len(quadrants), 4)
+        for q_name, q_pct in quadrants.items():
+            self.assertGreaterEqual(q_pct, 0.0, f"Quadrant {q_name} percentage must be non-negative")
+        total_quadrant_sum = round(sum(quadrants.values()), 1)
+        self.assertEqual(total_quadrant_sum, 100.0, f"Quadrant attention percentages must sum to 100.0% (got {total_quadrant_sum}%)")
+
+        # Peak intensity must be bounded in [0.0, 1.0]
+        self.assertGreaterEqual(res.get("peak_activation_intensity", 0.0), 0.0)
+        self.assertLessEqual(res.get("peak_activation_intensity", 0.0), 1.0)
+
+        # Modality check: MRI must return unsupported state
+        res_mri = explainer.generate_explanation(ct_path, modality="MRI")
+        self.assertEqual(res_mri.get("status"), "unsupported")
 
 
 class TestAuthAndRBAC(unittest.TestCase):
